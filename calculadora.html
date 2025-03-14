@@ -500,6 +500,22 @@
         overflow: hidden;
       }
       
+      /* Variações de cores para o desconto aplicado baseado no valor */
+      .desconto-badge.baixo {
+        background: linear-gradient(135deg, #4caf50, #8bc34a);
+        box-shadow: 0 2px 5px rgba(76, 175, 80, 0.3);
+      }
+      
+      .desconto-badge.medio {
+        background: linear-gradient(135deg, #ff9800, #ffc107);
+        box-shadow: 0 2px 5px rgba(255, 152, 0, 0.3);
+      }
+      
+      .desconto-badge.alto {
+        background: linear-gradient(135deg, #f44336, #ff5722);
+        box-shadow: 0 2px 5px rgba(244, 67, 54, 0.3);
+      }
+      
       .desconto-badge::before {
         content: '';
         position: absolute;
@@ -542,6 +558,39 @@
       .preco-original {
         position: relative;
         color: #757575;
+      }
+      
+      /* Estilo moderno para o preço original */
+      .preco-original-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #2196f3, #03a9f4);
+        color: white;
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-weight: 600;
+        box-shadow: 0 2px 5px rgba(33, 150, 243, 0.3);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .preco-original-badge:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
+      }
+      
+      .preco-original-badge::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: rgba(255, 255, 255, 0.1);
+        transform: rotate(45deg);
+        animation: shimmer 2s infinite;
       }
       
       .preco-final {
@@ -760,7 +809,7 @@
               <div id="resultado-container" role="region" aria-label="Resultados">
                 <div class="resultado-item">
                   <span>Preço Original:</span>
-                  <span class="preco-original">R$ <span id="preco-original">0,00</span></span>
+                  <span class="preco-original-badge"><i class="material-icons" style="font-size: 14px; margin-right: 4px;">attach_money</i>R$ <span id="preco-original">0,00</span></span>
                 </div>
                 <div class="resultado-item">
                   <span>Desconto Aplicado:</span>
@@ -1145,6 +1194,16 @@
         setTimeout(() => {
           descontoBadge.style.animation = "";
         }, 600);
+        
+        // Aplicar classe de estilo ao badge de desconto baseado no percentual
+        descontoBadge.classList.remove("baixo", "medio", "alto");
+        if (desconto <= 15) {
+          descontoBadge.classList.add("baixo");
+        } else if (desconto <= 30) {
+          descontoBadge.classList.add("medio");
+        } else {
+          descontoBadge.classList.add("alto");
+        }
 
         // Atualização dos resultados
         document.getElementById("preco-original").textContent =
