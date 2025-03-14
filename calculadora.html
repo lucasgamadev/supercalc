@@ -835,18 +835,48 @@
 
       // Adicionar validação de input para permitir apenas números
       document.getElementById("preco-reais").addEventListener("keypress", function (e) {
+      document.getElementById("preco-reais").addEventListener("wheel", function (e) {
+        e.preventDefault();
+        let valor = parseInt(this.value);
+        if (e.deltaY < 0) {
+          valor += 1;
+        } else {
+          valor = Math.max(0, valor - 1);
+        }
+        this.value = valor;
+      });
         if (!/[\d]/.test(e.key)) {
           e.preventDefault();
         }
       });
 
       document.getElementById("preco-centavos").addEventListener("keypress", function (e) {
+      document.getElementById("preco-centavos").addEventListener("wheel", function (e) {
+        e.preventDefault();
+        let valor = parseInt(this.value);
+        if (e.deltaY < 0) {
+          valor = Math.min(99, valor + 1);
+        } else {
+          valor = Math.max(0, valor - 1);
+        }
+        this.value = valor;
+      });
         if (!/[\d]/.test(e.key)) {
           e.preventDefault();
         }
       });
 
       document.getElementById("desconto").addEventListener("keypress", function (e) {
+      document.getElementById("desconto").addEventListener("wheel", function (e) {
+        e.preventDefault();
+        let valor = parseInt(this.value);
+        if (e.deltaY < 0) {
+          valor = Math.min(100, valor + 1);
+        } else {
+          valor = Math.max(0, valor - 1);
+        }
+        this.value = valor;
+      });
         if (!/[\d.]/.test(e.key)) {
           e.preventDefault();
         }
