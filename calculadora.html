@@ -194,10 +194,12 @@
       }
 
       #resultado-container {
-        background: #f5f5f5;
-        border-radius: 6px;
-        padding: 12px;
-        margin-top: 12px;
+        background: linear-gradient(to bottom, #f9f9f9, #f5f5f5);
+        border-radius: 12px;
+        padding: 15px;
+        margin-top: 15px;
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
       }
 
       .resultado-item {
@@ -321,38 +323,62 @@
       .historico-item {
         display: flex;
         flex-direction: column;
-        padding: 8px 12px !important;
-        border-bottom: 1px solid #e0e0e0 !important;
+        padding: 16px !important;
+        margin: 8px 0 !important;
+        border-radius: 12px !important;
+        background: linear-gradient(145deg, #ffffff, #f5f5f5) !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
+        transition: all 0.3s ease !important;
+        border: none !important;
+        position: relative;
+        overflow: hidden;
       }
 
-      .historico-item:last-child {
-        border-bottom: none !important;
+      .historico-item::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 4px;
+        background: linear-gradient(to bottom, #2196f3, #00bcd4);
+        border-radius: 4px 0 0 4px;
+      }
+
+      .historico-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12) !important;
       }
 
       .historico-preco {
         font-size: 1.1em;
-        margin-bottom: 8px;
+        margin-bottom: 12px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
       }
 
       .historico-preco .valor-original {
         color: #2196f3;
+        font-weight: 500;
       }
 
       .historico-preco .desconto {
-        color: #000000;
+        color: #424242;
+        background-color: rgba(33, 150, 243, 0.1);
+        padding: 4px 8px;
+        border-radius: 20px;
+        font-size: 0.9em;
+        font-weight: 500;
       }
 
       .historico-final {
         color: #4caf50;
-        font-weight: 500;
-        font-size: 1.1em;
-      }
-
-      .historico-item {
-        display: flex;
-        flex-direction: column;
-        padding: 12px !important;
-        border-bottom: 1px solid #e0e0e0 !important;
+        font-weight: 600;
+        font-size: 1.2em;
+        padding: 8px 0 0 0;
+        border-top: 1px dashed rgba(0, 0, 0, 0.08);
       }
 
       @keyframes destaque {
@@ -813,14 +839,25 @@
             </div>
         `;
 
-        // Adiciona efeito de fade in
+        // Adiciona efeito de fade in com animação melhorada
         item.style.opacity = "0";
-        item.style.transform = "translateY(-10px)";
-        item.style.transition = "all 0.3s ease";
-
+        item.style.transform = "translateY(-15px) scale(0.95)";
+        item.style.transition = "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
+        
+        // Adiciona um ID único para o item
+        const itemId = 'historico-' + Date.now();
+        item.setAttribute('id', itemId);
+        
         // Remove itens antigos se exceder o limite
         while (historico.children.length >= maxHistoricoItems) {
-          historico.removeChild(historico.lastChild);
+          const lastItem = historico.lastChild;
+          lastItem.style.opacity = "0";
+          lastItem.style.transform = "translateY(10px) scale(0.9)";
+          setTimeout(() => {
+            if (lastItem.parentNode) {
+              historico.removeChild(lastItem);
+            }
+          }, 300);
         }
 
         historico.insertBefore(item, historico.firstChild);
@@ -829,8 +866,21 @@
         item.offsetHeight;
 
         // Aplica a animação
-        item.style.opacity = "1";
-        item.style.transform = "translateY(0)";
+        setTimeout(() => {
+          item.style.opacity = "1";
+          item.style.transform = "translateY(0) scale(1)";
+        }, 50);
+        
+        // Adiciona efeito de destaque
+        setTimeout(() => {
+          const newItem = document.getElementById(itemId);
+          if (newItem) {
+            newItem.style.backgroundColor = "rgba(33, 150, 243, 0.05)";
+            setTimeout(() => {
+              newItem.style.backgroundColor = "";
+            }, 1000);
+          }
+        }, 500);
       }
 
       // Adicionar validação de input para permitir apenas números
