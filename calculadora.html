@@ -194,22 +194,42 @@
       }
 
       #resultado-container {
-        background: linear-gradient(to bottom, #f9f9f9, #f5f5f5);
-        border-radius: 12px;
-        padding: 15px;
+        background: linear-gradient(to bottom, #ffffff, #f7f9fc);
+        border-radius: 16px;
+        padding: 20px;
         margin-top: 15px;
-        border: 1px solid #e0e0e0;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(224, 224, 224, 0.5);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+      
+      #resultado-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, #2196f3, #00bcd4);
+      }
+      
+      #resultado-container:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
       }
 
       .resultado-item {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 8px 0;
+        padding: 12px 0;
         border-bottom: 1px solid #e0e0e0;
         font-size: 14px;
         font-family: "Roboto", sans-serif;
+        position: relative;
+        overflow: hidden;
       }
 
       .material-icons {
@@ -365,28 +385,87 @@
       }
 
       .historico-preco .desconto {
-        color: #424242;
-        background-color: rgba(33, 150, 243, 0.1);
-        padding: 4px 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        padding: 6px 12px;
         border-radius: 20px;
         font-size: 0.9em;
-        font-weight: 500;
+        font-weight: 600;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        margin-left: 8px;
+        transition: all 0.3s ease;
+      }
+      
+      .historico-preco .desconto.baixo {
+        background: linear-gradient(135deg, #4caf50, #8bc34a);
+      }
+      
+      .historico-preco .desconto.medio {
+        background: linear-gradient(135deg, #ff9800, #ffc107);
+      }
+      
+      .historico-preco .desconto.alto {
+        background: linear-gradient(135deg, #f44336, #ff5722);
+      }
+      
+      .historico-preco .desconto::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: rgba(255, 255, 255, 0.1);
+        transform: rotate(45deg);
+        animation: shimmer 2s infinite;
+      }
+      
+      .historico-preco .desconto:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       }
 
       .historico-final {
         color: #4caf50;
         font-weight: 600;
         font-size: 1.2em;
-        padding: 8px 0 0 0;
+        padding: 12px 0 0 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         border-top: 1px dashed rgba(0, 0, 0, 0.08);
       }
 
       @keyframes destaque {
         0% {
           background-color: #e3f2fd;
+          transform: scale(1.02);
+        }
+        50% {
+          background-color: rgba(227, 242, 253, 0.7);
         }
         100% {
           background-color: transparent;
+          transform: scale(1);
+        }
+      }
+      
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+          box-shadow: 0 2px 5px rgba(33, 150, 243, 0.3);
+        }
+        50% {
+          transform: scale(1.05);
+          box-shadow: 0 4px 10px rgba(33, 150, 243, 0.4);
+        }
+        100% {
+          transform: scale(1);
+          box-shadow: 0 2px 5px rgba(33, 150, 243, 0.3);
         }
       }
 
@@ -400,8 +479,84 @@
       }
 
       .resultado-item:last-child span {
-        font-weight: 500;
+        font-weight: 700;
         color: #2196f3;
+        font-size: 16px;
+      }
+      
+      /* Estilo moderno para o desconto aplicado */
+      .desconto-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #2196f3, #00bcd4);
+        color: white;
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-weight: 600;
+        box-shadow: 0 2px 5px rgba(33, 150, 243, 0.3);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .desconto-badge::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: rgba(255, 255, 255, 0.1);
+        transform: rotate(45deg);
+        animation: shimmer 2s infinite;
+      }
+      
+      @keyframes shimmer {
+        0% { transform: translateX(-100%) rotate(45deg); }
+        100% { transform: translateX(100%) rotate(45deg); }
+      }
+      
+      @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+      }
+      
+      .desconto-valor {
+        font-weight: 600;
+        color: #f44336;
+        position: relative;
+      }
+      
+      .desconto-valor::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #f44336, transparent);
+      }
+      
+      .preco-original {
+        position: relative;
+        color: #757575;
+      }
+      
+      .preco-final {
+        font-weight: 700;
+        font-size: 16px;
+        color: #4caf50;
+        display: flex;
+        align-items: center;
+      }
+      
+      .preco-final::before {
+        content: '\e5ca';
+        font-family: 'Material Icons';
+        margin-right: 5px;
+        font-size: 16px;
       }
 
       /* Melhorar responsividade para telas muito pequenas */
@@ -605,19 +760,19 @@
               <div id="resultado-container" role="region" aria-label="Resultados">
                 <div class="resultado-item">
                   <span>Preço Original:</span>
-                  <span>R$ <span id="preco-original">0.00</span></span>
+                  <span class="preco-original">R$ <span id="preco-original">0,00</span></span>
                 </div>
                 <div class="resultado-item">
                   <span>Desconto Aplicado:</span>
-                  <span><span id="desconto-aplicado">0</span>%</span>
+                  <span class="desconto-badge"><i class="material-icons" style="font-size: 14px; margin-right: 4px;">local_offer</i><span id="desconto-aplicado">0</span>%</span>
                 </div>
                 <div class="resultado-item">
                   <span>Valor do Desconto:</span>
-                  <span>R$ <span id="valor-desconto">0.00</span></span>
+                  <span class="desconto-valor">R$ <span id="valor-desconto">0,00</span></span>
                 </div>
                 <div class="resultado-item">
                   <span>Preço Final:</span>
-                  <span>R$ <span id="resultado">0.00</span></span>
+                  <span class="preco-final">R$ <span id="resultado">0,00</span></span>
                 </div>
               </div>
             </div>
@@ -829,13 +984,39 @@
           typeof preco === "string" ? preco : preco.toFixed(2).replace(".", ",");
         const resultadoFormatado =
           typeof resultado === "string" ? resultado : resultado.toFixed(2).replace(".", ",");
+        
+        // Calcula a economia (diferença entre preço original e final)
+        const precoOriginal = typeof preco === "string" 
+          ? parseFloat(preco.replace(",", ".")) 
+          : preco;
+        const precoFinal = typeof resultado === "string" 
+          ? parseFloat(resultado.replace(",", ".")) 
+          : resultado;
+        const economia = (precoOriginal - precoFinal).toFixed(2).replace(".", ",");
+        
+        // Determina a classe do desconto com base no valor percentual
+        const descontoNum = parseFloat(desconto);
+        let descontoClasse = "baixo";
+        if (descontoNum >= 30) {
+          descontoClasse = "alto";
+        } else if (descontoNum >= 15) {
+          descontoClasse = "medio";
+        }
 
         item.innerHTML = `
             <div class="historico-preco">
-                <span class="valor-original">Valor Original: R$ ${precoFormatado}</span> <span class="desconto">(Desconto: ${desconto}%)</span>
+                <span class="valor-original">Valor Original: R$ ${precoFormatado}</span> 
+                <span class="desconto ${descontoClasse}">
+                    <i class="material-icons" style="font-size: 14px; margin-right: 4px;">trending_down</i>
+                    ${desconto}%
+                </span>
             </div>
             <div class="historico-final">
-                Valor Final: R$ ${resultadoFormatado}
+                <span>Valor Final: R$ ${resultadoFormatado}</span>
+                <span style="color: #f44336; font-size: 0.9em; background-color: rgba(244, 67, 54, 0.1); padding: 4px 8px; border-radius: 12px;">
+                    <i class="material-icons" style="font-size: 14px; vertical-align: middle; margin-right: 2px;">savings</i>
+                    Economia: R$ ${economia}
+                </span>
             </div>
         `;
 
@@ -950,10 +1131,20 @@
 
         // Atualizar resultados com animação
         const resultados = document.querySelectorAll(".resultado-item");
-        resultados.forEach((item) => {
-          item.classList.add("resultado-atualizado");
-          setTimeout(() => item.classList.remove("resultado-atualizado"), 500);
+        resultados.forEach((item, index) => {
+          // Adiciona um pequeno atraso para cada item, criando um efeito cascata
+          setTimeout(() => {
+            item.classList.add("resultado-atualizado");
+            setTimeout(() => item.classList.remove("resultado-atualizado"), 500);
+          }, index * 100);
         });
+        
+        // Animar o badge de desconto
+        const descontoBadge = document.querySelector(".desconto-badge");
+        descontoBadge.style.animation = "pulse 0.6s ease-in-out";
+        setTimeout(() => {
+          descontoBadge.style.animation = "";
+        }, 600);
 
         // Atualização dos resultados
         document.getElementById("preco-original").textContent =
