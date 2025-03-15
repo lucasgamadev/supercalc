@@ -601,6 +601,8 @@
       }
       
       .preco-final {
+        /* Removing this style as we're using badge styling now */
+        display: none;
         font-weight: 700;
         font-size: 16px;
         color: #4caf50;
@@ -828,7 +830,7 @@
                 </div>
                 <div class="resultado-item">
                   <span>Preço Final:</span>
-                  <span class="preco-final">R$ <span id="resultado">0,00</span></span>
+                  <span class="desconto-badge valor-desconto-badge" style="background: linear-gradient(135deg, #4caf50, #8bc34a); box-shadow: 0 2px 5px rgba(76, 175, 80, 0.3); color: black;"><i class="material-icons" style="font-size: 14px; margin-right: 4px;">check_circle</i>R$ <span id="resultado" style="color: black;">0,00</span></span>
                 </div>
               </div>
             </div>
@@ -1198,13 +1200,16 @@
         // Animar os badges
         const descontoBadge = document.querySelector(".desconto-badge");
         const valorDescontoBadge = document.querySelector(".valor-desconto-badge");
+        const precoFinalBadge = document.querySelectorAll(".valor-desconto-badge")[1]; // Get the second badge (Preço Final)
         
         descontoBadge.style.animation = "pulse 0.6s ease-in-out";
         valorDescontoBadge.style.animation = "pulse 0.6s ease-in-out";
+        precoFinalBadge.style.animation = "pulse 0.6s ease-in-out";
         
         setTimeout(() => {
           descontoBadge.style.animation = "";
           valorDescontoBadge.style.animation = "";
+          precoFinalBadge.style.animation = "";
         }, 600);
         
         // Aplicar classe de estilo ao badge de desconto baseado no percentual
