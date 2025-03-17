@@ -20,8 +20,7 @@ Uma coleção de calculadoras úteis para diversas finalidades.
 ├── components/
 │   └── header.html
 ├── pages/
-│   ├── about.html
-│   └── contact.html
+│   └── about.html
 ├── tailwind.config.js
 ├── package.json
 └── README.md
