@@ -1,4 +1,4 @@
-# SuperCalc
+# 🧮 SuperCalc
 
 Uma coleção de calculadoras úteis para diversas finalidades.
 
@@ -26,22 +26,22 @@ Uma coleção de calculadoras úteis para diversas finalidades.
 └── README.md
 ```
 
-## Calculadoras Disponíveis
+## 🧮 Calculadoras Disponíveis
 
-- **Calculadora de Desconto**: Calcule rapidamente o valor final após aplicar um desconto.
+- **💰 Calculadora de Desconto**: Calcule rapidamente o valor final após aplicar um desconto.
 
-## Tecnologias Utilizadas
+## 🛠️ Tecnologias Utilizadas
 
-- HTML5
-- CSS3 & TailwindCSS
-- JavaScript
+- 🟠 HTML5
+- 🔵 CSS3 & 🌊 TailwindCSS
+- 🟡 JavaScript
 
-## Como Executar
+## 🚀 Como Executar
 
 1. Clone este repositório
 2. Abra o arquivo `index.html` em seu navegador
 
-## Desenvolvimento
+## 👨‍💻 Desenvolvimento
 
 Para trabalhar no desenvolvimento do projeto:
 
