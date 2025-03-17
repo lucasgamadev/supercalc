@@ -1,0 +1,20 @@
+{
+  "name": "supercalc",
+  "version": "1.0.0",
+  "description": "Uma coleção de calculadoras úteis para diversas finalidades",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx tailwindcss -i ./assets/css/styles.css -o ./assets/css/output.css --watch",
+    "build": "npx tailwindcss -i ./assets/css/styles.css -o ./assets/css/output.css --minify"
+  },
+  "keywords": [
+    "calculadora",
+    "desconto",
+    "ferramentas"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "tailwindcss": "^3.3.0"
+  }
+}

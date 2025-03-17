@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" width="200" height="60">
+  <!-- SuperCalc Logo -->
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2196f3" />
+      <stop offset="100%" stop-color="#00bcd4" />
+    </linearGradient>
+  </defs>
+  <rect x="10" y="15" width="40" height="30" rx="5" fill="url(#gradient)" />
+  <text x="60" y="38" font-family="Roboto, sans-serif" font-size="24" font-weight="bold" fill="url(#gradient)">SuperCalc</text>
+  <path d="M20 25 L40 25 M30 20 L30 40 M20 35 L40 35" stroke="white" stroke-width="2" stroke-linecap="round" />
+</svg>
