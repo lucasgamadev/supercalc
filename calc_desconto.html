@@ -539,6 +539,11 @@
         overflow: hidden;
       }
       
+      /* Removed hover animation for the desconto badge */
+      .desconto-badge:hover {
+        box-shadow: 0 4px 10px rgba(33, 150, 243, 0.4);
+      }
+      
       /* Variações de cores para o desconto aplicado baseado no valor */
       .desconto-badge.baixo {
         background: linear-gradient(135deg, #4caf50, #8bc34a);
@@ -578,6 +583,12 @@
         100% { transform: scale(1); }
       }
       
+      @keyframes rotate-scale {
+        0% { transform: translateY(-2px) rotate(0deg); }
+        50% { transform: translateY(-3px) rotate(2deg); }
+        100% { transform: translateY(-2px) rotate(0deg); }
+      }
+      
       /* Estilo para o valor do desconto */
       .valor-desconto-badge {
         background: linear-gradient(135deg, #f44336, #ff5722);
@@ -585,8 +596,16 @@
       }
       
       .valor-desconto-badge:hover {
-        transform: translateY(-2px);
         box-shadow: 0 4px 10px rgba(244, 67, 54, 0.4);
+      }
+      
+      /* Removed hover animation for the final price badge (green one) */
+      .desconto-badge.valor-desconto-badge[style*="background: linear-gradient(135deg, #4caf50, #8bc34a)"] {
+        transition: all 0.3s ease;
+      }
+      
+      .desconto-badge.valor-desconto-badge[style*="background: linear-gradient(135deg, #4caf50, #8bc34a)"]:hover {
+        box-shadow: 0 4px 10px rgba(76, 175, 80, 0.4) !important;
       }
       
       .valor-desconto-badge::before {
@@ -623,7 +642,6 @@
       }
       
       .preco-original-badge:hover {
-        transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
       }
       
