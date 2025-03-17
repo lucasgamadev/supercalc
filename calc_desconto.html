@@ -40,6 +40,7 @@
 
       body {
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         min-height: 100vh;
@@ -57,6 +58,7 @@
         max-width: 900px;
         padding: 5px;
         margin: 0 auto;
+        margin-top: 10px;
       }
 
       .container-principal .row {
@@ -244,6 +246,43 @@
         top: -1px;
       }
 
+      /* Container para centralizar o botão de voltar */
+      .btn-voltar-container {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin: 30px auto 0;
+        max-width: 900px;
+        position: relative;
+        z-index: 10;
+      }
+      
+      /* Estilo para o botão de voltar */
+      .btn-voltar {
+        display: inline-flex;
+        align-items: center;
+        background: linear-gradient(135deg, #2196f3, #00bcd4);
+        color: white;
+        padding: 0 18px;
+        height: 36px;
+        border-radius: 18px;
+        font-size: 14px;
+        font-weight: 500;
+        box-shadow: 0 3px 8px rgba(33, 150, 243, 0.4);
+        transition: all 0.3s ease;
+        text-decoration: none;
+        width: fit-content;
+        margin-bottom: 15px;
+      }
+      
+      .btn-voltar:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(33, 150, 243, 0.4);
+      }
+      
+      .btn-voltar .material-icons {
+        margin-right: 4px;
+      }
       .resultado-item:last-child {
         border-bottom: none;
       }
@@ -751,6 +790,12 @@
       </style>
       <div class="no-js-message">Por favor, habilite o JavaScript para usar a calculadora.</div>
     </noscript>
+    
+    <div class="btn-voltar-container">
+      <a href="index.html" class="btn-voltar waves-effect waves-light" title="Voltar para a página inicial">
+        <i class="material-icons left">arrow_back</i>Voltar
+      </a>
+    </div>
 
     <div class="container-principal">
       <div class="row">
