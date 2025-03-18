@@ -1250,6 +1250,11 @@
       });
 
       document.getElementById("desconto").addEventListener("keypress", function (e) {
+        if (!/[\d.]/.test(e.key)) {
+          e.preventDefault();
+        }
+      });
+
       document.getElementById("desconto").addEventListener("wheel", function (e) {
         e.preventDefault();
         let valor = parseInt(this.value);
@@ -1260,92 +1265,52 @@
         }
         this.value = valor;
       });
-        if (!/[\d.]/.test(e.key)) {
-          e.preventDefault();
-        }
-      });
 
       function calcularDesconto() {
-        if (!validarCampos()) return;
-
+        // Verificar se Reais e Desconto estão preenchidos, mas Centavos está vazio
         const reaisInput = document.getElementById("preco-reais");
         const centavosInput = document.getElementById("preco-centavos");
         const descontoInput = document.getElementById("desconto");
+        
+        // Se Reais e Desconto estão preenchidos mas Centavos está vazio, preencher com zero
+        if (reaisInput.value.trim() !== "" && 
+            descontoInput.value.trim() !== "" && 
+            centavosInput.value.trim() === "") {
+          centavosInput.value = "0";
+          // Atualiza o campo visualmente
+          M.updateTextFields();
+        }
+        
+        if (!validarCampos()) return;
 
         const reais = parseInt(reaisInput.value.trim());
         const centavos = parseInt(centavosInput.value.trim());
         const desconto = parseFloat(descontoInput.value.trim());
-
-        // Cálculos com precisão melhorada
-        const precoTotal = parseFloat((reais + centavos / 100).toFixed(2));
-        const valorDesconto = parseFloat((precoTotal * (desconto / 100)).toFixed(2));
-        const resultado = parseFloat((precoTotal - valorDesconto).toFixed(2));
-
-        // Atualizar resultados com animação
-        const resultados = document.querySelectorAll(".resultado-item");
-        resultados.forEach((item, index) => {
-          // Adiciona um pequeno atraso para cada item, criando um efeito cascata
-          setTimeout(() => {
-            item.classList.add("resultado-atualizado");
-            setTimeout(() => item.classList.remove("resultado-atualizado"), 500);
-          }, index * 100);
-        });
         
-        // Animar os badges
-        const descontoBadge = document.querySelector(".desconto-badge");
-        const valorDescontoBadge = document.querySelector(".valor-desconto-badge");
-        const precoFinalBadge = document.querySelectorAll(".valor-desconto-badge")[1]; // Get the second badge (Preço Final)
+        // Calcular o preço original em formato decimal
+        const precoOriginal = reais + (centavos / 100);
         
-        descontoBadge.style.animation = "pulse 0.6s ease-in-out";
-        valorDescontoBadge.style.animation = "pulse 0.6s ease-in-out";
-        precoFinalBadge.style.animation = "pulse 0.6s ease-in-out";
+        // Calcular o valor do desconto
+        const valorDescontoCalculado = precoOriginal * (desconto / 100);
         
-        setTimeout(() => {
-          descontoBadge.style.animation = "";
-          valorDescontoBadge.style.animation = "";
-          precoFinalBadge.style.animation = "";
-        }, 600);
+        // Calcular o preço final
+        const precoFinal = precoOriginal - valorDescontoCalculado;
         
-        // Aplicar classe de estilo ao badge de desconto baseado no percentual
-        descontoBadge.classList.remove("baixo", "medio", "alto");
-        if (desconto <= 15) {
-          descontoBadge.classList.add("baixo");
-        } else if (desconto <= 30) {
-          descontoBadge.classList.add("medio");
-        } else {
-          descontoBadge.classList.add("alto");
-        }
-
-        // Atualização dos resultados
-        document.getElementById("preco-original").textContent =
-          `${reais},${centavos.toString().padStart(2, "0")}`;
+        // Atualizar os elementos na interface
+        document.getElementById("preco-original").textContent = precoOriginal.toFixed(2).replace(".", ",");
         document.getElementById("desconto-aplicado").textContent = desconto;
-        document.getElementById("valor-desconto").textContent = valorDesconto
-          .toFixed(2)
-          .replace(".", ",");
-        document.getElementById("resultado").textContent = resultado.toFixed(2).replace(".", ",");
-
+        document.getElementById("valor-desconto").textContent = valorDescontoCalculado.toFixed(2).replace(".", ",");
+        document.getElementById("resultado").textContent = precoFinal.toFixed(2).replace(".", ",");
+        
         // Adicionar ao histórico
         adicionarAoHistorico(
-          document.getElementById("preco-original").textContent,
-          document.getElementById("desconto-aplicado").textContent,
-          document.getElementById("resultado").textContent
+          precoOriginal.toFixed(2).replace(".", ","),
+          desconto,
+          precoFinal.toFixed(2).replace(".", ",")
         );
-
-        showToast("Cálculo realizado com sucesso!", "rounded green");
-
-        // Limpar os campos de entrada após o cálculo
-        reaisInput.value = "";
-        centavosInput.value = "";
-        descontoInput.value = "";
-
-        // Remove classes de invalidação
-        reaisInput.classList.remove("invalid");
-        centavosInput.classList.remove("invalid");
-        descontoInput.classList.remove("invalid");
-
-        // Atualiza os campos do Materialize
-        M.updateTextFields();
+        
+        // Mostrar toast de sucesso
+        showToast("Desconto calculado com sucesso!", "rounded green");
       }
 
       function limparCampos() {
