@@ -855,30 +855,37 @@
             <div class="card-content">
               <span class="card-title" role="heading" aria-level="1">Calculadora de Desconto</span>
               <div class="row">
-                <div class="input-field col s6">
-                  <input
-                    id="preco-reais"
-                    type="number"
-                    min="0"
-                    inputmode="numeric"
-                    pattern="[0-9]*"
-                    aria-label="Reais"
-                    required
-                  />
-                  <label for="preco-reais">Reais (R$)</label>
-                </div>
-                <div class="input-field col s6">
-                  <input
-                    id="preco-centavos"
-                    type="number"
-                    min="0"
-                    max="99"
-                    inputmode="numeric"
-                    pattern="[0-9]*"
-                    aria-label="Centavos"
-                    required
-                  />
-                  <label for="preco-centavos">Centavos</label>
+                <div class="input-field col s12">
+                  <div class="flex" style="display: flex; align-items: flex-end;">
+                    <div style="flex: 1; margin-right: -5px;">
+                      <input
+                        id="preco-reais"
+                        type="number"
+                        min="0"
+                        inputmode="numeric"
+                        pattern="[0-9]*"
+                        aria-label="Reais"
+                        required
+                      />
+                      <label for="preco-reais">Reais (R$)</label>
+                    </div>
+                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                      <span style="font-size: 20px; font-weight: bold;">,</span>
+                    </div>
+                    <div style="flex: 1; margin-left: -5px;">
+                      <input
+                        id="preco-centavos"
+                        type="number"
+                        min="0"
+                        max="99"
+                        inputmode="numeric"
+                        pattern="[0-9]*"
+                        aria-label="Centavos"
+                        required
+                      />
+                      <label for="preco-centavos">Centavos</label>
+                    </div>
+                  </div>
                 </div>
                 <div class="input-field col s12">
                   <input
