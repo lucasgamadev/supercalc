@@ -239,7 +239,7 @@
         overflow: hidden;
       }
       
-      /* Efeito de brilho para botões */
+      /* Shimmer effect for buttons */
       .btn::before {
         content: '';
         position: absolute;
@@ -614,7 +614,7 @@
         overflow: hidden;
       }
       
-      /* Removida animação hover do badge de desconto */
+      /* Removed hover animation for the desconto badge */
       .desconto-badge:hover {
         box-shadow: 0 4px 10px rgba(33, 150, 243, 0.4);
       }
@@ -674,7 +674,7 @@
         box-shadow: 0 4px 10px rgba(244, 67, 54, 0.4);
       }
       
-      /* Removida animação hover para o badge de preço final (verde) */
+      /* Removed hover animation for the final price badge (green one) */
       .desconto-badge.valor-desconto-badge[style*="background: linear-gradient(135deg, #4caf50, #8bc34a)"] {
         transition: all 0.3s ease;
       }
@@ -733,7 +733,7 @@
       }
       
       .preco-final {
-        /* Removendo este estilo pois agora estamos usando estilo de badge */
+        /* Removing this style as we're using badge styling now */
         display: none;
         font-weight: 700;
         font-size: 16px;
@@ -903,7 +903,7 @@
             <div class="card-content">
               <span class="card-title" role="heading" aria-level="1">Calculadora de Desconto</span>
               <div class="row">
-                <div class="input-field col s12"></div>
+                <div class="input-field col s12 outlined">  <!-- Added 'outlined' class here -->
                   <input
                     id="valor"
                     type="text"
@@ -988,7 +988,7 @@
                 class="collection"
                 style="max-height: 400px; overflow-y: auto"
               >
-                <!-- Itens do histórico serão adicionados aqui -->
+                <!-- History items will be appended here -->
               </ul>
               <div class="btn-container" style="margin-top: 15px; text-align: center">
                 <button
