@@ -510,13 +510,6 @@
                 <button class="numero" id="btn-decimal">,</button>
                 <button class="igual" id="btn-equals">=</button>
               </div>
-              
-              <div class="btn-container">
-                <button class="btn waves-effect waves-light red" id="limpar-tudo">
-                  <i class="material-icons left" aria-hidden="true">refresh</i>
-                  Limpar Tudo
-                </button>
-              </div>
             </div>
           </div>
         </div>
@@ -787,7 +780,6 @@
       document.getElementById('btn-equals').addEventListener('click', calcular);
       document.getElementById('btn-clear').addEventListener('click', limparTudo);
       document.getElementById('btn-backspace').addEventListener('click', apagarDigito);
-      document.getElementById('limpar-tudo').addEventListener('click', limparTudo);
       document.getElementById('limpar-historico').addEventListener('click', limparHistorico);
       
       // Suporte ao teclado
