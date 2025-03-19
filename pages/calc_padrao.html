@@ -131,6 +131,72 @@
         flex-direction: column;
       }
 
+      #display {
+        width: 100%;
+        background: rgba(240, 248, 255, 0.8);
+        border: 1px solid rgba(0, 123, 255, 0.2);
+        border-radius: 8px;
+        padding: 15px;
+        font-size: 2rem;
+        text-align: right;
+        margin-bottom: 15px;
+        min-height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.1);
+        color: #333;
+        font-weight: 500;
+        overflow: hidden;
+        white-space: nowrap;
+        transition: all 0.2s ease;
+      }
+
+      .calculadora {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 10px;
+        margin-bottom: 15px;
+      }
+
+      .calculadora button {
+        font-size: 1.25rem;
+        padding: 15px 5px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        color: #fff;
+        transition: all 0.2s ease;
+        font-weight: 500;
+        min-height: 50px;
+      }
+
+      .numero {
+        background: linear-gradient(135deg, #42a5f5, #2196f3);
+        color: white;
+      }
+
+      .operador {
+        background: linear-gradient(135deg, #26c6da, #00bcd4);
+      }
+
+      .limpar {
+        background: linear-gradient(135deg, #ef5350, #f44336);
+      }
+
+      .backspace {
+        background: linear-gradient(135deg, #ffca28, #ffc107);
+        color: #333 !important;
+      }
+
+      .igual {
+        background: linear-gradient(135deg, #66bb6a, #4caf50);
+      }
+
+      .span-2 {
+        grid-column: span 2;
+      }
+
       #historico-list {
         flex: 1;
         margin: 0;
@@ -144,10 +210,43 @@
         margin: 0 !important;
       }
 
+      .resultado-item {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+        background-color: rgba(240, 248, 255, 0.5);
+        border-radius: 8px;
+        margin-bottom: 8px;
+        transition: all 0.2s ease;
+        border-left: 3px solid #2196f3;
+      }
+
+      .historico-expressao {
+        font-size: 0.95rem;
+        margin-right: 10px;
+        color: #555;
+      }
+
+      .historico-resultado {
+        font-weight: bold;
+        padding: 4px 10px;
+        background: linear-gradient(135deg, #42a5f5, #2196f3);
+        color: white;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(33, 150, 243, 0.3);
+      }
+
+      /* Ajustes responsivos */
       @media (max-width: 768px) {
         .container-principal {
           flex-direction: column;
           align-items: center;
+          padding: 10px;
         }
 
         .container-principal .row {
@@ -157,8 +256,115 @@
         #historico-list {
           max-height: 300px;
         }
+        
+        .calculadora button {
+          padding: 12px 5px;
+          font-size: 1.1rem;
+          min-height: 45px;
+        }
+        
+        #display {
+          padding: 12px;
+          font-size: 1.75rem;
+          min-height: 60px;
+        }
       }
 
+      @media (max-width: 480px) {
+        body {
+          padding: 2px;
+        }
+        
+        .calculadora button {
+          padding: 10px 5px;
+          font-size: 1rem;
+          min-height: 40px;
+        }
+        
+        #display {
+          padding: 10px;
+          font-size: 1.5rem;
+          min-height: 50px;
+        }
+        
+        .card-title {
+          font-size: 20px;
+        }
+        
+        .resultado-item {
+          padding: 8px 12px;
+        }
+      }
+
+      /* Ajustes para telas muito pequenas */
+      @media (max-width: 320px) {
+        .card-title {
+          font-size: 18px;
+          margin-bottom: 10px !important;
+        }
+        
+        .calculadora button {
+          padding: 8px 4px;
+          font-size: 0.9rem;
+          min-height: 36px;
+        }
+        
+        #display {
+          padding: 8px;
+          font-size: 1.25rem;
+          min-height: 45px;
+        }
+        
+        .resultado-item {
+          padding: 6px 10px;
+          font-size: 0.85rem;
+        }
+      }
+
+      /* Ajuste do toast para diferentes tamanhos de tela */
+      @media (max-width: 480px) {
+        #toast-container {
+          width: 90% !important;
+          left: 5% !important;
+          transform: translateY(-50%) !important;
+        }
+
+        .toast {
+          font-size: 14px !important;
+          padding: 10px 15px !important;
+          width: 100% !important;
+        }
+      }
+
+      /* Links de navegação */
+      .nav-links {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 15px;
+        margin-top: 10px;
+      }
+
+      .nav-links a {
+        color: white;
+        margin: 0 15px;
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        opacity: 0.9;
+      }
+
+      .nav-links a:hover {
+        opacity: 1;
+        transform: translateY(-2px);
+      }
+
+      .nav-links a i {
+        margin-right: 6px;
+      }
+
+      /* Estilos do título e elementos especiais */
       .card-title {
         text-align: center;
         display: block;
@@ -185,133 +391,6 @@
         height: 2px;
         background: linear-gradient(45deg, #2196f3, #00bcd4);
         border-radius: 2px;
-      }
-
-      @media (max-width: 480px) {
-        .card-title {
-          font-size: 20px;
-        }
-      }
-
-      .row {
-        margin-bottom: 0;
-      }
-
-      .input-field {
-        margin-bottom: 12px;
-      }
-
-      .calculadora {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 10px;
-        margin-top: 20px;
-      }
-
-      .calculadora button {
-        width: 100%;
-        border-radius: 8px;
-        height: 50px;
-        font-size: 18px;
-        font-weight: 500;
-        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
-        transition: all 0.2s ease;
-        background-color: #f5f5f5;
-        color: #333;
-        border: none;
-        cursor: pointer;
-      }
-
-      .calculadora button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-      }
-
-      .calculadora button:active {
-        transform: translateY(1px);
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-      }
-
-      .calculadora .operador {
-        background: linear-gradient(135deg, #42a5f5, #1976d2);
-        color: white;
-      }
-
-      .calculadora .igual {
-        background: linear-gradient(135deg, #4caf50, #2e7d32);
-        color: white;
-        grid-column: span 2;
-      }
-
-      .calculadora .limpar {
-        background: linear-gradient(135deg, #f44336, #d32f2f);
-        color: white;
-      }
-
-      .calculadora .backspace {
-        background: linear-gradient(135deg, #ff9800, #f57c00);
-        color: white;
-      }
-
-      .calculadora .span-2 {
-        grid-column: span 2;
-      }
-
-      #display {
-        grid-column: span 4;
-        font-size: 28px;
-        text-align: right;
-        padding: 10px 15px;
-        margin-bottom: 15px;
-        background-color: #f5f5f5;
-        border-radius: 8px;
-        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
-        height: 60px;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        overflow-x: auto;
-        white-space: nowrap;
-      }
-
-      .resultado-item {
-        position: relative;
-        display: flex;
-        align-items: center;
-        padding: 10px 16px;
-        border-radius: 8px;
-        background: #f9f9f9;
-        margin-bottom: 8px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-      }
-
-      .resultado-item:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      }
-
-      .historico-expressao {
-        flex-grow: 1;
-        font-weight: 500;
-        color: #333;
-      }
-
-      .historico-resultado {
-        font-weight: 700;
-        color: #1976d2;
-        margin-left: 10px;
-        padding: 4px 8px;
-        border-radius: 4px;
-        background: rgba(25, 118, 210, 0.1);
-      }
-
-      .btn-floating {
-        transition: all 0.2s ease;
-      }
-
-      .btn-floating:hover {
-        transform: rotate(90deg);
       }
 
       .btn-container {
@@ -346,47 +425,6 @@
       .btn-large i {
         font-size: 20px;
         margin-left: 5px;
-      }
-
-      @media (max-width: 480px) {
-        body {
-          padding: 2px;
-        }
-
-        .btn-large {
-          font-size: 12px;
-          padding: 0 15px !important;
-          height: 38px;
-          line-height: 38px;
-        }
-      }
-
-      /* Links de navegação */
-      .nav-links {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 15px;
-        margin-top: 10px;
-      }
-
-      .nav-links a {
-        color: white;
-        margin: 0 15px;
-        display: flex;
-        align-items: center;
-        font-weight: 500;
-        transition: all 0.2s ease;
-        text-decoration: none;
-        opacity: 0.9;
-      }
-
-      .nav-links a:hover {
-        opacity: 1;
-        transform: translateY(-2px);
-      }
-
-      .nav-links a i {
-        margin-right: 6px;
       }
 
       .fade-in {
@@ -440,10 +478,10 @@
     <div class="container-principal">
       <div class="row">
         <!-- Coluna da Calculadora -->
-        <div class="col s12 m7">
+        <div class="col s12 m6">
           <div class="card fade-in">
             <div class="card-content">
-              <span class="card-title">Calculadora Padrão</span>
+              <span class="card-title" role="heading" aria-level="1">Calculadora Padrão</span>
               
               <div id="display">0</div>
               
@@ -474,9 +512,9 @@
               </div>
               
               <div class="btn-container">
-                <button class="btn-large waves-effect waves-light" id="limpar-tudo">
+                <button class="btn waves-effect waves-light red" id="limpar-tudo">
+                  <i class="material-icons left" aria-hidden="true">refresh</i>
                   Limpar Tudo
-                  <i class="material-icons right">refresh</i>
                 </button>
               </div>
             </div>
@@ -484,19 +522,20 @@
         </div>
 
         <!-- Coluna do Histórico -->
-        <div class="col s12 m5">
+        <div class="col s12 m6">
           <div id="historico-container" class="card fade-in show">
             <div class="card-content">
-              <span class="card-title">Histórico</span>
-              <ul id="historico-list" class="collection"></ul>
+              <span class="card-title" role="heading" aria-level="1">Histórico</span>
+              <ul id="historico-list" class="collection" style="max-height: 400px; overflow-y: auto"></ul>
               
-              <div class="center-align" style="margin-top: 20px">
+              <div class="btn-container" style="margin-top: 15px; text-align: center">
                 <button
-                  class="btn-floating btn-large waves-effect waves-light red"
                   id="limpar-historico"
-                  title="Limpar Histórico"
+                  class="btn waves-effect waves-light orange"
+                  aria-label="Limpar histórico"
                 >
-                  <i class="material-icons">delete</i>
+                  <i class="material-icons left" aria-hidden="true">delete_sweep</i>
+                  Limpar Histórico
                 </button>
               </div>
             </div>
