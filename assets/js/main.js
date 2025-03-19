@@ -1,9 +1,9 @@
 /**
- * Main JavaScript file for SuperCalc
+ * Arquivo JavaScript principal para SuperCalc
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-  // Initialize any global components or functionality
+  // Inicializar componentes globais ou funcionalidades
   console.log('SuperCalc initialized');
   
   // Animação para o cabeçalho
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 1000);
   }
   
-  // Add event listeners for navigation with efeito de clique
+  // Adicionar event listeners para navegação com efeito de clique
   const navLinks = document.querySelectorAll('a.calculator-card');
   if (navLinks) {
     navLinks.forEach(link => {
