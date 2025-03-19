@@ -1,27 +1,27 @@
 /**
- * UI Components for SuperCalc
+ * Componentes de UI para SuperCalc
  */
 
 const SuperCalcUI = {
   /**
-   * Creates a toast notification
-   * @param {string} message - The message to display
-   * @param {string} type - The type of toast (success, error, info)
-   * @param {number} duration - Duration in milliseconds
+   * Cria uma notificação toast
+   * @param {string} message - A mensagem a ser exibida
+   * @param {string} type - O tipo do toast (sucesso, erro, info)
+   * @param {number} duration - Duração em milissegundos
    */
   showToast: function(message, type = 'info', duration = 3000) {
-    // Create toast element
+    // Criar elemento toast
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
     toast.textContent = message;
     
-    // Add to document
+    // Adicionar ao documento
     document.body.appendChild(toast);
     
-    // Show with animation
+    // Mostrar com animação
     setTimeout(() => toast.classList.add('show'), 10);
     
-    // Remove after duration
+    // Remover após a duração
     setTimeout(() => {
       toast.classList.remove('show');
       setTimeout(() => toast.remove(), 300);
@@ -29,9 +29,9 @@ const SuperCalcUI = {
   },
   
   /**
-   * Format currency values (BRL)
-   * @param {number} value - The value to format
-   * @returns {string} Formatted currency string
+   * Formata valores monetários (BRL)
+   * @param {number} valor - O valor a ser formatado
+   * @returns {string} Valor formatado em moeda brasileira (BRL)
    */
   formatCurrency: function(value) {
     return new Intl.NumberFormat('pt-BR', {
@@ -41,7 +41,7 @@ const SuperCalcUI = {
   }
 };
 
-// Export for use in other files
+// Exportar para uso em outros arquivos
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = SuperCalcUI;
 }
