@@ -884,11 +884,17 @@
       <div class="no-js-message">Por favor, habilite o JavaScript para usar a calculadora.</div>
     </noscript>
     
-    <div class="btn-voltar-container">
-      <a href="index.html" class="nav-btn inline-flex items-center bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-4 py-2 rounded-full text-sm font-medium shadow-md hover:opacity-90 transition-all duration-300" title="Ir para a página inicial">
-        <i class="fas fa-home mr-2 inline-flex items-center align-middle"></i>Início
-      </a>
+    <div class="btn-voltar-container" id="home-button-container">
+      <!-- O componente de botão de início será carregado aqui -->
     </div>
+    <script>
+      // Carregar o componente de botão de início
+      fetch('/components/home-button.html')
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('home-button-container').innerHTML = data;
+        });
+    </script>
 
     <div class="container-principal">
       <div class="row">
