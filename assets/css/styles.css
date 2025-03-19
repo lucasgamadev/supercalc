@@ -1,6 +1,6 @@
-/* Main styles for SuperCalc */
+/* Estilos principais para SuperCalc */
 
-/* Base styles */
+/* Estilos base */
 body {
   font-family: 'Roboto', sans-serif;
   background: linear-gradient(135deg, #00796b, #1565c0);
@@ -8,7 +8,7 @@ body {
   min-height: 100vh;
 }
 
-/* Card styles */
+/* Estilos do cartão */
 .calculator-card {
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   border-radius: 12px;
@@ -110,7 +110,7 @@ body {
   }
 }
 
-/* Calculator specific styles */
+/* Estilos específicos da calculadora */
 .container-principal {
   position: relative;
   display: flex;
@@ -134,7 +134,7 @@ body {
   flex-direction: column;
 }
 
-/* Responsive styles */
+/* Estilos responsivos */
 @media (max-width: 768px) {
   .container-principal {
     flex-direction: column;
