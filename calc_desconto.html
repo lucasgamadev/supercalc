@@ -1259,6 +1259,16 @@
         }
         
         this.value = valor;
+        
+        // Remove a classe 'invalid' quando o campo tem um valor válido
+        if (valor.trim() !== '') {
+          const valorNormalizado = valor.replace(',', '.');
+          const valorNumerico = parseFloat(valorNormalizado);
+          
+          if (!isNaN(valorNumerico) && valorNumerico >= 0) {
+            this.classList.remove("invalid");
+          }
+        }
       });
 
       document.getElementById("desconto").addEventListener("keypress", function (e) {
