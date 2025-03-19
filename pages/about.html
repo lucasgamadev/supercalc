@@ -113,6 +113,24 @@
       .then(response => response.text())
       .then(data => {
         document.getElementById('header-placeholder').innerHTML = data;
+        
+        // Carrega o botão de início somente após o header ser carregado
+        setTimeout(() => {
+          fetch('/components/home-button.html')
+            .then(response => response.text())
+            .then(data => {
+              // Adiciona o botão de início após o carregamento do header
+              const navMenu = document.querySelector('nav ul');
+              if (navMenu) {
+                const homeButtonLi = document.createElement('li');
+                homeButtonLi.innerHTML = data;
+                navMenu.prepend(homeButtonLi);
+                console.log('Botão de início adicionado com sucesso');
+              } else {
+                console.log('Menu de navegação não encontrado');
+              }
+            });
+        }, 300); // Pequeno atraso para garantir que o DOM do header foi renderizado
       });
   </script>
 </body>

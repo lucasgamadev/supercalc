@@ -6,7 +6,7 @@
   <!-- Navigation Menu -->
   <nav class="mt-6">
     <ul class="flex flex-wrap justify-center gap-4">
-      <li>
+      <li id="home-button" style="display: none;">
         <a href="/index.html" class="nav-btn inline-flex items-center bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-4 py-2 rounded-full text-sm font-medium shadow-md hover:opacity-90 transition-all duration-300" title="Ir para a página inicial">
           <i class="fas fa-home mr-2 inline-flex items-center align-middle"></i>Início
         </a>
@@ -14,4 +14,16 @@
       <li><a href="/pages/about.html" class="nav-btn inline-flex items-center bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-4 py-2 rounded-full text-sm font-medium shadow-md hover:opacity-90 transition-all duration-300"><i class="fas fa-info-circle mr-2 inline-flex items-center align-middle"></i>Sobre</a></li>
     </ul>
   </nav>
+  
+  <script>
+    // Verifica se não está na página inicial para mostrar o botão de início
+    document.addEventListener('DOMContentLoaded', function() {
+      const currentPath = window.location.pathname;
+      console.log('Current path:', currentPath); // Debug log
+      // Mostra o botão de início em todas as páginas exceto na página inicial
+      if (currentPath !== '/' && currentPath !== '/index.html' && !currentPath.endsWith('/')) {
+        document.getElementById('home-button').style.display = 'block';
+      }
+    });
+  </script>
 </header>
