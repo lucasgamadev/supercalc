@@ -162,7 +162,8 @@
 
       .input-field input {
         margin-bottom: 0 !important;
-        padding: 0 10px !important;
+        padding: 0 !important;
+        text-indent: 0 !important;
         box-sizing: border-box;
         font-size: 14px;
         font-family: "Roboto", sans-serif !important;
@@ -855,34 +856,16 @@
             <div class="card-content">
               <span class="card-title" role="heading" aria-level="1">Calculadora de Desconto</span>
               <div class="row">
-                <div class="input-field col s12">
-                  <div class="flex" style="display: flex; align-items: flex-end;">
-                    <div style="flex: 1; margin-right: 25px;">
-                      <input
-                        id="preco-reais"
-                        type="number"
-                        min="0"
-                        inputmode="numeric"
-                        pattern="[0-9]*"
-                        aria-label="Reais"
-                        required
-                      />
-                      <label for="preco-reais">Reais (R$)</label>
-                    </div>
-                    <div style="flex: 1;">
-                      <input
-                        id="preco-centavos"
-                        type="number"
-                        min="0"
-                        max="99"
-                        inputmode="numeric"
-                        pattern="[0-9]*"
-                        aria-label="Centavos"
-                        required
-                      />
-                      <label for="preco-centavos">Centavos</label>
-                    </div>
-                  </div>
+                <div class="input-field col s12 outlined">  <!-- Added 'outlined' class here -->
+                  <input
+                    id="valor"
+                    type="text"
+                    inputmode="decimal"
+                    pattern="[0-9]+([\.\,][0-9]+)?"
+                    aria-label="Valor em Reais"
+                    required
+                  />
+                  <label for="valor">Valor (R$)</label>
                 </div>
                 <div class="input-field col s12">
                   <input
@@ -980,32 +963,7 @@
     <!-- Importando Materialize JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script>
-      // Add event listeners for the new price fields
-      document.getElementById("preco-centavos").addEventListener("input", function (e) {
-        let valor = parseInt(this.value);
-        if (valor > 99) {
-          this.value = 99;
-          this.classList.add("invalid");
-          showToast("O valor máximo para centavos é 99", "rounded orange");
-        } else if (valor < 0) {
-          this.value = 0;
-          this.classList.add("invalid");
-          showToast("O valor mínimo para centavos é 0", "rounded orange");
-        } else if (!isNaN(valor)) {
-          this.classList.remove("invalid");
-        }
-      });
-
-      document.getElementById("preco-reais").addEventListener("input", function (e) {
-        let valor = parseInt(this.value);
-        if (valor < 0) {
-          this.value = 0;
-          this.classList.add("invalid");
-          showToast("O valor mínimo para reais é 0", "rounded orange");
-        } else if (!isNaN(valor)) {
-          this.classList.remove("invalid");
-        }
-      });
+      // Script inicializado
 
       document.getElementById("desconto").addEventListener("input", function (e) {
         const valor = parseFloat(this.value);
@@ -1024,30 +982,27 @@
 
       // Melhorar a validação em tempo real
       function validarCampos() {
-        const reais = document.getElementById("preco-reais").value.trim();
-        const centavos = document.getElementById("preco-centavos").value.trim();
+        const valorStr = document.getElementById("valor").value.trim();
         const desconto = document.getElementById("desconto").value.trim();
 
-        // Validação de reais
-        if (reais === "" || isNaN(parseInt(reais)) || parseInt(reais) < 0) {
-          const reaisInput = document.getElementById("preco-reais");
-          reaisInput.classList.add("invalid");
-          reaisInput.focus();
-          showToast("Por favor, insira um valor válido para reais", "rounded orange");
+        // Validação do valor
+        if (valorStr === "") {
+          const valorInput = document.getElementById("valor");
+          valorInput.classList.add("invalid");
+          valorInput.focus();
+          showToast("Por favor, insira um valor", "rounded orange");
           return false;
         }
-
-        // Validação de centavos
-        if (
-          centavos === "" ||
-          isNaN(parseInt(centavos)) ||
-          parseInt(centavos) < 0 ||
-          parseInt(centavos) > 99
-        ) {
-          const centavosInput = document.getElementById("preco-centavos");
-          centavosInput.classList.add("invalid");
-          centavosInput.focus();
-          showToast("Por favor, insira um valor válido para centavos (0-99)", "rounded orange");
+        
+        // Normaliza o valor (substitui vírgula por ponto para cálculos)
+        const valorNormalizado = valorStr.replace(",", ".");
+        const valor = parseFloat(valorNormalizado);
+        
+        if (isNaN(valor) || valor < 0) {
+          const valorInput = document.getElementById("valor");
+          valorInput.classList.add("invalid");
+          valorInput.focus();
+          showToast("Por favor, insira um valor válido", "rounded orange");
           return false;
         }
 
@@ -1222,37 +1177,41 @@
         }, 500);
       }
 
-      // Adicionar validação de input para permitir apenas números
-      document.getElementById("preco-reais").addEventListener("keypress", function (e) {
-      document.getElementById("preco-reais").addEventListener("wheel", function (e) {
-        e.preventDefault();
-        let valor = parseInt(this.value);
-        if (e.deltaY < 0) {
-          valor += 1;
-        } else {
-          valor = Math.max(0, valor - 1);
+      // Adicionar validação de input para permitir números e separadores decimais
+      document.getElementById("valor").addEventListener("keypress", function (e) {
+        // Permite números, vírgula e ponto como separador decimal
+        if (!/[\d\.,]/.test(e.key)) {
+          e.preventDefault();
         }
-        this.value = valor;
-      });
-        if (!/[\d]/.test(e.key)) {
+        
+        // Impede múltiplos separadores decimais
+        if ((e.key === ',' || e.key === '.') && (this.value.includes(',') || this.value.includes('.'))) {
           e.preventDefault();
         }
       });
-
-      document.getElementById("preco-centavos").addEventListener("keypress", function (e) {
-      document.getElementById("preco-centavos").addEventListener("wheel", function (e) {
-        e.preventDefault();
-        let valor = parseInt(this.value);
-        if (e.deltaY < 0) {
-          valor = Math.min(99, valor + 1);
-        } else {
-          valor = Math.max(0, valor - 1);
+      
+      document.getElementById("valor").addEventListener("input", function (e) {
+        // Remove caracteres inválidos (deixa apenas números e um separador decimal)
+        let valor = this.value.replace(/[^\d\.,]/g, '');
+        
+        // Garante que há apenas um separador decimal
+        const countCommas = (valor.match(/,/g) || []).length;
+        const countDots = (valor.match(/\./g) || []).length;
+        
+        if (countCommas > 1 || countDots > 1 || (countCommas >= 1 && countDots >= 1)) {
+          // Se houver múltiplos separadores, mantém apenas o primeiro
+          const firstSeparatorIndex = Math.min(
+            valor.indexOf(',') >= 0 ? valor.indexOf(',') : Infinity,
+            valor.indexOf('.') >= 0 ? valor.indexOf('.') : Infinity
+          );
+          
+          if (firstSeparatorIndex !== Infinity) {
+            const separator = valor[firstSeparatorIndex];
+            valor = valor.split(separator)[0] + separator + valor.split(separator)[1].replace(/[\.,]/g, '');
+          }
         }
+        
         this.value = valor;
-      });
-        if (!/[\d]/.test(e.key)) {
-          e.preventDefault();
-        }
       });
 
       document.getElementById("desconto").addEventListener("keypress", function (e) {
@@ -1273,28 +1232,17 @@
       });
 
       function calcularDesconto() {
-        // Verificar se Reais e Desconto estão preenchidos, mas Centavos está vazio
-        const reaisInput = document.getElementById("preco-reais");
-        const centavosInput = document.getElementById("preco-centavos");
+        const valorInput = document.getElementById("valor");
         const descontoInput = document.getElementById("desconto");
-        
-        // Se Reais e Desconto estão preenchidos mas Centavos está vazio, preencher com zero
-        if (reaisInput.value.trim() !== "" && 
-            descontoInput.value.trim() !== "" && 
-            centavosInput.value.trim() === "") {
-          centavosInput.value = "0";
-          // Atualiza o campo visualmente
-          M.updateTextFields();
-        }
         
         if (!validarCampos()) return;
 
-        const reais = parseInt(reaisInput.value.trim());
-        const centavos = parseInt(centavosInput.value.trim());
-        const desconto = parseFloat(descontoInput.value.trim());
+        // Obter o valor e normalizar (substituir vírgula por ponto para cálculos)
+        const valorStr = valorInput.value.trim();
+        const valorNormalizado = valorStr.replace(",", ".");
+        const precoOriginal = parseFloat(valorNormalizado);
         
-        // Calcular o preço original em formato decimal
-        const precoOriginal = reais + (centavos / 100);
+        const desconto = parseFloat(descontoInput.value.trim());
         
         // Calcular o valor do desconto
         const valorDescontoCalculado = precoOriginal * (desconto / 100);
@@ -1320,8 +1268,7 @@
       }
 
       function limparCampos() {
-        const reaisInput = document.getElementById("preco-reais");
-        const centavosInput = document.getElementById("preco-centavos");
+        const valorInput = document.getElementById("valor");
         const descontoInput = document.getElementById("desconto");
         const precoOriginal = document.getElementById("preco-original");
         const descontoAplicado = document.getElementById("desconto-aplicado");
@@ -1330,8 +1277,7 @@
 
         // Verifica se os campos já estão limpos
         if (
-          reaisInput.value === "" &&
-          centavosInput.value === "" &&
+          valorInput.value === "" &&
           descontoInput.value === "" &&
           precoOriginal.textContent === "0,00" &&
           descontoAplicado.textContent === "0" &&
@@ -1343,8 +1289,7 @@
         }
 
         // Limpa os campos
-        reaisInput.value = "";
-        centavosInput.value = "";
+        valorInput.value = "";
         descontoInput.value = "";
         precoOriginal.textContent = "0,00";
         descontoAplicado.textContent = "0";
@@ -1352,8 +1297,7 @@
         resultado.textContent = "0,00";
 
         // Remove classes de invalidação
-        reaisInput.classList.remove("invalid");
-        centavosInput.classList.remove("invalid");
+        valorInput.classList.remove("invalid");
         descontoInput.classList.remove("invalid");
 
         // Remove a classe active dos labels
@@ -1363,10 +1307,8 @@
         });
 
         // Remove qualquer estilo inline que possa ter sido adicionado
-        reaisInput.style.borderBottom = "";
-        reaisInput.style.boxShadow = "";
-        centavosInput.style.borderBottom = "";
-        centavosInput.style.boxShadow = "";
+        valorInput.style.borderBottom = "";
+        valorInput.style.boxShadow = "";
         descontoInput.style.borderBottom = "";
         descontoInput.style.boxShadow = "";
 
@@ -1378,8 +1320,8 @@
       // Inicializar componentes Materialize
       document.addEventListener("DOMContentLoaded", function () {
         M.updateTextFields();
-        // Definir foco inicial no campo de reais
-        document.getElementById("preco-reais").focus();
+        // Definir foco inicial no campo de valor
+        document.getElementById("valor").focus();
       });
     </script>
     
