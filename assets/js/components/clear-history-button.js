@@ -40,7 +40,7 @@ class ClearHistoryButton extends HTMLElement {
           box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
           transition: all 0.3s ease;
           font-family: "Roboto", sans-serif;
-          width: 100%;
+          width: auto;
           position: relative;
           overflow: hidden;
         }
