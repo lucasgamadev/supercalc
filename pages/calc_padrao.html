@@ -1,0 +1,799 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Calculadora padrão simples e eficiente para realizar operações matemáticas básicas"
+    />
+    <title>Calculadora Padrão</title>
+    <!-- TailwindCSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: '#e3f2fd',
+                100: '#bbdefb',
+                200: '#90caf9',
+                300: '#64b5f6',
+                400: '#42a5f5',
+                500: '#2196f3',
+                600: '#1e88e5',
+                700: '#1976d2',
+                800: '#1565c0',
+                900: '#0d47a1',
+              },
+              secondary: {
+                50: '#e0f7fa',
+                100: '#b2ebf2',
+                200: '#80deea',
+                300: '#4dd0e1',
+                400: '#26c6da',
+                500: '#00bcd4',
+                600: '#00acc1',
+                700: '#0097a7',
+                800: '#00838f',
+                900: '#006064',
+              },
+            },
+            fontFamily: {
+              'roboto': ['Roboto', 'sans-serif'],
+            },
+          },
+        },
+      }
+    </script>
+    <!-- Importando Materialize CSS e Ícones -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        font-family: "Roboto", sans-serif;
+      }
+
+      #historico-container {
+        position: relative;
+        width: 100%;
+        transition:
+          opacity 0.3s ease,
+          transform 0.3s ease;
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+
+      #historico-container.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        background: linear-gradient(135deg, #1565c0, #1976d2);
+        background-attachment: fixed;
+      }
+
+      .container-principal {
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        width: 100%;
+        max-width: 900px;
+        padding: 5px;
+        margin: 0 auto;
+        margin-top: 10px;
+      }
+
+      .container-principal .row {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+      }
+
+      .container-principal .col {
+        display: flex;
+      }
+
+      .card {
+        width: 100%;
+        max-width: 900px;
+        padding: 10px;
+        margin: 5px;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 12px !important;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .card-content {
+        padding: 10px !important;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      #historico-list {
+        flex: 1;
+        margin: 0;
+        border: none;
+        max-height: 357px;
+        overflow-y: auto;
+      }
+
+      .collection {
+        border: none !important;
+        margin: 0 !important;
+      }
+
+      @media (max-width: 768px) {
+        .container-principal {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .container-principal .row {
+          flex-direction: column;
+        }
+
+        #historico-list {
+          max-height: 300px;
+        }
+      }
+
+      .card-title {
+        text-align: center;
+        display: block;
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 15px !important;
+        background: linear-gradient(45deg, #2196f3, #00bcd4);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        letter-spacing: 0.5px;
+        position: relative;
+        padding-bottom: 8px;
+      }
+
+      .card-title::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 2px;
+        background: linear-gradient(45deg, #2196f3, #00bcd4);
+        border-radius: 2px;
+      }
+
+      @media (max-width: 480px) {
+        .card-title {
+          font-size: 20px;
+        }
+      }
+
+      .row {
+        margin-bottom: 0;
+      }
+
+      .input-field {
+        margin-bottom: 12px;
+      }
+
+      .calculadora {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .calculadora button {
+        width: 100%;
+        border-radius: 8px;
+        height: 50px;
+        font-size: 18px;
+        font-weight: 500;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+        transition: all 0.2s ease;
+        background-color: #f5f5f5;
+        color: #333;
+        border: none;
+        cursor: pointer;
+      }
+
+      .calculadora button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .calculadora button:active {
+        transform: translateY(1px);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+      }
+
+      .calculadora .operador {
+        background: linear-gradient(135deg, #42a5f5, #1976d2);
+        color: white;
+      }
+
+      .calculadora .igual {
+        background: linear-gradient(135deg, #4caf50, #2e7d32);
+        color: white;
+        grid-column: span 2;
+      }
+
+      .calculadora .limpar {
+        background: linear-gradient(135deg, #f44336, #d32f2f);
+        color: white;
+      }
+
+      .calculadora .backspace {
+        background: linear-gradient(135deg, #ff9800, #f57c00);
+        color: white;
+      }
+
+      .calculadora .span-2 {
+        grid-column: span 2;
+      }
+
+      #display {
+        grid-column: span 4;
+        font-size: 28px;
+        text-align: right;
+        padding: 10px 15px;
+        margin-bottom: 15px;
+        background-color: #f5f5f5;
+        border-radius: 8px;
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      .resultado-item {
+        position: relative;
+        display: flex;
+        align-items: center;
+        padding: 10px 16px;
+        border-radius: 8px;
+        background: #f9f9f9;
+        margin-bottom: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .resultado-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .historico-expressao {
+        flex-grow: 1;
+        font-weight: 500;
+        color: #333;
+      }
+
+      .historico-resultado {
+        font-weight: 700;
+        color: #1976d2;
+        margin-left: 10px;
+        padding: 4px 8px;
+        border-radius: 4px;
+        background: rgba(25, 118, 210, 0.1);
+      }
+
+      .btn-floating {
+        transition: all 0.2s ease;
+      }
+
+      .btn-floating:hover {
+        transform: rotate(90deg);
+      }
+
+      .btn-container {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 20px;
+      }
+
+      .btn-large {
+        padding: 0 25px !important;
+        height: 44px;
+        line-height: 44px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        border-radius: 50px !important;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+        transition: all 0.2s ease;
+      }
+
+      .btn-large:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn-large:active {
+        transform: translateY(1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+      }
+
+      .btn-large i {
+        font-size: 20px;
+        margin-left: 5px;
+      }
+
+      @media (max-width: 480px) {
+        body {
+          padding: 2px;
+        }
+
+        .btn-large {
+          font-size: 12px;
+          padding: 0 15px !important;
+          height: 38px;
+          line-height: 38px;
+        }
+      }
+
+      /* Links de navegação */
+      .nav-links {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 15px;
+        margin-top: 10px;
+      }
+
+      .nav-links a {
+        color: white;
+        margin: 0 15px;
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        opacity: 0.9;
+      }
+
+      .nav-links a:hover {
+        opacity: 1;
+        transform: translateY(-2px);
+      }
+
+      .nav-links a i {
+        margin-right: 6px;
+      }
+
+      .fade-in {
+        animation: fadeIn 0.5s ease forwards;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>
+      <style>
+        .no-js-message {
+          background: #ff5252;
+          color: white;
+          padding: 20px;
+          text-align: center;
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          z-index: 1000;
+          font-weight: bold;
+        }
+        body {
+          margin-top: 60px;
+        }
+      </style>
+      <div class="no-js-message">
+        Esta calculadora requer JavaScript para funcionar. Por favor, habilite o JavaScript em seu navegador.
+      </div>
+    </noscript>
+
+    <!-- Navegação -->
+    <div class="nav-links">
+      <a href="/" class="waves-effect">
+        <i class="material-icons">arrow_back</i>
+        Voltar para Home
+      </a>
+    </div>
+
+    <div class="container-principal">
+      <div class="row">
+        <!-- Coluna da Calculadora -->
+        <div class="col s12 m7">
+          <div class="card fade-in">
+            <div class="card-content">
+              <span class="card-title">Calculadora Padrão</span>
+              
+              <div id="display">0</div>
+              
+              <div class="calculadora">
+                <button class="limpar" id="btn-clear">C</button>
+                <button class="backspace" id="btn-backspace">⌫</button>
+                <button class="operador" id="btn-percent">%</button>
+                <button class="operador" id="btn-divide">÷</button>
+                
+                <button class="numero" id="btn-7">7</button>
+                <button class="numero" id="btn-8">8</button>
+                <button class="numero" id="btn-9">9</button>
+                <button class="operador" id="btn-multiply">×</button>
+                
+                <button class="numero" id="btn-4">4</button>
+                <button class="numero" id="btn-5">5</button>
+                <button class="numero" id="btn-6">6</button>
+                <button class="operador" id="btn-subtract">−</button>
+                
+                <button class="numero" id="btn-1">1</button>
+                <button class="numero" id="btn-2">2</button>
+                <button class="numero" id="btn-3">3</button>
+                <button class="operador" id="btn-add">+</button>
+                
+                <button class="numero span-2" id="btn-0">0</button>
+                <button class="numero" id="btn-decimal">,</button>
+                <button class="igual" id="btn-equals">=</button>
+              </div>
+              
+              <div class="btn-container">
+                <button class="btn-large waves-effect waves-light" id="limpar-tudo">
+                  Limpar Tudo
+                  <i class="material-icons right">refresh</i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coluna do Histórico -->
+        <div class="col s12 m5">
+          <div id="historico-container" class="card fade-in show">
+            <div class="card-content">
+              <span class="card-title">Histórico</span>
+              <ul id="historico-list" class="collection"></ul>
+              
+              <div class="center-align" style="margin-top: 20px">
+                <button
+                  class="btn-floating btn-large waves-effect waves-light red"
+                  id="limpar-historico"
+                  title="Limpar Histórico"
+                >
+                  <i class="material-icons">delete</i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <script>
+      // Variáveis para controle da calculadora
+      let valorAtual = '0';
+      let valorAnterior = '';
+      let operacao = null;
+      let resultadoExibido = false;
+      const display = document.getElementById('display');
+      const historicoList = document.getElementById('historico-list');
+      
+      // Função para mostrar toast de notificação
+      function showToast(message, classes = 'rounded') {
+        M.toast({
+          html: message,
+          classes: classes,
+          displayLength: 2000
+        });
+      }
+      
+      // Atualiza o display com o valor atual
+      function atualizarDisplay() {
+        // Formata o valor para exibição (adiciona separador de milhares, etc.)
+        let valorFormatado = valorAtual;
+        
+        // Se for um número, formata para o padrão brasileiro
+        if (!isNaN(parseFloat(valorAtual.replace(',', '.')))) {
+          const valor = parseFloat(valorAtual.replace(',', '.'));
+          // Verifica se é um número com casas decimais
+          if (valorAtual.includes(',')) {
+            const partes = valorAtual.split(',');
+            const parteInteira = parseFloat(partes[0]);
+            valorFormatado = parteInteira.toLocaleString('pt-BR') + ',' + partes[1];
+          } else {
+            valorFormatado = valor.toLocaleString('pt-BR');
+          }
+          
+          // Se o último caractere for uma vírgula, mantém
+          if (valorAtual.endsWith(',')) {
+            valorFormatado += ',';
+          }
+        }
+        
+        display.textContent = valorFormatado;
+      }
+      
+      // Adiciona um dígito ao valor atual
+      function adicionarDigito(digito) {
+        if (resultadoExibido) {
+          valorAtual = '0';
+          resultadoExibido = false;
+        }
+        
+        if (valorAtual === '0' && digito !== ',') {
+          valorAtual = digito;
+        } else if (digito === ',' && !valorAtual.includes(',')) {
+          valorAtual += digito;
+        } else if (digito !== ',' || !valorAtual.includes(',')) {
+          valorAtual += digito;
+        }
+        
+        atualizarDisplay();
+      }
+      
+      // Configurar a operação
+      function definirOperacao(op) {
+        if (valorAtual !== '0' || valorAnterior !== '') {
+          if (operacao !== null && valorAnterior !== '' && !resultadoExibido) {
+            calcular();
+          }
+          
+          operacao = op;
+          valorAnterior = valorAtual;
+          valorAtual = '0';
+          resultadoExibido = false;
+        }
+      }
+      
+      // Realizar o cálculo
+      function calcular() {
+        if (operacao === null || valorAnterior === '') return;
+        
+        let resultado;
+        const anterior = parseFloat(valorAnterior.replace(',', '.'));
+        const atual = parseFloat(valorAtual.replace(',', '.'));
+        
+        switch (operacao) {
+          case '+':
+            resultado = anterior + atual;
+            break;
+          case '−':
+            resultado = anterior - atual;
+            break;
+          case '×':
+            resultado = anterior * atual;
+            break;
+          case '÷':
+            if (atual === 0) {
+              showToast('Não é possível dividir por zero!', 'red rounded');
+              limparTudo();
+              return;
+            }
+            resultado = anterior / atual;
+            break;
+          case '%':
+            resultado = anterior * (atual / 100);
+            break;
+          default:
+            return;
+        }
+        
+        // Formata a expressão para o histórico
+        const expressao = `${valorAnterior.replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.')} ${operacao} ${valorAtual.replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
+        
+        // Adicionar ao histórico
+        adicionarAoHistorico(expressao, resultado);
+        
+        valorAtual = resultado.toString().replace('.', ',');
+        valorAnterior = '';
+        operacao = null;
+        resultadoExibido = true;
+        
+        atualizarDisplay();
+      }
+      
+      // Limpar tudo
+      function limparTudo() {
+        valorAtual = '0';
+        valorAnterior = '';
+        operacao = null;
+        resultadoExibido = false;
+        atualizarDisplay();
+      }
+      
+      // Apagar último dígito
+      function apagarDigito() {
+        if (resultadoExibido) {
+          limparTudo();
+          return;
+        }
+        
+        if (valorAtual.length > 1) {
+          valorAtual = valorAtual.slice(0, -1);
+        } else {
+          valorAtual = '0';
+        }
+        
+        atualizarDisplay();
+      }
+      
+      // Adicionar ao histórico
+      function adicionarAoHistorico(expressao, resultado) {
+        // Formata o resultado para exibição (padrão brasileiro)
+        const resultadoFormatado = resultado.toLocaleString('pt-BR');
+        
+        const li = document.createElement('li');
+        li.className = 'collection-item resultado-item fade-in';
+        li.innerHTML = `
+          <div class="historico-expressao">${expressao}</div>
+          <div class="historico-resultado">${resultadoFormatado}</div>
+        `;
+        
+        historicoList.prepend(li);
+        
+        // Armazenar no localStorage
+        salvarHistorico();
+        
+        // Mostrar o container de histórico
+        document.getElementById('historico-container').classList.add('show');
+      }
+      
+      // Salvar histórico no localStorage
+      function salvarHistorico() {
+        const itens = [];
+        document.querySelectorAll('#historico-list .resultado-item').forEach(item => {
+          itens.push({
+            expressao: item.querySelector('.historico-expressao').textContent,
+            resultado: item.querySelector('.historico-resultado').textContent
+          });
+        });
+        
+        localStorage.setItem('calculo-padrao-historico', JSON.stringify(itens));
+      }
+      
+      // Carregar histórico do localStorage
+      function carregarHistorico() {
+        const historico = localStorage.getItem('calculo-padrao-historico');
+        
+        if (historico) {
+          const itens = JSON.parse(historico);
+          
+          if (itens.length > 0) {
+            document.getElementById('historico-container').classList.add('show');
+            
+            itens.forEach(item => {
+              const li = document.createElement('li');
+              li.className = 'collection-item resultado-item';
+              li.innerHTML = `
+                <div class="historico-expressao">${item.expressao}</div>
+                <div class="historico-resultado">${item.resultado}</div>
+              `;
+              
+              historicoList.prepend(li);
+            });
+          }
+        }
+      }
+      
+      // Limpar histórico
+      function limparHistorico() {
+        while (historicoList.firstChild) {
+          historicoList.removeChild(historicoList.firstChild);
+        }
+        
+        localStorage.removeItem('calculo-padrao-historico');
+        document.getElementById('historico-container').classList.remove('show');
+        
+        showToast('Histórico limpo com sucesso!', 'green rounded');
+      }
+      
+      // Eventos para os botões
+      document.getElementById('btn-0').addEventListener('click', () => adicionarDigito('0'));
+      document.getElementById('btn-1').addEventListener('click', () => adicionarDigito('1'));
+      document.getElementById('btn-2').addEventListener('click', () => adicionarDigito('2'));
+      document.getElementById('btn-3').addEventListener('click', () => adicionarDigito('3'));
+      document.getElementById('btn-4').addEventListener('click', () => adicionarDigito('4'));
+      document.getElementById('btn-5').addEventListener('click', () => adicionarDigito('5'));
+      document.getElementById('btn-6').addEventListener('click', () => adicionarDigito('6'));
+      document.getElementById('btn-7').addEventListener('click', () => adicionarDigito('7'));
+      document.getElementById('btn-8').addEventListener('click', () => adicionarDigito('8'));
+      document.getElementById('btn-9').addEventListener('click', () => adicionarDigito('9'));
+      document.getElementById('btn-decimal').addEventListener('click', () => adicionarDigito(','));
+      
+      document.getElementById('btn-add').addEventListener('click', () => definirOperacao('+'));
+      document.getElementById('btn-subtract').addEventListener('click', () => definirOperacao('−'));
+      document.getElementById('btn-multiply').addEventListener('click', () => definirOperacao('×'));
+      document.getElementById('btn-divide').addEventListener('click', () => definirOperacao('÷'));
+      document.getElementById('btn-percent').addEventListener('click', () => definirOperacao('%'));
+      
+      document.getElementById('btn-equals').addEventListener('click', calcular);
+      document.getElementById('btn-clear').addEventListener('click', limparTudo);
+      document.getElementById('btn-backspace').addEventListener('click', apagarDigito);
+      document.getElementById('limpar-tudo').addEventListener('click', limparTudo);
+      document.getElementById('limpar-historico').addEventListener('click', limparHistorico);
+      
+      // Suporte ao teclado
+      document.addEventListener('keydown', (e) => {
+        // Números
+        if (/^[0-9]$/.test(e.key)) {
+          adicionarDigito(e.key);
+        } 
+        // Operações
+        else if (e.key === '+') {
+          definirOperacao('+');
+        } else if (e.key === '-') {
+          definirOperacao('−');
+        } else if (e.key === '*') {
+          definirOperacao('×');
+        } else if (e.key === '/') {
+          e.preventDefault(); // Previne a busca rápida no navegador
+          definirOperacao('÷');
+        } else if (e.key === '%') {
+          definirOperacao('%');
+        } 
+        // Decimal
+        else if (e.key === ',' || e.key === '.') {
+          adicionarDigito(',');
+        } 
+        // Igual / Enter
+        else if (e.key === '=' || e.key === 'Enter') {
+          e.preventDefault();
+          calcular();
+        } 
+        // Backspace
+        else if (e.key === 'Backspace') {
+          apagarDigito();
+        } 
+        // Escape / Delete (Limpar)
+        else if (e.key === 'Escape' || e.key === 'Delete') {
+          limparTudo();
+        }
+      });
+      
+      // Inicialização
+      document.addEventListener('DOMContentLoaded', function() {
+        atualizarDisplay();
+        carregarHistorico();
+      });
+    </script>
+  </body>
+</html>
