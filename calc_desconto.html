@@ -1018,10 +1018,10 @@
           this.value = 100;
           this.classList.add("invalid");
           showToast("O desconto máximo é 100%", "rounded orange");
-        } else if (valor < 0) {
-          this.value = 0;
+        } else if (valor <= 0) {
+          this.value = "";
           this.classList.add("invalid");
-          showToast("O desconto mínimo é 0%", "rounded orange");
+          showToast("O desconto deve ser maior que 0%", "rounded orange");
         } else {
           this.classList.remove("invalid");
         }
@@ -1057,13 +1057,13 @@
         if (
           desconto === "" ||
           isNaN(parseFloat(desconto)) ||
-          parseFloat(desconto) < 0 ||
+          parseFloat(desconto) <= 0 ||
           parseFloat(desconto) > 100
         ) {
           const descontoInput = document.getElementById("desconto");
           descontoInput.classList.add("invalid");
           descontoInput.focus();
-          showToast("Por favor, insira um desconto válido (0-100)", "rounded orange");
+          showToast("Por favor, insira um desconto válido (maior que 0 e até 100)", "rounded orange");
           return false;
         }
 
