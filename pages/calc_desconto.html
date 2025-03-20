@@ -370,51 +370,7 @@
         }
       }
 
-      .toast {
-        animation: slideIn 0.15s ease-out;
-        justify-content: center;
-        text-align: center;
-        font-size: 16px !important;
-        border-radius: 8px !important;
-        padding: 12px 24px !important;
-        background-color: rgba(0, 0, 0, 0.85) !important;
-        color: white !important;
-        font-weight: 500 !important;
-        width: auto !important;
-        min-width: 0 !important;
-        margin: 0 !important;
-        display: inline-block !important;
-        pointer-events: auto;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-        font-family: "Roboto", sans-serif !important;
-      }
-
-      /* Estilos para os toasts */
-      #toast-container {
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-        position: fixed !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
-        width: auto !important;
-        max-width: none !important;
-        height: auto !important;
-        pointer-events: none;
-      }
-
-      .toast.red {
-        background-color: rgba(244, 67, 54, 0.95) !important;
-      }
-
-      .toast.green {
-        background-color: rgba(76, 175, 80, 0.95) !important;
-      }
-
-      .toast.blue {
-        background-color: rgba(33, 150, 243, 0.95) !important;
-      }
+      /* Estilos de toast removidos - usando componente toast-notification */
 
       @media (max-width: 480px) {
         .toast {
@@ -855,20 +811,7 @@
         }
       }
 
-      /* Ajuste do toast para diferentes tamanhos de tela */
-      @media (max-width: 480px) {
-        #toast-container {
-          width: 90% !important;
-          left: 5% !important;
-          top: 50% !important;
-        }
-
-        .toast {
-          font-size: 14px !important;
-          padding: 10px 15px !important;
-          width: 100% !important;
-        }
-      }
+      /* Ajustes de responsividade para toast removidos - usando componente toast-notification */
     </style>
   </head>
   <body>
@@ -1009,14 +952,19 @@
         </div>
       </div>
     </div>
-    <div id="toast-container"></div>
-
     <!-- Importando Materialize JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <!-- Importando componentes web personalizados -->
     <script src="/assets/js/components/clear-history-button.js"></script>
+    <script src="/assets/js/components/toast-notification.js"></script>
     <script>
       // Script inicializado
+      
+      // Função para mostrar toast usando o componente web
+      function showToast(message, classes = 'rounded') {
+        // Usa o método estático do componente ToastNotification
+        ToastNotification.showToast(message, classes);
+      }
 
       document.getElementById("desconto").addEventListener("input", function (e) {
         const valor = parseFloat(this.value);
@@ -1076,26 +1024,9 @@
         return true;
       }
 
-      function showToast(message, classes) {
-        // Remove toasts anteriores
-        const existingToasts = document.querySelectorAll(".toast");
-        existingToasts.forEach((toast) => toast.remove());
-
-        M.toast({
-          html: message,
-          classes: `${classes} center-align`,
-          displayLength: 1000, // Reduzido para 1 segundo
-          inDuration: 150, // Animação de entrada mais rápida
-          outDuration: 150 // Animação de saída mais rápida
-        });
-
-        // Garante que o container está posicionado corretamente
-        const toastContainer = document.getElementById("toast-container");
-        if (toastContainer) {
-          toastContainer.style.display = "flex";
-          toastContainer.style.justifyContent = "center";
-          toastContainer.style.alignItems = "center";
-        }
+      function showToast(message, classes = 'rounded') {
+        // Usa o método estático do componente ToastNotification
+        ToastNotification.showToast(message, classes);
       }
 
       document.getElementById("calcular").addEventListener("click", calcularDesconto);

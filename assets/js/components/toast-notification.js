@@ -47,7 +47,7 @@ class ToastNotification extends HTMLElement {
           padding: 12px 24px;
           color: white;
           border-radius: 8px;
-          margin: 8px;
+          margin: 8px auto;
           font-size: 16px;
           font-weight: 500;
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -59,6 +59,7 @@ class ToastNotification extends HTMLElement {
           transform: translateY(20px);
           transition: opacity 0.3s, transform 0.3s;
           pointer-events: auto;
+          max-width: 80%;
         }
         
         .toast.show {
@@ -112,6 +113,23 @@ class ToastNotification extends HTMLElement {
     if (!document.getElementById(this.containerId)) {
       const container = document.createElement('div');
       container.id = this.containerId;
+      
+      // Aplicar estilos diretamente ao criar o container com !important
+      container.style.cssText = `
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        pointer-events: none !important;
+        z-index: 10000 !important;
+      `;
+      
       document.body.appendChild(container);
     }
   }
@@ -136,9 +154,21 @@ class ToastNotification extends HTMLElement {
     const container = document.getElementById(this.containerId);
     if (container) {
       container.appendChild(toast);
-      container.style.display = 'flex';
-      container.style.justifyContent = 'center';
-      container.style.alignItems = 'center';
+      // Reforça os estilos com !important a cada exibição
+      container.style.cssText = `
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        pointer-events: none !important;
+        z-index: 10000 !important;
+      `;
       
       // Mostra com animação
       setTimeout(() => toast.classList.add('show'), 10);
@@ -175,6 +205,32 @@ class ToastNotification extends HTMLElement {
       toastComponent = document.createElement('toast-notification');
       document.body.appendChild(toastComponent);
     }
+    
+    // Garante que o container de toast exista e esteja configurado corretamente
+    const containerId = 'toast-container';
+    let container = document.getElementById(containerId);
+    
+    if (!container) {
+      container = document.createElement('div');
+      container.id = containerId;
+      document.body.appendChild(container);
+    }
+    
+    // Reforça os estilos com !important para garantir centralização
+    container.style.cssText = `
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      position: fixed !important;
+      top: 50% !important;
+      left: 50% !important;
+      transform: translate(-50%, -50%) !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      height: auto !important;
+      pointer-events: none !important;
+      z-index: 10000 !important;
+    `;
     
     // Exibe o toast
     toastComponent.show(message, classes, duration);
