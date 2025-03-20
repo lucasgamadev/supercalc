@@ -842,7 +842,7 @@
         const li = document.createElement('li');
         li.className = 'collection-item resultado-item fade-in';
         li.innerHTML = `
-          <div class="historico-expressao">${expressao}</div>
+          <div class="historico-expressao">${expressao} = ${resultadoFormatado}</div>
           <div class="historico-resultado ${resultado >= 0 ? 'resultado-positivo' : 'resultado-negativo'}">${resultadoFormatado}</div>
         `;
         
@@ -882,7 +882,7 @@
               const li = document.createElement('li');
               li.className = 'collection-item resultado-item';
               li.innerHTML = `
-                <div class="historico-expressao">${item.expressao}</div>
+                <div class="historico-expressao">${item.expressao.includes(' = ') ? item.expressao : `${item.expressao} = ${item.resultado}`}</div>
                 <div class="historico-resultado ${parseFloat(item.resultado.replace('.', ',')) >= 0 ? 'resultado-positivo' : 'resultado-negativo'}">${item.resultado}</div>
               `;
               
