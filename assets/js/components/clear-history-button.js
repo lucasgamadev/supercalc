@@ -131,15 +131,18 @@ class ClearHistoryButton extends HTMLElement {
    * @param {string} classes - Classes CSS para o toast
    */
   showToast(message, classes) {
-    // Verifica se o Materialize está disponível
-    if (typeof M !== 'undefined' && M.toast) {
+    // Usa o componente ToastNotification se disponível
+    if (typeof ToastNotification !== 'undefined' && ToastNotification.showToast) {
+      ToastNotification.showToast(message, classes, 2000);
+    } else if (typeof M !== 'undefined' && M.toast) {
+      // Fallback para Materialize se ToastNotification não estiver disponível
       M.toast({
         html: message,
         classes: `${classes} center-align`,
         displayLength: 1000
       });
     } else {
-      // Fallback para quando o Materialize não está disponível
+      // Fallback final
       alert(message);
     }
   }
