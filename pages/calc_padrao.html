@@ -674,6 +674,43 @@
         display.textContent = valorFormatado;
       }
       
+      // Atualiza o display mostrando a expressão completa (número anterior + operador + número atual)
+      function atualizarDisplayComExpressao() {
+        // Formata o valor anterior
+        let valorAnteriorFormatado = valorAnterior;
+        if (!isNaN(parseFloat(valorAnterior.replace(',', '.')))) {
+          const valor = parseFloat(valorAnterior.replace(',', '.'));
+          if (valorAnterior.includes(',')) {
+            const partes = valorAnterior.split(',');
+            const parteInteira = parseFloat(partes[0]);
+            valorAnteriorFormatado = parteInteira.toLocaleString('pt-BR') + ',' + partes[1];
+          } else {
+            valorAnteriorFormatado = valor.toLocaleString('pt-BR');
+          }
+        }
+        
+        // Formata o valor atual
+        let valorAtualFormatado = valorAtual;
+        if (!isNaN(parseFloat(valorAtual.replace(',', '.')))) {
+          const valor = parseFloat(valorAtual.replace(',', '.'));
+          if (valorAtual.includes(',')) {
+            const partes = valorAtual.split(',');
+            const parteInteira = parseFloat(partes[0]);
+            valorAtualFormatado = parteInteira.toLocaleString('pt-BR') + ',' + partes[1];
+          } else {
+            valorAtualFormatado = valor.toLocaleString('pt-BR');
+          }
+          
+          // Se o último caractere for uma vírgula, mantém
+          if (valorAtual.endsWith(',')) {
+            valorAtualFormatado += ',';
+          }
+        }
+        
+        // Exibe a expressão completa
+        display.textContent = valorAnteriorFormatado + ' ' + operacao + ' ' + valorAtualFormatado;
+      }
+      
       // Adiciona um dígito ao valor atual
       function adicionarDigito(digito) {
         if (resultadoExibido) {
@@ -689,7 +726,12 @@
           valorAtual += digito;
         }
         
-        atualizarDisplay();
+        // Se estiver no meio de uma operação, mostra a expressão completa
+        if (operacao !== null && valorAnterior !== '') {
+          atualizarDisplayComExpressao();
+        } else {
+          atualizarDisplay();
+        }
       }
       
       // Configurar a operação
@@ -703,6 +745,20 @@
           valorAnterior = valorAtual;
           valorAtual = '0';
           resultadoExibido = false;
+          
+          // Mostrar o operador no visor
+          let valorFormatado = valorAnterior;
+          if (!isNaN(parseFloat(valorAnterior.replace(',', '.')))) {
+            const valor = parseFloat(valorAnterior.replace(',', '.'));
+            if (valorAnterior.includes(',')) {
+              const partes = valorAnterior.split(',');
+              const parteInteira = parseFloat(partes[0]);
+              valorFormatado = parteInteira.toLocaleString('pt-BR') + ',' + partes[1];
+            } else {
+              valorFormatado = valor.toLocaleString('pt-BR');
+            }
+          }
+          display.textContent = valorFormatado + ' ' + op;
         }
       }
       
@@ -750,7 +806,7 @@
         operacao = null;
         resultadoExibido = true;
         
-        atualizarDisplay();
+        atualizarDisplay(); // Atualiza o display com o resultado
       }
       
       // Limpar tudo
@@ -759,7 +815,7 @@
         valorAnterior = '';
         operacao = null;
         resultadoExibido = false;
-        atualizarDisplay();
+        display.textContent = '0'; // Atualiza diretamente o display para '0'
       }
       
       // Apagar último dígito
