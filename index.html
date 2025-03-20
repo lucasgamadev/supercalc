@@ -121,13 +121,8 @@
       </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="mt-16 text-center text-white opacity-80">
-      <div class="logo-container mb-4">
-        <img src="/assets/images/logo.svg" alt="SuperCalc Logo" class="mx-auto" width="200">
-      </div>
-      <p> 2025 SuperCalc - Todas as calculadoras que você precisa em um só lugar</p>
-    </footer>
+    <!-- Include Footer Component -->
+    <div id="footer-placeholder"></div>
   </div>
 
   <!-- Scripts -->
@@ -138,6 +133,13 @@
       .then(response => response.text())
       .then(data => {
         document.getElementById('header-placeholder').innerHTML = data;
+      });
+      
+    // Load footer component
+    fetch('/components/footer.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('footer-placeholder').innerHTML = data;
       });
   </script>
 </body>
