@@ -396,6 +396,21 @@
         }
       }
 
+      /* Estilos para os toasts - centralização */
+      #toast-container {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        width: auto !important;
+        max-width: none !important;
+        height: auto !important;
+        pointer-events: none;
+      }
+
       /* Links de navegação */
       .nav-links {
         display: flex;
@@ -612,11 +627,25 @@
       
       // Função para mostrar toast de notificação
       function showToast(message, classes = 'rounded') {
+        // Remove toasts anteriores
+        const existingToasts = document.querySelectorAll(".toast");
+        existingToasts.forEach((toast) => toast.remove());
+        
         M.toast({
           html: message,
-          classes: classes,
-          displayLength: 2000
+          classes: `${classes} center-align`,
+          displayLength: 2000,
+          inDuration: 150,
+          outDuration: 150
         });
+        
+        // Garante que o container está posicionado corretamente
+        const toastContainer = document.getElementById("toast-container");
+        if (toastContainer) {
+          toastContainer.style.display = "flex";
+          toastContainer.style.justifyContent = "center";
+          toastContainer.style.alignItems = "center";
+        }
       }
       
       // Atualiza o display com o valor atual
