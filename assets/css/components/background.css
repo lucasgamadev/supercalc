@@ -1,0 +1,7 @@
+/* Componente de fundo para SuperCalc */
+
+.supercalc-background {
+  background: linear-gradient(135deg, #00796b, #1565c0);
+  background-attachment: fixed;
+  min-height: 100vh;
+}

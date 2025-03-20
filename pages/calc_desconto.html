@@ -10,6 +10,10 @@
     <title>Calculadora de Desconto</title>
     <!-- TailwindCSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <!-- Componente de fundo -->
+    <script src="/assets/js/components/background.js"></script>
     <script>
       tailwind.config = {
         theme: {
@@ -82,8 +86,6 @@
         align-items: center;
         min-height: 100vh;
         margin: 0;
-        background: linear-gradient(135deg, #00796b, #1565c0);
-        background-attachment: fixed;
       }
 
       .container-principal {
@@ -968,7 +970,7 @@
       }
     </style>
   </head>
-  <body>
+  <body class="supercalc-background">
     <noscript>
       <style>
         .no-js-message {

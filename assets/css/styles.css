@@ -1,11 +1,11 @@
 /* Estilos principais para SuperCalc */
 
+/* Importar componentes */
+@import url('./components/background.css');
+
 /* Estilos base */
 body {
   font-family: 'Roboto', sans-serif;
-  background: linear-gradient(135deg, #00796b, #1565c0);
-  background-attachment: fixed;
-  min-height: 100vh;
 }
 
 /* Estilos do cartão */

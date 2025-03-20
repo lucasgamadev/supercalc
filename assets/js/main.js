@@ -2,6 +2,9 @@
  * Arquivo JavaScript principal para SuperCalc
  */
 
+// Importar componentes
+import '/assets/js/components/background.js';
+
 document.addEventListener('DOMContentLoaded', function() {
   // Inicializar componentes globais ou funcionalidades
   console.log('SuperCalc initialized');
