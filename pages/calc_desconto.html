@@ -506,9 +506,57 @@
         font-size: 1.2em;
         padding: 12px 0 0 0;
         display: flex;
+        flex-wrap: wrap;
         justify-content: space-between;
         align-items: center;
+        gap: 8px;
         border-top: 1px dashed rgba(0, 0, 0, 0.08);
+      }
+
+      .historico-final > span {
+        margin: 4px 0;
+      }
+
+      .historico-final > span:last-child {
+        width: 100%;
+        margin-top: 8px;
+      }
+
+      .historico-economia {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0 8px 0;
+        gap: 10px;
+        border-top: 1px dashed rgba(0, 0, 0, 0.08);
+      }
+      
+      .historico-economia .valor-economia {
+        flex: 1;
+        color: #f44336;
+        font-size: 0.9em;
+        background-color: rgba(244, 67, 54, 0.1);
+        padding: 4px 8px;
+        border-radius: 12px;
+      }
+
+      .historico-final {
+        color: #4caf50;
+        font-weight: 600;
+        font-size: 1.2em;
+        padding: 12px 0 0 0;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 8px;
+        border-top: 1px dashed rgba(0, 0, 0, 0.08);
+        width: 100%;
+      }
+
+      .historico-final > span {
+        margin: 4px 0;
+        width: 100%;
       }
 
       @keyframes destaque {
@@ -811,7 +859,113 @@
         }
       }
 
-      /* Ajustes de responsividade para toast removidos - usando componente toast-notification */
+      /* Estilos específicos para telas menores */
+      @media (max-width: 480px) {
+        .historico-economia, .historico-final {
+          padding: 8px 0;
+        }
+        
+        .valor-final, .valor-economia {
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          max-width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          font-size: 0.9em;
+        }
+        
+        .historico-preco {
+          margin-bottom: 8px;
+        }
+      }
+
+      /* Estilos específicos para telas menores */
+      @media (max-width: 480px) {
+        .historico-economia, .historico-final {
+          padding: 8px 0;
+        }
+        
+        .historico-economia {
+          flex-wrap: wrap;
+        }
+        
+        .historico-economia .desconto {
+          margin-left: auto;
+        }
+        
+        .valor-final, .valor-economia {
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          max-width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          font-size: 0.9em;
+        }
+        
+        .historico-preco {
+          margin-bottom: 8px;
+        }
+      }
+
+      /* Estilo para o desconto na seção de economia */
+      .historico-economia .desconto {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.9em;
+        font-weight: 600;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        margin-left: 8px;
+        transition: all 0.3s ease;
+      }
+      
+      .historico-economia .desconto.baixo {
+        background: linear-gradient(135deg, #4caf50, #8bc34a);
+      }
+      
+      .historico-economia .desconto.medio {
+        background: linear-gradient(135deg, #ff9800, #ffc107);
+      }
+      
+      .historico-economia .desconto.alto {
+        background: linear-gradient(135deg, #f44336, #ff5722);
+      }
+      
+      .historico-economia .desconto::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: rgba(255, 255, 255, 0.1);
+        transform: rotate(45deg);
+        animation: shimmer 2s infinite;
+      }
+      
+      .historico-economia .desconto:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .historico-final {
+        color: #4caf50;
+        font-weight: 600;
+        font-size: 1.2em;
+        padding: 12px 0 0 0;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 8px;
+        border-top: 1px dashed rgba(0, 0, 0, 0.08);
+        width: 100%;
+      }
     </style>
   </head>
   <body>
@@ -1095,17 +1249,19 @@
         item.innerHTML = `
             <div class="historico-preco">
                 <span class="valor-original">Valor Original: R$ ${precoFormatado}</span> 
+            </div>
+            <div class="historico-economia">
+                <span class="valor-economia">
+                    <i class="material-icons" style="font-size: 14px; vertical-align: middle; margin-right: 2px;">savings</i>
+                    Economia: R$ ${economia}
+                </span>
                 <span class="desconto ${descontoClasse}">
                     <i class="material-icons" style="font-size: 14px; margin-right: 4px;">trending_down</i>
                     ${desconto}%
                 </span>
             </div>
             <div class="historico-final">
-                <span>Valor Final: R$ ${resultadoFormatado}</span>
-                <span style="color: #f44336; font-size: 0.9em; background-color: rgba(244, 67, 54, 0.1); padding: 4px 8px; border-radius: 12px;">
-                    <i class="material-icons" style="font-size: 14px; vertical-align: middle; margin-right: 2px;">savings</i>
-                    Economia: R$ ${economia}
-                </span>
+                <span class="valor-final">Valor Final: R$ ${resultadoFormatado}</span>
             </div>
         `;
 
