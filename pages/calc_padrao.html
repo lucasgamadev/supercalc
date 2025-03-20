@@ -663,11 +663,11 @@
             valorFormatado = parteInteira.toLocaleString('pt-BR') + ',' + partes[1];
           } else {
             valorFormatado = valor.toLocaleString('pt-BR');
-          }
-          
-          // Se o último caractere for uma vírgula, mantém
-          if (valorAtual.endsWith(',')) {
-            valorFormatado += ',';
+            
+            // Se o último caractere for uma vírgula, mantém (apenas se não tiver vírgula ainda)
+            if (valorAtual.endsWith(',')) {
+              valorFormatado += ',';
+            }
           }
         }
         
@@ -686,6 +686,11 @@
             valorAnteriorFormatado = parteInteira.toLocaleString('pt-BR') + ',' + partes[1];
           } else {
             valorAnteriorFormatado = valor.toLocaleString('pt-BR');
+            
+            // Se o último caractere for uma vírgula, mantém (apenas se não tiver vírgula ainda)
+            if (valorAnterior.endsWith(',')) {
+              valorAnteriorFormatado += ',';
+            }
           }
         }
         
@@ -699,11 +704,11 @@
             valorAtualFormatado = parteInteira.toLocaleString('pt-BR') + ',' + partes[1];
           } else {
             valorAtualFormatado = valor.toLocaleString('pt-BR');
-          }
-          
-          // Se o último caractere for uma vírgula, mantém
-          if (valorAtual.endsWith(',')) {
-            valorAtualFormatado += ',';
+            
+            // Se o último caractere for uma vírgula, mantém (apenas se não tiver vírgula ainda)
+            if (valorAtual.endsWith(',')) {
+              valorAtualFormatado += ',';
+            }
           }
         }
         
@@ -756,6 +761,11 @@
               valorFormatado = parteInteira.toLocaleString('pt-BR') + ',' + partes[1];
             } else {
               valorFormatado = valor.toLocaleString('pt-BR');
+              
+              // Se o último caractere for uma vírgula, mantém (apenas se não tiver vírgula ainda)
+              if (valorAnterior.endsWith(',')) {
+                valorFormatado += ',';
+              }
             }
           }
           display.textContent = valorFormatado + ' ' + op;
