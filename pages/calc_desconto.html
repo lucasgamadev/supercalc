@@ -886,15 +886,19 @@
     </noscript>
     
     <div class="btn-voltar-container" id="home-button-container">
-      <!-- O componente de botão de início será carregado aqui -->
+      <!-- Componente do Botão Início para SuperCalc -->
+      <home-button href="/index.html" text="Início" icon="fa-home"></home-button>
     </div>
+    
+    <!-- Importação do componente home-button -->
     <script>
-      // Carregar o componente de botão de início
-      fetch('/components/home-button.html')
-        .then(response => response.text())
-        .then(data => {
-          document.getElementById('home-button-container').innerHTML = data;
-        });
+      // Verifica se o componente já foi carregado
+      if (!customElements.get('home-button')) {
+        // Carrega o script do componente se ainda não estiver carregado
+        const script = document.createElement('script');
+        script.src = '/assets/js/components/home-button.js';
+        document.head.appendChild(script);
+      }
     </script>
 
     <div class="container-principal">

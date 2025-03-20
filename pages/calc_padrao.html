@@ -545,10 +545,19 @@
     <!-- Navegação -->
     <div class="nav-links">
       <!-- Componente do Botão Início para SuperCalc -->
-      <a href="/index.html" class="nav-btn inline-flex items-center bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-4 py-2 rounded-full text-sm font-medium shadow-md hover:opacity-90 transition-all duration-300" title="Ir para a página inicial">
-        <i class="fas fa-home mr-2 inline-flex items-center align-middle"></i>Início
-      </a>
+      <home-button href="/index.html" text="Início" icon="fa-home"></home-button>
     </div>
+    
+    <!-- Importação do componente home-button -->
+    <script>
+      // Verifica se o componente já foi carregado
+      if (!customElements.get('home-button')) {
+        // Carrega o script do componente se ainda não estiver carregado
+        const script = document.createElement('script');
+        script.src = '/assets/js/components/home-button.js';
+        document.head.appendChild(script);
+      }
+    </script>
 
     <div class="container-principal">
       <div class="row">

@@ -116,20 +116,25 @@
         
         // Carrega o botão de início somente após o header ser carregado
         setTimeout(() => {
-          fetch('/components/home-button.html')
-            .then(response => response.text())
-            .then(data => {
-              // Adiciona o botão de início após o carregamento do header
-              const navMenu = document.querySelector('nav ul');
-              if (navMenu) {
-                const homeButtonLi = document.createElement('li');
-                homeButtonLi.innerHTML = data;
-                navMenu.prepend(homeButtonLi);
-                console.log('Botão de início adicionado com sucesso');
-              } else {
-                console.log('Menu de navegação não encontrado');
-              }
-            });
+          // Adiciona o botão de início após o carregamento do header
+          const navMenu = document.querySelector('nav ul');
+          if (navMenu) {
+            const homeButtonLi = document.createElement('li');
+            homeButtonLi.innerHTML = '<home-button href="/index.html" text="Início" icon="fa-home"></home-button>';
+            navMenu.prepend(homeButtonLi);
+            
+            // Verifica se o componente já foi carregado
+            if (!customElements.get('home-button')) {
+              // Carrega o script do componente se ainda não estiver carregado
+              const script = document.createElement('script');
+              script.src = '/assets/js/components/home-button.js';
+              document.head.appendChild(script);
+            }
+            
+            console.log('Botão de início adicionado com sucesso');
+          } else {
+            console.log('Menu de navegação não encontrado');
+          }
         }, 300); // Pequeno atraso para garantir que o DOM do header foi renderizado
       });
   </script>
