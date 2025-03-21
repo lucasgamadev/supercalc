@@ -450,14 +450,28 @@
       <home-button href="/index.html" text="Início" icon="fa-home"></home-button>
     </div>
     
-    <!-- Importação do componente home-button -->
+    <!-- Importação dos componentes -->
     <script>
-      // Verifica se o componente já foi carregado
+      // Verifica se os componentes já foram carregados
       if (!customElements.get('home-button')) {
         // Carrega o script do componente se ainda não estiver carregado
         const script = document.createElement('script');
         script.src = '/assets/js/components/home-button.js';
         document.head.appendChild(script);
+      }
+      
+      // Carrega o componente calculate-button
+      if (!customElements.get('calculate-button')) {
+        const scriptCalc = document.createElement('script');
+        scriptCalc.src = '/assets/js/components/calculate-button.js';
+        document.head.appendChild(scriptCalc);
+      }
+      
+      // Carrega o componente clear-button
+      if (!customElements.get('clear-button')) {
+        const scriptClear = document.createElement('script');
+        scriptClear.src = '/assets/js/components/clear-button.js';
+        document.head.appendChild(scriptClear);
       }
     </script>
     
@@ -517,12 +531,8 @@
               
               <!-- Botões -->
               <div class="btn-container">
-                <button id="converter-btn" class="btn waves-effect waves-light blue">
-                  <i class="material-icons left">autorenew</i>Converter
-                </button>
-                <button id="limpar-btn" class="btn waves-effect waves-light grey lighten-1">
-                  <i class="material-icons left">clear</i>Limpar
-                </button>
+                <calculate-button id="converter-btn" text="Converter" icon="autorenew" color="blue"></calculate-button>
+                <clear-button id="limpar-btn" text="Limpar" icon="clear" color="grey"></clear-button>
               </div>
               
               <!-- Resultado -->
@@ -866,11 +876,22 @@
         // Carregar histórico ao iniciar
         carregarHistorico();
         
-        // Event listeners
-        document.getElementById('converter-btn').addEventListener('click', converterUnidades);
-        document.getElementById('limpar-btn').addEventListener('click', function() {
-          document.getElementById('valor-entrada').value = '';
-          document.getElementById('resultado-container').style.display = 'none';
+        // Event listeners para os componentes personalizados
+        document.addEventListener('DOMContentLoaded', function() {
+          // Adiciona event listener para o botão de converter
+          const converterBtn = document.getElementById('converter-btn');
+          if (converterBtn) {
+            converterBtn.addEventListener('calculate', converterUnidades);
+          }
+          
+          // Adiciona event listener para o botão de limpar
+          const limparBtn = document.getElementById('limpar-btn');
+          if (limparBtn) {
+            limparBtn.addEventListener('clear', function() {
+              document.getElementById('valor-entrada').value = '';
+              document.getElementById('resultado-container').style.display = 'none';
+            });
+          }
         });
         // O event listener para limpar histórico foi removido pois agora é gerenciado pelo componente clear-history-button
       });

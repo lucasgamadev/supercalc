@@ -989,14 +989,28 @@
       <home-button href="/index.html" text="Início" icon="fa-home"></home-button>
     </div>
     
-    <!-- Importação do componente home-button -->
+    <!-- Importação dos componentes -->
     <script>
-      // Verifica se o componente já foi carregado
+      // Verifica se os componentes já foram carregados
       if (!customElements.get('home-button')) {
         // Carrega o script do componente se ainda não estiver carregado
         const script = document.createElement('script');
         script.src = '/assets/js/components/home-button.js';
         document.head.appendChild(script);
+      }
+      
+      // Carrega o componente calculate-button
+      if (!customElements.get('calculate-button')) {
+        const scriptCalc = document.createElement('script');
+        scriptCalc.src = '/assets/js/components/calculate-button.js';
+        document.head.appendChild(scriptCalc);
+      }
+      
+      // Carrega o componente clear-button
+      if (!customElements.get('clear-button')) {
+        const scriptClear = document.createElement('script');
+        scriptClear.src = '/assets/js/components/clear-button.js';
+        document.head.appendChild(scriptClear);
       }
     </script>
 
@@ -1032,22 +1046,20 @@
                 </div>
               </div>
               <div class="btn-container">
-                <button
+                <calculate-button
                   id="calcular"
-                  class="btn waves-effect waves-light blue"
+                  text="Calcular"
+                  icon="calculate"
+                  color="blue"
                   aria-label="Calcular desconto"
-                >
-                  <i class="material-icons left" aria-hidden="true">calculate</i>
-                  Calcular
-                </button>
-                <button
+                ></calculate-button>
+                <clear-button
                   id="limpar"
-                  class="btn waves-effect waves-light red"
+                  text="Limpar"
+                  icon="clear"
+                  color="red"
                   aria-label="Limpar campos"
-                >
-                  <i class="material-icons left" aria-hidden="true">clear</i>
-                  Limpar
-                </button>
+                ></clear-button>
               </div>
               <div id="resultado-container" role="region" aria-label="Resultados">
                 <div class="resultado-item">
