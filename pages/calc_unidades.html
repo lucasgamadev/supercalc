@@ -1,0 +1,863 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Conversor de unidades simples e eficiente para converter entre diferentes unidades de medida"
+    />
+    <title>Conversor de Unidades</title>
+    <!-- TailwindCSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <!-- Componente de fundo -->
+    <script src="/assets/js/components/background.js"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: '#e3f2fd',
+                100: '#bbdefb',
+                200: '#90caf9',
+                300: '#64b5f6',
+                400: '#42a5f5',
+                500: '#2196f3',
+                600: '#1e88e5',
+                700: '#1976d2',
+                800: '#1565c0',
+                900: '#0d47a1',
+              },
+              secondary: {
+                50: '#e0f7fa',
+                100: '#b2ebf2',
+                200: '#80deea',
+                300: '#4dd0e1',
+                400: '#26c6da',
+                500: '#00bcd4',
+                600: '#00acc1',
+                700: '#0097a7',
+                800: '#00838f',
+                900: '#006064',
+              },
+            },
+            fontFamily: {
+              'roboto': ['Roboto', 'sans-serif'],
+            },
+          },
+        },
+      }
+    </script>
+    <!-- Importando Materialize CSS e Ícones -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        font-family: "Roboto", sans-serif;
+      }
+
+      #historico-container {
+        position: relative;
+        width: 100%;
+        transition: opacity 0.3s ease;
+        opacity: 0;
+      }
+
+      #historico-container.show {
+        opacity: 1;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+      }
+
+      .container-principal {
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        width: 100%;
+        max-width: 900px;
+        padding: 5px;
+        margin: 0 auto;
+        margin-top: 10px;
+      }
+
+      .container-principal .row {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+      }
+
+      .container-principal .col {
+        display: flex;
+      }
+
+      .card {
+        width: 100%;
+        max-width: 900px;
+        padding: 10px;
+        margin: 5px;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 12px !important;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .card-content {
+        padding: 10px !important;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      #historico-list {
+        flex: 1;
+        margin: 0;
+        border: none;
+        max-height: 357px;
+        overflow-y: auto;
+      }
+
+      .collection {
+        border: none !important;
+        margin: 0 !important;
+      }
+
+      @media (max-width: 768px) {
+        .container-principal {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .container-principal .row {
+          flex-direction: column;
+        }
+
+        #historico-list {
+          max-height: 300px;
+        }
+      }
+
+      .card-title {
+        text-align: center;
+        display: block;
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 15px !important;
+        background: linear-gradient(45deg, #2196f3, #00bcd4);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        letter-spacing: 0.5px;
+        position: relative;
+        padding-bottom: 8px;
+      }
+
+      .card-title::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 2px;
+        background: linear-gradient(45deg, #2196f3, #00bcd4);
+        border-radius: 2px;
+      }
+
+      @media (max-width: 480px) {
+        .card-title {
+          font-size: 20px;
+        }
+      }
+
+      .row {
+        margin-bottom: 0;
+      }
+
+      .input-field {
+        margin-bottom: 12px;
+      }
+
+      .input-field input {
+        margin-bottom: 0 !important;
+        padding: 0 !important;
+        text-indent: 0 !important;
+        box-sizing: border-box;
+        font-size: 14px;
+        font-family: "Roboto", sans-serif !important;
+      }
+
+      .input-field label {
+        left: 10px;
+        font-size: 14px;
+        font-family: "Roboto", sans-serif !important;
+      }
+
+      .btn-container {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .btn {
+        flex: 1;
+        height: 36px;
+        line-height: 36px;
+        font-size: 14px;
+        text-transform: none;
+        border-radius: 6px;
+        box-shadow: none;
+        font-family: "Roboto", sans-serif !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      /* Shimmer effect for buttons */
+      .btn::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: rgba(255, 255, 255, 0.1);
+        transform: rotate(45deg);
+        animation: shimmer 2s infinite;
+        pointer-events: none;
+      }
+
+      #resultado-container {
+        background: linear-gradient(to bottom, #ffffff, #f7f9fc);
+        border-radius: 16px;
+        padding: 20px;
+        margin-top: 15px;
+        border: 1px solid rgba(224, 224, 224, 0.5);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+      
+      #resultado-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, #2196f3, #00bcd4);
+      }
+      
+      #resultado-container:hover {
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+      }
+
+      .resultado-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 16px;
+        border: 1px solid rgba(0, 123, 255, 0.2);
+        border-radius: 8px;
+        background: rgba(240, 248, 255, 0.8);
+        font-size: 14px;
+        font-family: "Roboto", sans-serif;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 10px;
+        box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+      }
+
+      .material-icons {
+        font-size: 18px !important;
+      }
+      
+      /* Animação de shimmer para botões */
+      @keyframes shimmer {
+        0% {
+          transform: translate(-50%, -50%) rotate(45deg);
+        }
+        100% {
+          transform: translate(250%, 250%) rotate(45deg);
+        }
+      }
+
+      /* Estilo para o select de categorias */
+      .select-wrapper input.select-dropdown {
+        height: 3rem;
+        line-height: 3rem;
+        font-size: 14px;
+        padding: 0 10px;
+        margin: 0;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        background-color: white;
+      }
+
+      .select-wrapper .caret {
+        fill: rgba(0, 0, 0, 0.54);
+      }
+
+      .dropdown-content li > a, .dropdown-content li > span {
+        color: #2196f3;
+        font-size: 14px;
+      }
+
+      /* Estilo para os ícones das unidades */
+      .unit-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        margin-right: 8px;
+        color: #2196f3;
+      }
+      
+      /* Animação de shimmer para botões */
+      @keyframes shimmer {
+        0% { transform: translateX(-100%) rotate(45deg); }
+        100% { transform: translateX(100%) rotate(45deg); }
+      }
+      
+      /* Container para centralizar o botão de voltar */
+      .btn-voltar-container {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin: 30px auto 0;
+        max-width: 900px;
+        position: relative;
+        z-index: 10;
+        gap: 10px; /* Adiciona espaçamento entre os botões */
+        flex-wrap: wrap; /* Permite que os botões quebrem para a próxima linha em telas pequenas */
+      }
+      
+      /* Estilo para o botão de voltar */
+      .btn-voltar {
+        display: inline-flex;
+        align-items: center;
+        background: linear-gradient(135deg, #2196f3, #00bcd4);
+        color: white;
+        padding: 0 18px;
+        height: 36px;
+        border-radius: 18px;
+        font-size: 14px;
+        font-weight: 500;
+        box-shadow: 0 3px 8px rgba(33, 150, 243, 0.4);
+        transition: all 0.3s ease;
+        text-decoration: none;
+        width: fit-content;
+        margin-bottom: 15px;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .btn-voltar:hover {
+        box-shadow: 0 4px 8px rgba(33, 150, 243, 0.4);
+      }
+      
+      .btn-voltar::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: rgba(255, 255, 255, 0.1);
+        transform: rotate(45deg);
+        animation: shimmer 2s infinite;
+        pointer-events: none;
+      }
+      
+      .btn-voltar .material-icons {
+        margin-right: 4px;
+      }
+      
+      /* Estilo para os itens do histórico */
+      .historico-item {
+        display: flex;
+        flex-direction: column;
+        padding: 16px !important;
+        margin: 8px 0 !important;
+        border-radius: 12px !important;
+        background: linear-gradient(145deg, #ffffff, #f5f5f5) !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
+        transition: all 0.3s ease !important;
+        border: 1px solid #cccccc !important;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .historico-item::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 4px;
+        background: linear-gradient(to bottom, #2196f3, #00bcd4);
+        border-radius: 4px 0 0 4px;
+      }
+
+      .historico-item:hover {
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12) !important;
+      }
+    </style>
+  </head>
+  <body class="supercalc-background">
+    <noscript>
+      <style>
+        .no-js-message {
+          display: block;
+          text-align: center;
+          color: red;
+          font-weight: bold;
+          margin-top: 20px;
+        }
+      </style>
+      <div class="no-js-message">Por favor, habilite o JavaScript para usar o conversor.</div>
+    </noscript>
+    
+    <div class="btn-voltar-container" id="home-button-container">
+      <!-- Componente do Botão Início para SuperCalc -->
+      <home-button href="/index.html" text="Início" icon="fa-home"></home-button>
+    </div>
+    
+    <!-- Importação do componente home-button -->
+    <script>
+      // Verifica se o componente já foi carregado
+      if (!customElements.get('home-button')) {
+        // Carrega o script do componente se ainda não estiver carregado
+        const script = document.createElement('script');
+        script.src = '/assets/js/components/home-button.js';
+        document.head.appendChild(script);
+      }
+    </script>
+    
+    <!-- Componente de fundo animado -->
+    <div id="background-animation"></div>
+    
+    <!-- Cabeçalho removido, mantendo apenas o botão de início -->
+
+    <!-- Conteúdo Principal -->
+    <div class="container-principal">
+      <div class="row">
+        <!-- Calculadora -->
+        <div class="col s12 m7 l8">
+          <div class="card">
+            <div class="card-content">
+              <span class="card-title"><i class="fas fa-exchange-alt mr-2"></i>Conversor de Unidades</span>
+              
+              <!-- Seletor de Categoria -->
+              <div class="input-field">
+                <select id="categoria-select">
+                  <option value="" disabled>Escolha uma categoria</option>
+                  <option value="comprimento" selected>Comprimento</option>
+                  <option value="peso">Peso/Massa</option>
+                  <option value="temperatura">Temperatura</option>
+                  <option value="volume">Volume</option>
+                  <option value="area">Área</option>
+                  <option value="tempo">Tempo</option>
+                  <option value="dados">Dados</option>
+                  <option value="velocidade">Velocidade</option>
+                  <option value="energia">Energia</option>
+                </select>
+                <label>Categoria</label>
+              </div>
+              
+              <!-- Valor de Entrada -->
+              <div class="input-field">
+                <i class="material-icons prefix">input</i>
+                <input id="valor-entrada" type="number" class="validate" step="any">
+                <label for="valor-entrada">Valor</label>
+              </div>
+              
+              <!-- Unidade de Origem -->
+              <div class="input-field">
+                <select id="unidade-origem">
+                  <!-- Será preenchido via JavaScript -->
+                </select>
+                <label>De</label>
+              </div>
+              
+              <!-- Unidade de Destino -->
+              <div class="input-field">
+                <select id="unidade-destino">
+                  <!-- Será preenchido via JavaScript -->
+                </select>
+                <label>Para</label>
+              </div>
+              
+              <!-- Botões -->
+              <div class="btn-container">
+                <button id="converter-btn" class="btn waves-effect waves-light blue">
+                  <i class="material-icons left">autorenew</i>Converter
+                </button>
+                <button id="limpar-btn" class="btn waves-effect waves-light grey lighten-1">
+                  <i class="material-icons left">clear</i>Limpar
+                </button>
+              </div>
+              
+              <!-- Resultado -->
+              <div id="resultado-container" style="display: none;">
+                <div class="resultado-item">
+                  <span id="resultado-texto">Resultado:</span>
+                  <span id="resultado-valor" class="font-bold">0</span>
+                </div>
+                <div class="resultado-item">
+                  <span>Fórmula:</span>
+                  <span id="formula-texto" class="font-mono">-</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Histórico -->
+        <div class="col s12 m5 l4">
+          <div id="historico-container" class="card">
+            <div class="card-content">
+              <span class="card-title"><i class="fas fa-history mr-2"></i>Histórico</span>
+              <ul id="historico-list" class="collection">
+                <!-- Itens do histórico serão adicionados aqui via JavaScript -->
+                <li class="collection-item">Nenhuma conversão realizada</li>
+              </ul>
+              <div class="btn-container mt-3">
+                <button id="limpar-historico-btn" class="btn waves-effect waves-light red lighten-2">
+                  <i class="material-icons left">delete</i>Limpar Histórico
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Rodapé removido -->
+    
+    <!-- Importando jQuery e Materialize JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    
+    <script>
+      // Inicialização dos componentes do Materialize
+      document.addEventListener('DOMContentLoaded', function() {
+        M.AutoInit();
+        
+        // Mostrar o histórico após um pequeno delay para efeito visual
+        setTimeout(() => {
+          document.getElementById('historico-container').classList.add('show');
+        }, 300);
+        
+        // Definição das unidades por categoria
+        const unidades = {
+          comprimento: [
+            { valor: 'mm', nome: 'Milímetros (mm)', fator: 0.001 },
+            { valor: 'cm', nome: 'Centímetros (cm)', fator: 0.01 },
+            { valor: 'dm', nome: 'Decímetros (dm)', fator: 0.1 },
+            { valor: 'm', nome: 'Metros (m)', fator: 1 },
+            { valor: 'km', nome: 'Quilômetros (km)', fator: 1000 },
+            { valor: 'in', nome: 'Polegadas (in)', fator: 0.0254 },
+            { valor: 'ft', nome: 'Pés (ft)', fator: 0.3048 },
+            { valor: 'yd', nome: 'Jardas (yd)', fator: 0.9144 },
+            { valor: 'mi', nome: 'Milhas (mi)', fator: 1609.344 }
+          ],
+          peso: [
+            { valor: 'mg', nome: 'Miligramas (mg)', fator: 0.000001 },
+            { valor: 'g', nome: 'Gramas (g)', fator: 0.001 },
+            { valor: 'kg', nome: 'Quilogramas (kg)', fator: 1 },
+            { valor: 't', nome: 'Toneladas (t)', fator: 1000 },
+            { valor: 'oz', nome: 'Onças (oz)', fator: 0.0283495 },
+            { valor: 'lb', nome: 'Libras (lb)', fator: 0.453592 }
+          ],
+          temperatura: [
+            { valor: 'C', nome: 'Celsius (°C)', fator: 1 },
+            { valor: 'F', nome: 'Fahrenheit (°F)', fator: 1 },
+            { valor: 'K', nome: 'Kelvin (K)', fator: 1 }
+          ],
+          volume: [
+            { valor: 'ml', nome: 'Mililitros (ml)', fator: 0.001 },
+            { valor: 'l', nome: 'Litros (l)', fator: 1 },
+            { valor: 'm3', nome: 'Metros cúbicos (m³)', fator: 1000 },
+            { valor: 'gal', nome: 'Galões (gal)', fator: 3.78541 },
+            { valor: 'fl_oz', nome: 'Onças fluidas (fl oz)', fator: 0.0295735 }
+          ],
+          area: [
+            { valor: 'mm2', nome: 'Milímetros quadrados (mm²)', fator: 0.000001 },
+            { valor: 'cm2', nome: 'Centímetros quadrados (cm²)', fator: 0.0001 },
+            { valor: 'm2', nome: 'Metros quadrados (m²)', fator: 1 },
+            { valor: 'ha', nome: 'Hectares (ha)', fator: 10000 },
+            { valor: 'km2', nome: 'Quilômetros quadrados (km²)', fator: 1000000 },
+            { valor: 'in2', nome: 'Polegadas quadradas (in²)', fator: 0.00064516 },
+            { valor: 'ft2', nome: 'Pés quadrados (ft²)', fator: 0.092903 },
+            { valor: 'ac', nome: 'Acres (ac)', fator: 4046.86 }
+          ],
+          tempo: [
+            { valor: 'ms', nome: 'Milissegundos (ms)', fator: 0.001 },
+            { valor: 's', nome: 'Segundos (s)', fator: 1 },
+            { valor: 'min', nome: 'Minutos (min)', fator: 60 },
+            { valor: 'h', nome: 'Horas (h)', fator: 3600 },
+            { valor: 'd', nome: 'Dias (d)', fator: 86400 },
+            { valor: 'sem', nome: 'Semanas (sem)', fator: 604800 },
+            { valor: 'mes', nome: 'Meses (30 dias)', fator: 2592000 },
+            { valor: 'ano', nome: 'Anos (365 dias)', fator: 31536000 }
+          ],
+          dados: [
+            { valor: 'b', nome: 'Bytes (B)', fator: 1 },
+            { valor: 'kb', nome: 'Kilobytes (KB)', fator: 1024 },
+            { valor: 'mb', nome: 'Megabytes (MB)', fator: 1048576 },
+            { valor: 'gb', nome: 'Gigabytes (GB)', fator: 1073741824 },
+            { valor: 'tb', nome: 'Terabytes (TB)', fator: 1099511627776 },
+            { valor: 'pb', nome: 'Petabytes (PB)', fator: 1125899906842624 },
+            { valor: 'kib', nome: 'Kibibytes (KiB)', fator: 1024 },
+            { valor: 'mib', nome: 'Mebibytes (MiB)', fator: 1048576 },
+            { valor: 'gib', nome: 'Gibibytes (GiB)', fator: 1073741824 },
+            { valor: 'tib', nome: 'Tebibytes (TiB)', fator: 1099511627776 }
+          ],
+          velocidade: [
+            { valor: 'mps', nome: 'Metros por segundo (m/s)', fator: 1 },
+            { valor: 'kmh', nome: 'Quilômetros por hora (km/h)', fator: 0.277778 },
+            { valor: 'mph', nome: 'Milhas por hora (mph)', fator: 0.44704 },
+            { valor: 'kn', nome: 'Nós (kn)', fator: 0.514444 },
+            { valor: 'fts', nome: 'Pés por segundo (ft/s)', fator: 0.3048 }
+          ],
+          energia: [
+            { valor: 'j', nome: 'Joules (J)', fator: 1 },
+            { valor: 'kj', nome: 'Kilojoules (kJ)', fator: 1000 },
+            { valor: 'cal', nome: 'Calorias (cal)', fator: 4.184 },
+            { valor: 'kcal', nome: 'Kilocalories (kcal)', fator: 4184 },
+            { valor: 'wh', nome: 'Watt-hora (Wh)', fator: 3600 },
+            { valor: 'kwh', nome: 'Kilowatt-hora (kWh)', fator: 3600000 },
+            { valor: 'ev', nome: 'Elétron-volt (eV)', fator: 1.602176634e-19 },
+            { valor: 'btu', nome: 'BTU', fator: 1055.06 }
+          ]
+        };
+        
+        // Função para preencher os selects de unidades
+        function preencherUnidades(categoria) {
+          const unidadeOrigem = document.getElementById('unidade-origem');
+          const unidadeDestino = document.getElementById('unidade-destino');
+          
+          // Limpar os selects
+          unidadeOrigem.innerHTML = '';
+          unidadeDestino.innerHTML = '';
+          
+          // Preencher com as unidades da categoria selecionada
+          unidades[categoria].forEach(unidade => {
+            unidadeOrigem.innerHTML += `<option value="${unidade.valor}">${unidade.nome}</option>`;
+            unidadeDestino.innerHTML += `<option value="${unidade.valor}">${unidade.nome}</option>`;
+          });
+          
+          // Selecionar opções diferentes por padrão
+          if (unidades[categoria].length > 1) {
+            unidadeDestino.selectedIndex = 1;
+          }
+          
+          // Reinicializar os selects do Materialize
+          M.FormSelect.init(unidadeOrigem);
+          M.FormSelect.init(unidadeDestino);
+        }
+        
+        // Inicializar com a categoria padrão
+        preencherUnidades('comprimento');
+        
+        // Evento de mudança de categoria
+        document.getElementById('categoria-select').addEventListener('change', function() {
+          preencherUnidades(this.value);
+          // Limpar o resultado
+          document.getElementById('resultado-container').style.display = 'none';
+        });
+        
+        // Função para converter unidades
+        function converterUnidades() {
+          const categoria = document.getElementById('categoria-select').value;
+          const valor = parseFloat(document.getElementById('valor-entrada').value);
+          const unidadeOrigem = document.getElementById('unidade-origem').value;
+          const unidadeDestino = document.getElementById('unidade-destino').value;
+          
+          if (isNaN(valor)) {
+            M.toast({html: 'Por favor, insira um valor válido', classes: 'red'});
+            return;
+          }
+          
+          let resultado;
+          let formula = '';
+          
+          // Encontrar os fatores de conversão
+          const unidadeOrigemObj = unidades[categoria].find(u => u.valor === unidadeOrigem);
+          const unidadeDestinoObj = unidades[categoria].find(u => u.valor === unidadeDestino);
+          
+          // Conversão especial para temperatura
+          if (categoria === 'temperatura') {
+            if (unidadeOrigem === 'C' && unidadeDestino === 'F') {
+              resultado = (valor * 9/5) + 32;
+              formula = `${valor}°C × (9/5) + 32 = ${resultado.toFixed(2)}°F`;
+            } else if (unidadeOrigem === 'F' && unidadeDestino === 'C') {
+              resultado = (valor - 32) * 5/9;
+              formula = `(${valor}°F - 32) × (5/9) = ${resultado.toFixed(2)}°C`;
+            } else if (unidadeOrigem === 'C' && unidadeDestino === 'K') {
+              resultado = valor + 273.15;
+              formula = `${valor}°C + 273.15 = ${resultado.toFixed(2)}K`;
+            } else if (unidadeOrigem === 'K' && unidadeDestino === 'C') {
+              resultado = valor - 273.15;
+              formula = `${valor}K - 273.15 = ${resultado.toFixed(2)}°C`;
+            } else if (unidadeOrigem === 'F' && unidadeDestino === 'K') {
+              resultado = (valor - 32) * 5/9 + 273.15;
+              formula = `(${valor}°F - 32) × (5/9) + 273.15 = ${resultado.toFixed(2)}K`;
+            } else if (unidadeOrigem === 'K' && unidadeDestino === 'F') {
+              resultado = (valor - 273.15) * 9/5 + 32;
+              formula = `(${valor}K - 273.15) × (9/5) + 32 = ${resultado.toFixed(2)}°F`;
+            } else {
+              resultado = valor; // Mesma unidade
+              formula = `${valor}${unidadeOrigem} = ${resultado}${unidadeDestino}`;
+            }
+          } else {
+            // Conversão padrão para outras categorias
+            resultado = valor * (unidadeOrigemObj.fator / unidadeDestinoObj.fator);
+            formula = `${valor} ${unidadeOrigemObj.nome} × (${unidadeOrigemObj.fator} / ${unidadeDestinoObj.fator}) = ${resultado.toFixed(6)} ${unidadeDestinoObj.nome}`;
+          }
+          
+          // Exibir o resultado
+          document.getElementById('resultado-valor').textContent = resultado.toFixed(6);
+          document.getElementById('formula-texto').textContent = formula;
+          document.getElementById('resultado-container').style.display = 'block';
+          
+          // Adicionar ao histórico
+          adicionarAoHistorico(valor, unidadeOrigemObj.nome, resultado.toFixed(6), unidadeDestinoObj.nome);
+        }
+        
+        // Função para adicionar ao histórico
+        function adicionarAoHistorico(valorOrigem, unidadeOrigem, valorDestino, unidadeDestino) {
+          const historicoList = document.getElementById('historico-list');
+          
+          // Remover a mensagem padrão se existir
+          const mensagemPadrao = historicoList.querySelector('li:first-child');
+          if (mensagemPadrao && mensagemPadrao.textContent === 'Nenhuma conversão realizada') {
+            historicoList.removeChild(mensagemPadrao);
+          }
+          
+          // Obter a categoria atual
+          const categoria = document.getElementById('categoria-select').value;
+          const categoriaTexto = document.getElementById('categoria-select').options[document.getElementById('categoria-select').selectedIndex].text;
+          
+          // Criar novo item de histórico
+          const novoItem = document.createElement('li');
+          novoItem.className = 'collection-item historico-item';
+          
+          // Obter ícone baseado na categoria
+          let icone = 'straighten';
+          if (categoria === 'peso') icone = 'fitness_center';
+          if (categoria === 'temperatura') icone = 'thermostat';
+          if (categoria === 'volume') icone = 'local_drink';
+          if (categoria === 'area') icone = 'square_foot';
+          if (categoria === 'tempo') icone = 'schedule';
+          if (categoria === 'dados') icone = 'memory';
+          if (categoria === 'velocidade') icone = 'speed';
+          if (categoria === 'energia') icone = 'bolt';
+          
+          // Formatar o HTML do item
+          novoItem.innerHTML = `
+            <div class="historico-preco">
+              <span class="valor-original">
+                <i class="material-icons">${icone}</i> ${categoriaTexto}
+              </span>
+              <span class="desconto baixo">
+                ${new Date().toLocaleTimeString()}
+              </span>
+            </div>
+            <div class="historico-conversao">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="font-weight-bold">${valorOrigem} ${unidadeOrigem.split(' ')[0]}</span>
+                <i class="material-icons">arrow_forward</i>
+                <span class="font-weight-bold">${valorDestino} ${unidadeDestino.split(' ')[0]}</span>
+              </div>
+            </div>
+          `;
+          
+          // Adicionar ao início da lista
+          historicoList.insertBefore(novoItem, historicoList.firstChild);
+          
+          // Limitar o histórico a 10 itens
+          if (historicoList.children.length > 10) {
+            historicoList.removeChild(historicoList.lastChild);
+          }
+          
+          // Salvar no localStorage
+          salvarHistorico();
+        }
+        
+        // Função para salvar o histórico no localStorage
+        function salvarHistorico() {
+          const historicoList = document.getElementById('historico-list');
+          const itens = Array.from(historicoList.children).map(item => item.innerHTML);
+          localStorage.setItem('historicoUnidades', JSON.stringify(itens));
+        }
+        
+        // Função para carregar o histórico do localStorage
+        function carregarHistorico() {
+          const historicoSalvo = localStorage.getItem('historicoUnidades');
+          if (historicoSalvo) {
+            const itens = JSON.parse(historicoSalvo);
+            const historicoList = document.getElementById('historico-list');
+            
+            // Limpar a lista atual
+            historicoList.innerHTML = '';
+            
+            // Adicionar os itens salvos
+            itens.forEach(item => {
+              const novoItem = document.createElement('li');
+              novoItem.className = 'collection-item';
+              novoItem.innerHTML = item;
+              historicoList.appendChild(novoItem);
+            });
+          }
+        }
+        
+        // Função para limpar o histórico
+        function limparHistorico() {
+          const historicoList = document.getElementById('historico-list');
+          historicoList.innerHTML = '<li class="collection-item">Nenhuma conversão realizada</li>';
+          localStorage.removeItem('historicoUnidades');
+        }
+        
+        // Carregar histórico ao iniciar
+        carregarHistorico();
+        
+        // Event listeners
+        document.getElementById('converter-btn').addEventListener('click', converterUnidades);
+        document.getElementById('limpar-btn').addEventListener('click', function() {
+          document.getElementById('valor-entrada').value = '';
+          document.getElementById('resultado-container').style.display = 'none';
+        });
+        document.getElementById('limpar-historico-btn').addEventListener('click', limparHistorico);
+      });
+    </script>
+  </body>
+</html>
