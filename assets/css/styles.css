@@ -137,6 +137,8 @@ body {
 /* Efeito hover para itens do histórico */
 .resultado-item {
   transition: all 0.3s ease;
+  padding-left: 16px !important; /* Forçar padding esquerdo consistente */
+  padding-right: 16px !important; /* Forçar padding direito consistente */
 }
 
 .resultado-item:hover {
