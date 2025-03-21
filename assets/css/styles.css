@@ -134,6 +134,15 @@ body {
   flex-direction: column;
 }
 
+/* Efeito hover para itens do histórico */
+.resultado-item {
+  transition: all 0.3s ease;
+}
+
+.resultado-item:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
 /* Estilos responsivos */
 @media (max-width: 768px) {
   .container-principal {
