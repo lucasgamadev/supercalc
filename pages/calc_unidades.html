@@ -550,9 +550,14 @@
                 <li class="collection-item">Nenhuma conversão realizada</li>
               </ul>
               <div class="btn-container mt-3">
-                <button id="limpar-historico-btn" class="btn waves-effect waves-light red lighten-2">
-                  <i class="material-icons left">delete</i>Limpar Histórico
-                </button>
+                <clear-history-button 
+                  storage-key="historicoUnidades" 
+                  history-list-id="historico-list" 
+                  container-id="historico-container"
+                  success-message="Histórico de conversões limpo!"
+                  empty-message="Não há conversões para limpar">
+                  Limpar Histórico
+                </clear-history-button>
               </div>
             </div>
           </div>
@@ -565,6 +570,17 @@
     <!-- Importando jQuery e Materialize JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    
+    <!-- Importação do componente clear-history-button -->
+    <script>
+      // Verifica se o componente já foi carregado
+      if (!customElements.get('clear-history-button')) {
+        // Carrega o script do componente se ainda não estiver carregado
+        const script = document.createElement('script');
+        script.src = '/assets/js/components/clear-history-button.js';
+        document.head.appendChild(script);
+      }
+    </script>
     
     <script>
       // Inicialização dos componentes do Materialize
@@ -856,7 +872,7 @@
           document.getElementById('valor-entrada').value = '';
           document.getElementById('resultado-container').style.display = 'none';
         });
-        document.getElementById('limpar-historico-btn').addEventListener('click', limparHistorico);
+        // O event listener para limpar histórico foi removido pois agora é gerenciado pelo componente clear-history-button
       });
     </script>
   </body>
