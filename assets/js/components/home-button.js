@@ -21,6 +21,11 @@ class HomeButton extends HTMLElement {
     this.shadowRoot.innerHTML = `
       <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
       <style>
+        :host {
+          display: block;
+          margin: 0 auto;
+          text-align: center;
+        }
         .nav-btn {
           display: inline-flex;
           align-items: center;
@@ -33,6 +38,7 @@ class HomeButton extends HTMLElement {
           text-decoration: none;
           box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
           transition: all 0.3s ease;
+          margin: 0 auto;
         }
         
         .nav-btn:hover {
@@ -97,15 +103,15 @@ class HomeButton extends HTMLElement {
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue !== newValue) {
       switch (name) {
-        case 'href':
-          this.href = newValue;
-          break;
-        case 'text':
-          this.text = newValue;
-          break;
-        case 'icon':
-          this.icon = newValue;
-          break;
+      case 'href':
+        this.href = newValue;
+        break;
+      case 'text':
+        this.text = newValue;
+        break;
+      case 'icon':
+        this.icon = newValue;
+        break;
       }
       this.render();
     }

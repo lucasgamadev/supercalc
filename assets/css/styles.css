@@ -2,6 +2,8 @@
 
 /* Importar componentes */
 @import url('./components/background.css');
+@import url('./components/button-container.css');
+@import url('./components/calculator-buttons.css');
 
 /* Estilos base */
 body {

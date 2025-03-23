@@ -1,0 +1,40 @@
+/**
+ * Calculator Buttons Component Styles
+ * Provides styling for calculator buttons to occupy full horizontal space
+ */
+
+/* Make buttons in calculator occupy full width */
+.btn-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  margin-top: 15px;
+}
+
+/* Each button should take equal space */
+.btn-container > * {
+  flex: 1;
+  width: 100%;
+}
+
+/* Ensure the button components expand to fill their container */
+calculate-button,
+clear-button {
+  display: block;
+  width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .btn-container {
+    margin-top: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .btn-container {
+    margin-top: 10px;
+    gap: 8px;
+  }
+}

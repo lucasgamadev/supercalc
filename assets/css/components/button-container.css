@@ -1,0 +1,39 @@
+/**
+ * Button Container Component Styles
+ * Provides consistent styling for button containers across all pages
+ */
+
+.btn-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 30px auto 0;
+  max-width: 900px;
+  position: relative;
+  z-index: 10;
+  gap: 10px; /* Adds spacing between buttons */
+  flex-wrap: wrap; /* Allows buttons to wrap to next line on small screens */
+  text-align: center;
+}
+
+/* Estilo específico para o container do botão início */
+#home-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 30px auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .btn-container {
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .btn-container {
+    margin-top: 15px;
+    gap: 8px;
+  }
+}
