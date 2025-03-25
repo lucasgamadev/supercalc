@@ -837,6 +837,12 @@
       
       // Adicionar ao histórico
       function adicionarAoHistorico(expressao, resultado) {
+        // Verifica se existe o componente EmptyHistory e remove se existir
+        const emptyHistory = historicoList.querySelector('empty-history');
+        if (emptyHistory) {
+          historicoList.removeChild(emptyHistory);
+        }
+        
         // Cria e adiciona o item ao histórico
         const li = criarItemHistorico(expressao, resultado);
         historicoList.prepend(li);
