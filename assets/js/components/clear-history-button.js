@@ -117,9 +117,15 @@ class ClearHistoryButton extends HTMLElement {
       localStorage.removeItem(this.storageKey);
     }
 
-    // Esconde o container de histórico se especificado
+    // Adiciona o componente EmptyHistory para indicar que o histórico está vazio
+    const emptyHistory = document.createElement('empty-history');
+    emptyHistory.setAttribute('message', 'Nenhum cálculo no histórico');
+    emptyHistory.setAttribute('sub-message', 'Os cálculos realizados aparecerão aqui');
+    historico.appendChild(emptyHistory);
+    
+    // Mostra o container de histórico se especificado
     if (historicoContainer) {
-      historicoContainer.classList.remove("show");
+      historicoContainer.classList.add("show");
     }
 
     this.showToast(this.successMessage, "rounded green");
