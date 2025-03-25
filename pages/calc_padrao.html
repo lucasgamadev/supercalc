@@ -654,6 +654,7 @@
     <!-- Importando componentes web personalizados -->
     <script src="/assets/js/components/clear-history-button.js"></script>
     <script src="/assets/js/components/toast-notification.js"></script>
+    <script src="/assets/js/components/empty-history.js"></script>
 
     <script>
       // Variáveis para controle da calculadora
@@ -873,6 +874,14 @@
             const li = criarItemHistorico(item.expressao, item.resultado);
             historicoList.prepend(li);
           });
+        } else {
+          // Mostrar o componente de histórico vazio
+          historicoList.innerHTML = '';
+          const emptyHistory = document.createElement('empty-history');
+          emptyHistory.setAttribute('message', 'Nenhum cálculo no histórico');
+          emptyHistory.setAttribute('sub-message', 'Os cálculos realizados aparecerão aqui');
+          historicoList.appendChild(emptyHistory);
+          document.getElementById('historico-container').classList.add('show');
         }
       }
       
@@ -892,7 +901,13 @@
         }
         
         localStorage.removeItem('calculo-padrao-historico');
-        document.getElementById('historico-container').classList.remove('show');
+        
+        // Adicionar o componente de histórico vazio
+        const emptyHistory = document.createElement('empty-history');
+        emptyHistory.setAttribute('message', 'Nenhum cálculo no histórico');
+        emptyHistory.setAttribute('sub-message', 'Os cálculos realizados aparecerão aqui');
+        historicoList.appendChild(emptyHistory);
+        document.getElementById('historico-container').classList.add('show');
         
         showToast('Histórico limpo com sucesso!', 'green rounded');
       }

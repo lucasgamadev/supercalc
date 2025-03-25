@@ -1082,6 +1082,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <!-- Importando componentes web personalizados -->
     <script src="/assets/js/components/clear-history-button.js"></script>
+    <script src="/assets/js/components/empty-history.js"></script>
 
     <!-- Script da Calculadora -->
     <script>
@@ -1150,12 +1151,11 @@
           historicoList.innerHTML = "";
           
           if (historico.length === 0) {
-            historicoList.innerHTML = `
-              <li class="collection-item" style="text-align: center; padding: 20px;">
-                <i class="material-icons" style="font-size: 48px; color: #ccc; display: block; margin-bottom: 10px;">history</i>
-                <span style="color: #888;">Nenhum cálculo no histórico</span>
-              </li>
-            `;
+            historicoList.innerHTML = '';
+            const emptyHistory = document.createElement('empty-history');
+            emptyHistory.setAttribute('message', 'Nenhum cálculo no histórico');
+            emptyHistory.setAttribute('sub-message', 'Os cálculos realizados aparecerão aqui');
+            historicoList.appendChild(emptyHistory);
             return;
           }
 

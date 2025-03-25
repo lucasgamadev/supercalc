@@ -1136,6 +1136,7 @@
     <!-- Importando componentes web personalizados -->
     <script src="/assets/js/components/toast-notification.js"></script>
     <script src="/assets/js/components/clear-history-button.js"></script>
+    <script src="/assets/js/components/empty-history.js"></script>
     <script>
       // Script inicializado
       
@@ -1227,6 +1228,12 @@
       function adicionarAoHistorico(preco, desconto, resultado) {
         const historico = document.getElementById("historico-list");
         const maxHistoricoItems = 5;
+        
+        // Remover o componente empty-history se existir
+        const emptyHistory = historico.querySelector('empty-history');
+        if (emptyHistory) {
+          historico.removeChild(emptyHistory);
+        }
 
         const item = document.createElement("li");
         item.className = "collection-item historico-item";
@@ -1468,11 +1475,28 @@
         showToast("Campos limpos!", "rounded blue");
       }
 
+      // Função para carregar o histórico
+      function carregarHistorico() {
+        const historicoList = document.getElementById("historico-list");
+        
+        // Verificar se já existem itens no histórico
+        if (historicoList.children.length === 0) {
+          // Mostrar o componente de histórico vazio
+          historicoList.innerHTML = '';
+          const emptyHistory = document.createElement('empty-history');
+          emptyHistory.setAttribute('message', 'Nenhum cálculo no histórico');
+          emptyHistory.setAttribute('sub-message', 'Os cálculos realizados aparecerão aqui');
+          historicoList.appendChild(emptyHistory);
+        }
+      }
+      
       // Inicializar componentes Materialize
       document.addEventListener("DOMContentLoaded", function () {
         M.updateTextFields();
         // Definir foco inicial no campo de valor
         document.getElementById("valor").focus();
+        // Carregar histórico
+        carregarHistorico();
       });
     </script>
     

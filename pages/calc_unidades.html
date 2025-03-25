@@ -676,7 +676,10 @@
               <span class="card-title"><i class="fas fa-history mr-2"></i>Histórico</span>
               <ul id="historico-list" class="collection">
                 <!-- Itens do histórico serão adicionados aqui via JavaScript -->
-                <li class="collection-item">Nenhuma conversão realizada</li>
+                <empty-history 
+                  message="Nenhuma conversão realizada" 
+                  sub-message="As conversões realizadas aparecerão aqui">
+                </empty-history>
               </ul>
               <div class="btn-container" style="margin-top: auto; text-align: center; position: absolute; bottom: 10px; left: 0; right: 0;">
                 <clear-history-button 
@@ -700,13 +703,21 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     
-    <!-- Importação do componente clear-history-button -->
+    <!-- Importação dos componentes web personalizados -->
     <script>
-      // Verifica se o componente já foi carregado
+      // Verifica se o componente clear-history-button já foi carregado
       if (!customElements.get('clear-history-button')) {
         // Carrega o script do componente se ainda não estiver carregado
         const script = document.createElement('script');
         script.src = '/assets/js/components/clear-history-button.js';
+        document.head.appendChild(script);
+      }
+      
+      // Verifica se o componente empty-history já foi carregado
+      if (!customElements.get('empty-history')) {
+        // Carrega o script do componente se ainda não estiver carregado
+        const script = document.createElement('script');
+        script.src = '/assets/js/components/empty-history.js';
         document.head.appendChild(script);
       }
     </script>
@@ -902,10 +913,10 @@
         function adicionarAoHistorico(valorOrigem, unidadeOrigem, valorDestino, unidadeDestino) {
           const historicoList = document.getElementById('historico-list');
           
-          // Remover a mensagem padrão se existir
-          const mensagemPadrao = historicoList.querySelector('li:first-child');
-          if (mensagemPadrao && mensagemPadrao.textContent === 'Nenhuma conversão realizada') {
-            historicoList.removeChild(mensagemPadrao);
+          // Remover o componente empty-history se existir
+          const emptyHistory = historicoList.querySelector('empty-history');
+          if (emptyHistory) {
+            historicoList.removeChild(emptyHistory);
           }
           
           // Obter a categoria atual
