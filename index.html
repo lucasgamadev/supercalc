@@ -52,6 +52,25 @@
   </script>
   <!-- Custom CSS -->
   <link rel="stylesheet" href="/assets/css/styles.css">
+  <style>
+    .fade-in-up {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.6s ease forwards;
+    }
+    
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .stagger-delay-1 { animation-delay: 0.1s; }
+    .stagger-delay-2 { animation-delay: 0.2s; }
+    .stagger-delay-3 { animation-delay: 0.3s; }
+    .stagger-delay-4 { animation-delay: 0.4s; }
+  </style>
 </head>
 <body class="antialiased supercalc-background">
   <div class="container mx-auto px-4 py-8">
@@ -61,7 +80,7 @@
     <!-- Calculators Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <!-- Standard Calculator Card -->
-      <a href="/pages/calc_padrao.html" class="block relative bg-white bg-opacity-95 p-6 calculator-card">
+      <a href="/pages/calc_padrao.html" class="block relative bg-white bg-opacity-95 p-6 calculator-card fade-in-up stagger-delay-1">
         <div class="flex flex-col items-center text-center">
           <div class="calculator-icon">
             <span class="material-icons">calculate</span>
@@ -76,7 +95,7 @@
       </a>
 
       <!-- Discount Calculator Card -->
-      <a href="/pages/calc_desconto.html" class="block relative bg-white bg-opacity-95 p-6 calculator-card">
+      <a href="/pages/calc_desconto.html" class="block relative bg-white bg-opacity-95 p-6 calculator-card fade-in-up stagger-delay-2">
         <div class="flex flex-col items-center text-center">
           <div class="calculator-icon">
             <span class="material-icons">percent</span>
@@ -91,7 +110,7 @@
       </a>
 
       <!-- Interest Calculator Card -->
-      <a href="/pages/calc_juros.html" class="block relative bg-white bg-opacity-95 p-6 calculator-card">
+      <a href="/pages/calc_juros.html" class="block relative bg-white bg-opacity-95 p-6 calculator-card fade-in-up stagger-delay-3">
         <div class="flex flex-col items-center text-center">
           <div class="calculator-icon">
             <span class="material-icons">payments</span>
@@ -106,7 +125,7 @@
       </a>
 
       <!-- Unit Converter Card -->
-      <a href="/pages/calc_unidades.html" class="block relative bg-white bg-opacity-95 p-6 calculator-card">
+      <a href="/pages/calc_unidades.html" class="block relative bg-white bg-opacity-95 p-6 calculator-card fade-in-up stagger-delay-4">
         <div class="flex flex-col items-center text-center">
           <div class="calculator-icon">
             <span class="material-icons">straighten</span>
