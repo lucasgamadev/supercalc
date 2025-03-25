@@ -196,22 +196,69 @@
       }
 
       .input-field {
-        margin-bottom: 12px;
-      }
-
-      .input-field input {
-        margin-bottom: 0 !important;
-        padding: 0 !important;
-        text-indent: 0 !important;
-        box-sizing: border-box;
-        font-size: 14px;
-        font-family: "Roboto", sans-serif !important;
+        margin-bottom: 20px !important;
+        position: relative;
       }
 
       .input-field label {
-        left: 10px;
-        font-size: 14px;
+        position: relative !important;
+        font-size: 14px !important;
+        color: #555 !important;
+        top: -5px !important;
+        left: 0 !important;
+        display: block !important;
+        margin-bottom: 6px !important;
+        transform: none !important;
         font-family: "Roboto", sans-serif !important;
+      }
+
+      .input-field label.active {
+        transform: none !important;
+      }
+
+      .input-field input {
+        height: 42px !important;
+        padding: 0 12px !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        font-size: 14px !important;
+        border: 1px solid #e0e0e0 !important;
+        border-radius: 4px !important;
+        box-sizing: border-box !important;
+      }
+
+      .input-field .prefix {
+        top: 18px !important;
+        font-size: 18px !important;
+      }
+
+      .input-field .prefix ~ input {
+        margin-left: 3rem !important;
+        width: calc(100% - 3rem) !important;
+      }
+
+      .select-wrapper {
+        width: 100% !important;
+      }
+
+      .select-wrapper input.select-dropdown {
+        height: 42px !important;
+        padding: 0 12px !important;
+        border: 1px solid #e0e0e0 !important;
+        border-radius: 4px !important;
+        box-sizing: border-box !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        font-size: 14px !important;
+        background-color: white !important;
+      }
+      
+      .input-field select {
+        opacity: 0;
+        position: absolute;
+        pointer-events: none;
+        height: 0;
+        width: 0;
       }
 
       .btn-container {
@@ -306,27 +353,6 @@
         100% {
           transform: translate(250%, 250%) rotate(45deg);
         }
-      }
-
-      /* Estilo para o select de categorias */
-      .select-wrapper input.select-dropdown {
-        height: 3rem;
-        line-height: 3rem;
-        font-size: 14px;
-        padding: 0 10px;
-        margin: 0;
-        border: 1px solid #e0e0e0;
-        border-radius: 4px;
-        background-color: white;
-      }
-
-      .select-wrapper .caret {
-        fill: rgba(0, 0, 0, 0.54);
-      }
-
-      .dropdown-content li > a, .dropdown-content li > span {
-        color: #2196f3;
-        font-size: 14px;
       }
 
       /* Estilo para os ícones das unidades */
@@ -429,6 +455,92 @@
       .historico-item:hover {
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12) !important;
       }
+
+      /* Correções para o alinhamento de campos e labels */
+      .input-field {
+        margin-bottom: 20px !important;
+        position: relative;
+      }
+
+      .input-field label {
+        position: relative !important;
+        font-size: 14px !important;
+        color: #555 !important;
+        top: -5px !important;
+        left: 0 !important;
+        display: block !important;
+        margin-bottom: 6px !important;
+        transform: none !important;
+        font-family: "Roboto", sans-serif !important;
+      }
+
+      .input-field label.active {
+        transform: none !important;
+      }
+
+      .input-field input {
+        height: 42px !important;
+        padding: 0 12px !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        font-size: 14px !important;
+        border: 1px solid #e0e0e0 !important;
+        border-radius: 4px !important;
+        box-sizing: border-box !important;
+      }
+
+      /* Correção para o select do Materialize */
+      .select-wrapper {
+        width: 100% !important;
+      }
+
+      .select-wrapper input.select-dropdown {
+        height: 42px !important;
+        padding: 0 12px !important;
+        border: 1px solid #e0e0e0 !important;
+        border-radius: 4px !important;
+        box-sizing: border-box !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        font-size: 14px !important;
+        background-color: white !important;
+      }
+
+      /* Esconder o select nativo para evitar duplicação */
+      .input-field select {
+        opacity: 0;
+        position: absolute;
+        pointer-events: none;
+        height: 0;
+        width: 0;
+      }
+
+      /* Corrigir alinhamento do ícone prefix */
+      .input-field .prefix {
+        top: 18px !important;
+        font-size: 18px !important;
+      }
+
+      .input-field .prefix ~ input {
+        margin-left: 3rem !important;
+        width: calc(100% - 3rem) !important;
+      }
+
+      /* Corrigir dropdown */
+      .select-wrapper .caret {
+        right: 10px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+      }
+
+      .select-dropdown {
+        width: 100% !important;
+      }
+
+      .dropdown-content li > a, .dropdown-content li > span {
+        color: #2196f3;
+        font-size: 14px;
+      }
     </style>
   </head>
   <body class="supercalc-background">
@@ -492,42 +604,48 @@
               
               <!-- Seletor de Categoria -->
               <div class="input-field">
-                <select id="categoria-select">
-                  <option value="" disabled>Escolha uma categoria</option>
-                  <option value="comprimento" selected>Comprimento</option>
-                  <option value="peso">Peso/Massa</option>
-                  <option value="temperatura">Temperatura</option>
-                  <option value="volume">Volume</option>
-                  <option value="area">Área</option>
-                  <option value="tempo">Tempo</option>
-                  <option value="dados">Dados</option>
-                  <option value="velocidade">Velocidade</option>
-                  <option value="energia">Energia</option>
-                </select>
-                <label>Categoria</label>
+                <label for="categoria-select">Categoria</label>
+                <div class="select-wrapper">
+                  <select id="categoria-select">
+                    <option value="" disabled>Escolha uma categoria</option>
+                    <option value="comprimento" selected>Comprimento</option>
+                    <option value="peso">Peso/Massa</option>
+                    <option value="temperatura">Temperatura</option>
+                    <option value="volume">Volume</option>
+                    <option value="area">Área</option>
+                    <option value="tempo">Tempo</option>
+                    <option value="dados">Dados</option>
+                    <option value="velocidade">Velocidade</option>
+                    <option value="energia">Energia</option>
+                  </select>
+                </div>
               </div>
               
               <!-- Valor de Entrada -->
               <div class="input-field">
+                <label for="valor-entrada">Valor</label>
                 <i class="material-icons prefix">input</i>
                 <input id="valor-entrada" type="number" class="validate" step="any">
-                <label for="valor-entrada">Valor</label>
               </div>
               
               <!-- Unidade de Origem -->
               <div class="input-field">
-                <select id="unidade-origem">
-                  <!-- Será preenchido via JavaScript -->
-                </select>
-                <label>De</label>
+                <label for="unidade-origem">De</label>
+                <div class="select-wrapper">
+                  <select id="unidade-origem">
+                    <!-- Será preenchido via JavaScript -->
+                  </select>
+                </div>
               </div>
               
               <!-- Unidade de Destino -->
               <div class="input-field">
-                <select id="unidade-destino">
-                  <!-- Será preenchido via JavaScript -->
-                </select>
-                <label>Para</label>
+                <label for="unidade-destino">Para</label>
+                <div class="select-wrapper">
+                  <select id="unidade-destino">
+                    <!-- Será preenchido via JavaScript -->
+                  </select>
+                </div>
               </div>
               
               <!-- Botões -->
@@ -860,41 +978,30 @@
             // Adicionar os itens salvos
             itens.forEach(item => {
               const novoItem = document.createElement('li');
-              novoItem.className = 'collection-item';
+              novoItem.className = 'collection-item historico-item';
               novoItem.innerHTML = item;
               historicoList.appendChild(novoItem);
             });
           }
         }
         
-        // Função para limpar o histórico
-        function limparHistorico() {
-          const historicoList = document.getElementById('historico-list');
-          historicoList.innerHTML = '<li class="collection-item">Nenhuma conversão realizada</li>';
-          localStorage.removeItem('historicoUnidades');
-        }
-        
         // Carregar histórico ao iniciar
         carregarHistorico();
         
-        // Event listeners para os componentes personalizados
-        document.addEventListener('DOMContentLoaded', function() {
-          // Adiciona event listener para o botão de converter
-          const converterBtn = document.getElementById('converter-btn');
-          if (converterBtn) {
-            converterBtn.addEventListener('calculate', converterUnidades);
-          }
-          
-          // Adiciona event listener para o botão de limpar
-          const limparBtn = document.getElementById('limpar-btn');
-          if (limparBtn) {
-            limparBtn.addEventListener('clear', function() {
-              document.getElementById('valor-entrada').value = '';
-              document.getElementById('resultado-container').style.display = 'none';
-            });
-          }
-        });
-        // O event listener para limpar histórico foi removido pois agora é gerenciado pelo componente clear-history-button
+        // Event listeners para os botões
+        const converterBtn = document.getElementById('converter-btn');
+        if (converterBtn) {
+          converterBtn.addEventListener('calculate', converterUnidades);
+        }
+        
+        // Adiciona event listener para o botão de limpar
+        const limparBtn = document.getElementById('limpar-btn');
+        if (limparBtn) {
+          limparBtn.addEventListener('clear', function() {
+            document.getElementById('valor-entrada').value = '';
+            document.getElementById('resultado-container').style.display = 'none';
+          });
+        }
       });
     </script>
   </body>
