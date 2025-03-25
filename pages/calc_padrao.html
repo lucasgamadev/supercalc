@@ -243,13 +243,19 @@
         margin-bottom: 10px;
       }
 
+      .historico-conteudo {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+      }
+
       .historico-expressao {
         font-size: 1rem;
         color: #333;
         font-weight: 500;
         position: relative;
         transition: all 0.3s ease;
-        flex: 1;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -629,72 +635,65 @@
         ToastNotification.showToast(message, classes);
       }
       
-      // Atualiza o display com o valor atual
-      function atualizarDisplay() {
-        // Formata o valor para exibição (adiciona separador de milhares, etc.)
-        let valorFormatado = valorAtual;
-        
-        // Se for um número, formata para o padrão brasileiro
-        if (!isNaN(parseFloat(valorAtual.replace(',', '.')))) {
-          const valor = parseFloat(valorAtual.replace(',', '.'));
-          // Verifica se é um número com casas decimais
-          if (valorAtual.includes(',')) {
-            const partes = valorAtual.split(',');
-            const parteInteira = parseFloat(partes[0]);
-            valorFormatado = parteInteira.toLocaleString('pt-BR') + ',' + partes[1];
-          } else {
-            valorFormatado = valor.toLocaleString('pt-BR');
-            
-            // Se o último caractere for uma vírgula, mantém (apenas se não tiver vírgula ainda)
-            if (valorAtual.endsWith(',')) {
-              valorFormatado += ',';
-            }
-          }
-        }
-        
-        display.textContent = valorFormatado;
+      // Função para formatar número no padrão brasileiro
+      function formatarNumero(numero) {
+        return typeof numero === 'number' 
+          ? numero.toLocaleString('pt-BR')
+          : numero.replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
       }
       
-      // Atualiza o display mostrando a expressão completa (número anterior + operador + número atual)
-      function atualizarDisplayComExpressao() {
-        // Formata o valor anterior
-        let valorAnteriorFormatado = valorAnterior;
-        if (!isNaN(parseFloat(valorAnterior.replace(',', '.')))) {
-          const valor = parseFloat(valorAnterior.replace(',', '.'));
-          if (valorAnterior.includes(',')) {
-            const partes = valorAnterior.split(',');
-            const parteInteira = parseFloat(partes[0]);
-            valorAnteriorFormatado = parteInteira.toLocaleString('pt-BR') + ',' + partes[1];
-          } else {
-            valorAnteriorFormatado = valor.toLocaleString('pt-BR');
-            
-            // Se o último caractere for uma vírgula, mantém (apenas se não tiver vírgula ainda)
-            if (valorAnterior.endsWith(',')) {
-              valorAnteriorFormatado += ',';
-            }
-          }
+      // Função para converter string para número, considerando formato brasileiro
+      function converterParaNumero(valor) {
+        return parseFloat(valor.toString().replace(/\./g, '').replace(',', '.'));
+      }
+      
+      // Função para determinar a classe do resultado com base no valor
+      function obterClasseResultado(valor) {
+        const numero = typeof valor === 'number' 
+          ? valor 
+          : converterParaNumero(valor);
+          
+        if (numero > 0) return 'resultado-positivo';
+        if (numero < 0) return 'resultado-negativo';
+        return 'resultado-zero';
+      }
+      
+      // Função para criar o HTML do item do histórico
+      function criarItemHistorico(expressao, resultado) {
+        const resultadoFormatado = typeof resultado === 'string' ? resultado : formatarNumero(resultado);
+        const classeResultado = obterClasseResultado(resultado);
+        
+        const li = document.createElement('li');
+        li.className = 'collection-item resultado-item fade-in';
+        
+        // Se a expressão já inclui o resultado, não adiciona novamente
+        const textoExpressao = expressao.includes(' = ') 
+          ? expressao 
+          : `${expressao} = ${resultadoFormatado}`;
+        
+        li.innerHTML = `
+          <div class="historico-conteudo">
+            <span class="historico-expressao">${textoExpressao}</span>
+            <span class="historico-resultado ${classeResultado}">${resultadoFormatado}</span>
+          </div>
+        `;
+        
+        return li;
+      }
+      
+      // Atualiza o display com um valor formatado
+      function atualizarDisplay(valor = valorAtual, incluirOperacao = false) {
+        // Se estiver no meio de uma operação e precisar mostrar a expressão completa
+        if (incluirOperacao && operacao !== null && valorAnterior !== '') {
+          const valorAnteriorFormatado = formatarNumero(valorAnterior);
+          const valorAtualFormatado = formatarNumero(valor);
+          display.textContent = `${valorAnteriorFormatado} ${operacao} ${valorAtualFormatado}`;
+          return;
         }
         
-        // Formata o valor atual
-        let valorAtualFormatado = valorAtual;
-        if (!isNaN(parseFloat(valorAtual.replace(',', '.')))) {
-          const valor = parseFloat(valorAtual.replace(',', '.'));
-          if (valorAtual.includes(',')) {
-            const partes = valorAtual.split(',');
-            const parteInteira = parseFloat(partes[0]);
-            valorAtualFormatado = parteInteira.toLocaleString('pt-BR') + ',' + partes[1];
-          } else {
-            valorAtualFormatado = valor.toLocaleString('pt-BR');
-            
-            // Se o último caractere for uma vírgula, mantém (apenas se não tiver vírgula ainda)
-            if (valorAtual.endsWith(',')) {
-              valorAtualFormatado += ',';
-            }
-          }
-        }
-        
-        // Exibe a expressão completa
-        display.textContent = valorAnteriorFormatado + ' ' + operacao + ' ' + valorAtualFormatado;
+        // Caso contrário, apenas mostra o valor formatado
+        const valorFormatado = formatarNumero(valor);
+        display.textContent = valorFormatado;
       }
       
       // Adiciona um dígito ao valor atual
@@ -704,6 +703,7 @@
           resultadoExibido = false;
         }
         
+        // Lógica para decidir como adicionar o dígito
         if (valorAtual === '0' && digito !== ',') {
           valorAtual = digito;
         } else if (digito === ',' && !valorAtual.includes(',')) {
@@ -712,12 +712,8 @@
           valorAtual += digito;
         }
         
-        // Se estiver no meio de uma operação, mostra a expressão completa
-        if (operacao !== null && valorAnterior !== '') {
-          atualizarDisplayComExpressao();
-        } else {
-          atualizarDisplay();
-        }
+        // Atualiza o display adequadamente
+        atualizarDisplay(valorAtual, true);
       }
       
       // Configurar a operação
@@ -733,23 +729,8 @@
           resultadoExibido = false;
           
           // Mostrar o operador no visor
-          let valorFormatado = valorAnterior;
-          if (!isNaN(parseFloat(valorAnterior.replace(',', '.')))) {
-            const valor = parseFloat(valorAnterior.replace(',', '.'));
-            if (valorAnterior.includes(',')) {
-              const partes = valorAnterior.split(',');
-              const parteInteira = parseFloat(partes[0]);
-              valorFormatado = parteInteira.toLocaleString('pt-BR') + ',' + partes[1];
-            } else {
-              valorFormatado = valor.toLocaleString('pt-BR');
-              
-              // Se o último caractere for uma vírgula, mantém (apenas se não tiver vírgula ainda)
-              if (valorAnterior.endsWith(',')) {
-                valorFormatado += ',';
-              }
-            }
-          }
-          display.textContent = valorFormatado + ' ' + op;
+          const valorAnteriorFormatado = formatarNumero(valorAnterior);
+          display.textContent = `${valorAnteriorFormatado} ${op}`;
         }
       }
       
@@ -757,37 +738,30 @@
       function calcular() {
         if (operacao === null || valorAnterior === '') return;
         
-        let resultado;
-        const anterior = parseFloat(valorAnterior.replace(',', '.'));
-        const atual = parseFloat(valorAtual.replace(',', '.'));
+        // Converte strings para números
+        const anterior = converterParaNumero(valorAnterior);
+        const atual = converterParaNumero(valorAtual);
         
+        // Verifica divisão por zero antes do cálculo
+        if (operacao === '÷' && atual === 0) {
+          showToast('Não é possível dividir por zero!', 'red rounded');
+          limparTudo();
+          return;
+        }
+        
+        // Realiza a operação adequada
+        let resultado;
         switch (operacao) {
-          case '+':
-            resultado = anterior + atual;
-            break;
-          case '−':
-            resultado = anterior - atual;
-            break;
-          case '×':
-            resultado = anterior * atual;
-            break;
-          case '÷':
-            if (atual === 0) {
-              showToast('Não é possível dividir por zero!', 'red rounded');
-              limparTudo();
-              return;
-            }
-            resultado = anterior / atual;
-            break;
-          case '%':
-            resultado = anterior * (atual / 100);
-            break;
-          default:
-            return;
+          case '+': resultado = anterior + atual; break;
+          case '−': resultado = anterior - atual; break;
+          case '×': resultado = anterior * atual; break;
+          case '÷': resultado = anterior / atual; break;
+          case '%': resultado = anterior * (atual / 100); break;
+          default: return;
         }
         
         // Formata a expressão para o histórico
-        const expressao = `${valorAnterior.replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.')} ${operacao} ${valorAtual.replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
+        const expressao = `${formatarNumero(valorAnterior)} ${operacao} ${formatarNumero(valorAtual)}`;
         
         // Adicionar ao histórico
         adicionarAoHistorico(expressao, resultado);
@@ -797,7 +771,7 @@
         operacao = null;
         resultadoExibido = true;
         
-        atualizarDisplay(); // Atualiza o display com o resultado
+        atualizarDisplay();
       }
       
       // Limpar tudo
@@ -806,7 +780,7 @@
         valorAnterior = '';
         operacao = null;
         resultadoExibido = false;
-        display.textContent = '0'; // Atualiza diretamente o display para '0'
+        atualizarDisplay();
       }
       
       // Apagar último dígito
@@ -822,85 +796,48 @@
           valorAtual = '0';
         }
         
-        atualizarDisplay();
+        atualizarDisplay(valorAtual, true);
       }
       
       // Adicionar ao histórico
       function adicionarAoHistorico(expressao, resultado) {
-        // Formata o resultado para exibição (padrão brasileiro)
-        const resultadoFormatado = resultado.toLocaleString('pt-BR');
-        
-        const li = document.createElement('li');
-        li.className = 'collection-item resultado-item fade-in';
-        
-        // Define a classe do resultado com base no valor
-        let resultadoClass = 'resultado-zero';
-        if (resultado > 0) {
-          resultadoClass = 'resultado-positivo';
-        } else if (resultado < 0) {
-          resultadoClass = 'resultado-negativo';
-        }
-        
-        li.innerHTML = `
-          <div class="historico-expressao">${expressao} = ${resultadoFormatado}</div>
-          <div class="historico-resultado ${resultadoClass}">${resultadoFormatado}</div>
-        `;
-        
+        // Cria e adiciona o item ao histórico
+        const li = criarItemHistorico(expressao, resultado);
         historicoList.prepend(li);
         
         // Armazenar no localStorage
-        salvarHistorico();
+        const resultadoFormatado = formatarNumero(resultado);
+        const item = { expressao, resultado: resultadoFormatado };
+        salvarHistoricoItem(item);
         
         // Mostrar o container de histórico
         document.getElementById('historico-container').classList.add('show');
       }
       
-      // Salvar histórico no localStorage
-      function salvarHistorico() {
-        const itens = [];
-        document.querySelectorAll('#historico-list .resultado-item').forEach(item => {
-          itens.push({
-            expressao: item.querySelector('.historico-expressao').textContent,
-            resultado: item.querySelector('.historico-resultado').textContent
-          });
-        });
-        
+      // Salvar um novo item no histórico
+      function salvarHistoricoItem(novoItem) {
+        const itens = obterHistoricoSalvo() || [];
+        itens.unshift(novoItem); // Adiciona no início do array
         localStorage.setItem('calculo-padrao-historico', JSON.stringify(itens));
+      }
+      
+      // Obter histórico salvo no localStorage
+      function obterHistoricoSalvo() {
+        const historico = localStorage.getItem('calculo-padrao-historico');
+        return historico ? JSON.parse(historico) : null;
       }
       
       // Carregar histórico do localStorage
       function carregarHistorico() {
-        const historico = localStorage.getItem('calculo-padrao-historico');
+        const itens = obterHistoricoSalvo();
         
-        if (historico) {
-          const itens = JSON.parse(historico);
+        if (itens && itens.length > 0) {
+          document.getElementById('historico-container').classList.add('show');
           
-          if (itens.length > 0) {
-            document.getElementById('historico-container').classList.add('show');
-            
-            itens.forEach(item => {
-              const li = document.createElement('li');
-              li.className = 'collection-item resultado-item';
-              
-              // Converte o resultado para número para classificação
-              const resultadoNumerico = parseFloat(item.resultado.replace(/\./g, '').replace(',', '.'));
-              
-              // Define a classe do resultado com base no valor
-              let resultadoClass = 'resultado-zero';
-              if (resultadoNumerico > 0) {
-                resultadoClass = 'resultado-positivo';
-              } else if (resultadoNumerico < 0) {
-                resultadoClass = 'resultado-negativo';
-              }
-              
-              li.innerHTML = `
-                <div class="historico-expressao">${item.expressao.includes(' = ') ? item.expressao : `${item.expressao} = ${item.resultado}`}</div>
-                <div class="historico-resultado ${resultadoClass}">${item.resultado}</div>
-              `;
-              
-              historicoList.prepend(li);
-            });
-          }
+          itens.forEach(item => {
+            const li = criarItemHistorico(item.expressao, item.resultado);
+            historicoList.prepend(li);
+          });
         }
       }
       
@@ -925,31 +862,48 @@
         showToast('Histórico limpo com sucesso!', 'green rounded');
       }
       
-      // Eventos para os botões
-      document.getElementById('btn-0').addEventListener('click', () => adicionarDigito('0'));
-      document.getElementById('btn-1').addEventListener('click', () => adicionarDigito('1'));
-      document.getElementById('btn-2').addEventListener('click', () => adicionarDigito('2'));
-      document.getElementById('btn-3').addEventListener('click', () => adicionarDigito('3'));
-      document.getElementById('btn-4').addEventListener('click', () => adicionarDigito('4'));
-      document.getElementById('btn-5').addEventListener('click', () => adicionarDigito('5'));
-      document.getElementById('btn-6').addEventListener('click', () => adicionarDigito('6'));
-      document.getElementById('btn-7').addEventListener('click', () => adicionarDigito('7'));
-      document.getElementById('btn-8').addEventListener('click', () => adicionarDigito('8'));
-      document.getElementById('btn-9').addEventListener('click', () => adicionarDigito('9'));
-      document.getElementById('btn-decimal').addEventListener('click', () => adicionarDigito(','));
+      // Registrar eventos para os botões
+      function registrarEventos() {
+        // Botões numéricos
+        const botoes = {
+          numeros: ['btn-0', 'btn-1', 'btn-2', 'btn-3', 'btn-4', 'btn-5', 'btn-6', 'btn-7', 'btn-8', 'btn-9'],
+          operadores: {
+            'btn-add': '+',
+            'btn-subtract': '−',
+            'btn-multiply': '×',
+            'btn-divide': '÷',
+            'btn-percent': '%'
+          },
+          especiais: {
+            'btn-equals': calcular,
+            'btn-clear': limparTudo,
+            'btn-backspace': apagarDigito,
+            'btn-decimal': () => adicionarDigito(',')
+          }
+        };
+        
+        // Registra eventos para números
+        botoes.numeros.forEach(id => {
+          const numero = id.replace('btn-', '');
+          document.getElementById(id).addEventListener('click', () => adicionarDigito(numero));
+        });
+        
+        // Registra eventos para operadores
+        Object.entries(botoes.operadores).forEach(([id, op]) => {
+          document.getElementById(id).addEventListener('click', () => definirOperacao(op));
+        });
+        
+        // Registra eventos para botões especiais
+        Object.entries(botoes.especiais).forEach(([id, funcao]) => {
+          document.getElementById(id).addEventListener('click', funcao);
+        });
+        
+        // Suporte ao teclado
+        document.addEventListener('keydown', gerenciarTeclado);
+      }
       
-      document.getElementById('btn-add').addEventListener('click', () => definirOperacao('+'));
-      document.getElementById('btn-subtract').addEventListener('click', () => definirOperacao('−'));
-      document.getElementById('btn-multiply').addEventListener('click', () => definirOperacao('×'));
-      document.getElementById('btn-divide').addEventListener('click', () => definirOperacao('÷'));
-      document.getElementById('btn-percent').addEventListener('click', () => definirOperacao('%'));
-      
-      document.getElementById('btn-equals').addEventListener('click', calcular);
-      document.getElementById('btn-clear').addEventListener('click', limparTudo);
-      document.getElementById('btn-backspace').addEventListener('click', apagarDigito);
-      
-      // Suporte ao teclado
-      document.addEventListener('keydown', (e) => {
+      // Gerenciar eventos de teclado
+      function gerenciarTeclado(e) {
         // Números
         if (/^[0-9]$/.test(e.key)) {
           adicionarDigito(e.key);
@@ -984,10 +938,11 @@
         else if (e.key === 'Escape' || e.key === 'Delete') {
           limparTudo();
         }
-      });
+      }
       
       // Inicialização
       document.addEventListener('DOMContentLoaded', function() {
+        registrarEventos();
         atualizarDisplay();
         carregarHistorico();
       });
