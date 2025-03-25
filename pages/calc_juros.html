@@ -1059,16 +1059,14 @@
                 role="list"
                 aria-label="Histórico de cálculos"
               ></ul>
-              <div style="position: absolute; bottom: 10px; left: 0; right: 0; text-align: center;">
-                <button
-                  id="limpar-historico"
-                  class="btn waves-effect waves-light grey"
-                  style="margin: 0 auto;"
-                  aria-label="Limpar histórico"
-                >
-                  <i class="material-icons left" aria-hidden="true">delete</i>
-                  Limpar Histórico
-                </button>
+              <div class="btn-container" style="margin-top: auto; text-align: center; position: absolute; bottom: 10px; left: 0; right: 0; display: flex; justify-content: center;">
+                <clear-history-button
+                  storage-key="historico-juros"
+                  history-list-id="historico-list"
+                  container-id="historico-container"
+                  success-message="Histórico limpo com sucesso!"
+                  empty-message="O histórico já está vazio!"
+                ></clear-history-button>
               </div>
             </div>
           </div>
@@ -1082,6 +1080,8 @@
     <!-- Importando jQuery e Materialize JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <!-- Importando componentes web personalizados -->
+    <script src="/assets/js/components/clear-history-button.js"></script>
 
     <!-- Script da Calculadora -->
     <script>
@@ -1096,7 +1096,7 @@
         const tipoJurosRadios = document.getElementsByName("tipo-juros");
         const calcularBtn = document.getElementById("calcular");
         const limparBtn = document.getElementById("limpar");
-        const limparHistoricoBtn = document.getElementById("limpar-historico");
+        // O botão limpar histórico agora é um componente web que gerencia seu próprio estado
         const historicoList = document.getElementById("historico-list");
 
         // Elementos de resultado
@@ -1317,18 +1317,7 @@
           showToast("Campos limpos", "rounded blue");
         });
 
-        // Evento de clique no botão limpar histórico
-        limparHistoricoBtn.addEventListener("click", function () {
-          if (historico.length === 0) {
-            showToast("Histórico já está vazio", "rounded orange");
-            return;
-          }
-          
-          historico = [];
-          localStorage.removeItem("historicoJuros");
-          atualizarHistorico();
-          showToast("Histórico limpo com sucesso", "rounded red");
-        });
+        // O evento de clique no botão limpar histórico agora é gerenciado pelo componente web
 
         // Formatar entrada de valor monetário
         principalInput.addEventListener("input", function (e) {
