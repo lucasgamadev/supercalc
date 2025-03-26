@@ -76,7 +76,6 @@
       }
 
       #historico-container.show {
-
         opacity: 1;
       }
 
@@ -231,37 +230,84 @@
         grid-column: span 2;
       }
 
-      #historico-list {
-        flex: 1;
-        margin: 0;
-        border: none;
-        max-height: 357px;
-        overflow-y: auto;
+      /* Estilos para o container do histórico e scrollbar - revisão completa */
+      .historico-wrapper {
+        position: relative;
+        height: 380px; /* Altura fixa para garantir o scroll */
+        margin-top: 10px;
+        margin-bottom: 10px; /* Mantendo igual ao espaçamento superior */
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        display: block; /* Alterado de flex para block */
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
+        overflow: hidden; /* Contém overflow apenas neste nível */
+        padding: 10px 0 10px 10px; /* Espaço à esquerda, em cima e embaixo, mas não à direita */
       }
 
+      /* Estilo direto e simplificado para o histórico */
+      #historico-list {
+        height: calc(100% - 20px); /* Ajustado para considerar o padding superior e inferior */
+        width: calc(100% - 10px); /* Ajustado para considerar somente o padding esquerdo */
+        margin: 0;
+        padding: 0; /* Removido padding extra à direita */
+        list-style: none;
+        overflow-y: auto !important; /* Alterado de scroll para auto - só mostra quando necessário */
+        overflow-x: hidden;
+        position: relative;
+        z-index: 1; /* Garante que a lista fique acima de outros elementos */
+        transform: translateZ(0); /* Ativa aceleração de hardware */
+        will-change: scroll-position; /* Otimização para rolagem */
+      }
+
+      /* Estilos limpos para os itens da lista */
+      #historico-list .collection-item {
+        padding: 8px 10px !important;
+        margin-bottom: 5px !important;
+        background-color: transparent !important;
+        border-bottom: 1px solid rgba(0,0,0,0.05) !important;
+      }
+
+      /* Personalização da barra de rolagem - revisão completa */
+      #historico-list::-webkit-scrollbar {
+        width: 8px;
+        background-color: transparent;
+      }
+
+      #historico-list::-webkit-scrollbar-track {
+        background: rgba(219, 234, 254, 0.5);
+        border-radius: 4px;
+      }
+
+      #historico-list::-webkit-scrollbar-thumb {
+        background: rgba(37, 99, 235, 0.6);
+        border-radius: 4px;
+        border: 2px solid transparent;
+        background-clip: padding-box;
+      }
+
+      #historico-list::-webkit-scrollbar-thumb:hover {
+        background: rgba(29, 78, 216, 0.8);
+        border: 2px solid transparent;
+        background-clip: padding-box;
+      }
+
+      /* Para Firefox */
+      #historico-list {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(37, 99, 235, 0.6) rgba(219, 234, 254, 0.5);
+      }
+
+      /* Limpar conflitos com Materialize */
       .collection {
         border: none !important;
         margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
       }
       
-      /* Adicionando contorno cinza aos itens do histórico */
-      #historico-list .collection-item {
-        border: 1px solid #cccccc !important;
-        border-radius: 8px !important;
-        margin-bottom: 10px !important;
-        padding-top: 6px !important;
-        padding-bottom: 6px !important;
-      }
-
-      .collection .collection-item {
-        border-bottom: none !important;
-        padding: 0 !important;
-        margin-bottom: 15px !important;
-        background: transparent !important;
-      }
-
-      .collection .collection-item:last-child {
-        margin-bottom: 10px !important;
+      /* Remover qualquer overflow oculto que possa estar interferindo */
+      .card-content, .card {
+        overflow: visible !important;
       }
 
       .resultado-item {
@@ -575,7 +621,7 @@
         display: flex;
         justify-content: center;
         gap: 20px;
-        margin-top: 20px;
+        margin-top: 0; /* Removido espaço superior */
       }
 
       .btn-large {
@@ -638,6 +684,15 @@
         height: 100%;
         border-radius: 2px 0 0 2px;
         transition: all 0.3s ease;
+      }
+
+      /* Ajuste para o componente de histórico vazio */
+      empty-history {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
       }
     </style>
   </head>
@@ -727,11 +782,15 @@
         <!-- Coluna do Histórico -->
         <div class="col s12 m6">
           <div id="historico-container" class="card fade-in show">
-            <div class="card-content" style="position: relative; padding-bottom: 60px !important;">
-              <span class="card-title" role="heading" aria-level="1"><i class="fas fa-history mr-2"></i>Histórico de Cálculos</span>
-              <ul id="historico-list" class="collection" style="max-height: 400px; overflow-y: auto"></ul>
+            <div class="card-content" style="position: relative; padding: 10px !important; padding-bottom: 50px !important;">
+              <span class="card-title" role="heading" aria-level="1" style="margin-bottom: 10px;"><i class="fas fa-history mr-2"></i>Histórico de Cálculos</span>
               
-              <div class="btn-container" style="margin-top: auto; text-align: center; position: absolute; bottom: 10px; left: 0; right: 0;">
+              <!-- Nova div para envolver o histórico e sua barra de rolagem -->
+              <div class="historico-wrapper">
+                <ul id="historico-list" class="collection"></ul>
+              </div>
+              
+              <div class="btn-container" style="margin-top: 10px; padding: 0; text-align: center; position: absolute; bottom: 10px; left: 0; right: 0;">
                 <clear-history-button
                   storage-key="calculo-padrao-historico"
                   history-list-id="historico-list"
@@ -973,7 +1032,8 @@
         li.style.opacity = '0';
         li.style.transform = 'translateY(-10px)';
         
-        // Limitamos o histórico a um número máximo de itens visíveis
+        // Removido limite de itens visíveis - o scroll agora cuidará disso
+        /* 
         const maxVisibleItems = 5;
         if (historicoList.children.length >= maxVisibleItems) {
           // Aplica um efeito de fade out no último item
@@ -991,6 +1051,7 @@
             }, 300);
           }
         }
+        */
         
         historicoList.prepend(li);
         
@@ -1017,8 +1078,8 @@
         const itens = obterHistoricoSalvo() || [];
         itens.unshift(expressao); // Adiciona no início do array
         
-        // Limitar a 10 itens no histórico para não sobrecarregar o localStorage
-        if (itens.length > 10) {
+        // Aumentar para permitir mais itens no histórico 
+        if (itens.length > 30) { // Aumentado de 10 para 30
           itens.pop(); // Remove o último item
         }
         
@@ -1038,11 +1099,12 @@
         if (itens && itens.length > 0) {
           document.getElementById('historico-container').classList.add('show');
           
-          // Limitamos a exibição para os itens mais recentes
-          const maxVisibleItems = 5;
-          const itemsToShow = itens.slice(0, maxVisibleItems);
+          // Removido limite de exibição - mostrar todos os itens
+          // const maxVisibleItems = 5;
+          // const itemsToShow = itens.slice(0, maxVisibleItems);
           
-          itemsToShow.forEach((item, index) => {
+          // Mostrar todos os itens do histórico
+          itens.forEach((item, index) => {
             // Verifica se o item é um objeto JSON serializado
             let expressao;
             
@@ -1115,7 +1177,7 @@
             const li = document.createElement('li');
             li.className = 'collection-item resultado-item fade-in';
             li.style.borderLeftColor = operadorCor;
-            li.style.animationDelay = `${index * 0.1}s`;
+            li.style.animationDelay = `${Math.min(index, 10) * 0.05}s`; // Limitar atraso de animação
             
             li.innerHTML = `
               <div class="historico-item-wrapper">
@@ -1138,8 +1200,15 @@
           emptyHistory.setAttribute('message', 'Nenhum cálculo no histórico');
           emptyHistory.setAttribute('sub-message', 'Os cálculos realizados aparecerão aqui');
           historicoList.appendChild(emptyHistory);
-          document.getElementById('historico-container').classList.add('show');
+          
+          // Adicionar um pequeno atraso para garantir que o componente seja renderizado antes de mostrar o container
+          setTimeout(() => {
+            document.getElementById('historico-container').classList.add('show');
+          }, 50);
         }
+        
+        // Forçar um reflow para garantir que as barras de rolagem sejam calculadas corretamente
+        document.getElementById('historico-list').offsetHeight;
       }
       
       // Limpar histórico
@@ -1250,6 +1319,39 @@
         registrarEventos();
         atualizarDisplay();
         carregarHistorico();
+        
+        // Corrigir problemas de rolagem após o carregamento completo
+        setTimeout(function() {
+          const historicoList = document.getElementById('historico-list');
+          if (historicoList) {
+            // Reset forçado para garantir rolagem
+            historicoList.style.overflow = 'hidden';
+            // Forçar um reflow
+            historicoList.offsetHeight;
+            // Restaurar scroll
+            historicoList.style.overflow = 'auto';
+            
+            // Impedir propagação de eventos de rolagem
+            historicoList.addEventListener('wheel', function(e) {
+              if (this.scrollHeight > this.clientHeight) {
+                e.stopPropagation();
+              }
+            }, { passive: false }); // Important para permitir preventDefault
+            
+            // Garantir que o touch scroll funcione em dispositivos móveis
+            historicoList.addEventListener('touchstart', function(e) {
+              if (this.scrollHeight > this.clientHeight) {
+                e.stopPropagation();
+              }
+            }, { passive: true });
+            
+            historicoList.addEventListener('touchmove', function(e) {
+              if (this.scrollHeight > this.clientHeight) {
+                e.stopPropagation();
+              }
+            }, { passive: true });
+          }
+        }, 100); // Atraso pequeno para garantir que tudo esteja renderizado
       });
     </script>
   </body>
