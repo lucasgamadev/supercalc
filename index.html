@@ -52,8 +52,9 @@
   </script>
   <!-- Custom CSS -->
   <link rel="stylesheet" href="/assets/css/styles.css">
-  <!-- Componente de cabeçalho -->
+  <!-- Componentes -->
   <script src="/assets/js/components/header.js"></script>
+  <script src="/assets/js/components/footer.js"></script>
   <style>
     .fade-in-up {
       opacity: 0;
@@ -142,19 +143,11 @@
       </a>
     </div>
 
-    <!-- Include Footer Component -->
-    <div id="footer-placeholder"></div>
+    <!-- Footer Component -->
+    <footer-component></footer-component>
   </div>
 
   <!-- Scripts -->
   <script src="/assets/js/main.js"></script>
-  <script>
-    // Load footer component
-    fetch('/components/footer.html')
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById('footer-placeholder').innerHTML = data;
-      });
-  </script>
 </body>
-</html>
+</html> 
