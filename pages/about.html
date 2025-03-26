@@ -17,6 +17,8 @@
   <link rel="stylesheet" href="/assets/css/styles.css">
   <!-- Componente de botão início -->
   <script src="/assets/js/components/home-button.js"></script>
+  <!-- Componente de cabeçalho -->
+  <script src="/assets/js/components/header.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -74,8 +76,8 @@
 </head>
 <body class="antialiased supercalc-background">
   <div class="container mx-auto px-4 py-4">
-    <!-- Incluir Componente do Cabeçalho -->
-    <div id="header-placeholder"></div>
+    <!-- Cabeçalho -->
+    <header-component></header-component>
 
     <!-- Navegação -->
     <div style="display: flex; justify-content: center; width: 100%; margin: 10px auto 20px;">
@@ -131,26 +133,5 @@
 
   <!-- Scripts -->
   <script src="/assets/js/main.js"></script>
-  <script>
-    // Carrega o header
-    fetch('/components/header.html')
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById('header-placeholder').innerHTML = data;
-        
-        // Adicionar estilo para reduzir espaço após o header
-        const header = document.querySelector('header');
-        if (header) {
-          header.style.marginBottom = '0';
-          
-          // Reduzir o espaço entre o texto e o botão início
-          const nav = header.querySelector('nav');
-          if (nav) {
-            nav.style.marginTop = '10px';
-          }
-        }
-      })
-      .catch(error => console.error("Erro ao carregar o header:", error));
-  </script>
 </body>
 </html>
