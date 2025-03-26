@@ -1192,11 +1192,11 @@
         const valorNormalizado = valorStr.replace(",", ".");
         const valor = parseFloat(valorNormalizado);
         
-        if (isNaN(valor) || valor < 0) {
+        if (isNaN(valor) || valor <= 0) {
           const valorInput = document.getElementById("valor");
           valorInput.classList.add("invalid");
           valorInput.focus();
-          showToast("Por favor, insira um valor válido", "rounded orange");
+          showToast("Por favor, insira um valor válido positivo", "rounded orange");
           return false;
         }
 
@@ -1343,48 +1343,9 @@
 
       // Adicionar validação de input para permitir números e separadores decimais
       document.getElementById("valor").addEventListener("keypress", function (e) {
-        // Permite números, vírgula e ponto como separador decimal
-        if (!/[\d\.,]/.test(e.key)) {
+        // Permite apenas números
+        if (!/\d/.test(e.key)) {
           e.preventDefault();
-        }
-        
-        // Impede múltiplos separadores decimais
-        if ((e.key === ',' || e.key === '.') && (this.value.includes(',') || this.value.includes('.'))) {
-          e.preventDefault();
-        }
-      });
-      
-      document.getElementById("valor").addEventListener("input", function (e) {
-        // Remove caracteres inválidos (deixa apenas números e um separador decimal)
-        let valor = this.value.replace(/[^\d\.,]/g, '');
-        
-        // Garante que há apenas um separador decimal
-        const countCommas = (valor.match(/,/g) || []).length;
-        const countDots = (valor.match(/\./g) || []).length;
-        
-        if (countCommas > 1 || countDots > 1 || (countCommas >= 1 && countDots >= 1)) {
-          // Se houver múltiplos separadores, mantém apenas o primeiro
-          const firstSeparatorIndex = Math.min(
-            valor.indexOf(',') >= 0 ? valor.indexOf(',') : Infinity,
-            valor.indexOf('.') >= 0 ? valor.indexOf('.') : Infinity
-          );
-          
-          if (firstSeparatorIndex !== Infinity) {
-            const separator = valor[firstSeparatorIndex];
-            valor = valor.split(separator)[0] + separator + valor.split(separator)[1].replace(/[\.,]/g, '');
-          }
-        }
-        
-        this.value = valor;
-        
-        // Remove a classe 'invalid' quando o campo tem um valor válido
-        if (valor.trim() !== '') {
-          const valorNormalizado = valor.replace(',', '.');
-          const valorNumerico = parseFloat(valorNormalizado);
-          
-          if (!isNaN(valorNumerico) && valorNumerico >= 0) {
-            this.classList.remove("invalid");
-          }
         }
       });
 
@@ -1403,6 +1364,14 @@
           valor = Math.max(0, valor - 1);
         }
         this.value = valor;
+      });
+
+      document.getElementById("valor").addEventListener("input", function (e) {
+        let valor = e.target.value.replace(/\D/g, "");
+        if (valor === "") return;
+        
+        valor = (parseFloat(valor) / 100).toFixed(2);
+        e.target.value = valor.replace(".", ",");
       });
 
       function calcularDesconto() {
