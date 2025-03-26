@@ -282,19 +282,14 @@
         display: flex;
         width: 100%;
         align-items: center;
-        justify-content: space-between;
       }
 
       .historico-expressao {
         font-size: 1rem;
         color: #333;
         font-weight: 500;
-        position: relative;
-        transition: all 0.3s ease;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 70%;
+        width: 100%;
+        padding: 10px;
       }
 
       .historico-resultado {
@@ -312,19 +307,6 @@
         transition: all 0.3s ease;
         position: relative;
         text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-      }
-
-      /* Estilo específico para resultados positivos, negativos e neutros */
-      .resultado-positivo {
-        background: #66bb6a;
-      }
-
-      .resultado-negativo {
-        background: #ef5350;
-      }
-
-      .resultado-zero {
-        background: #9e9e9e;
       }
 
       /* Ajustes responsivos */
@@ -671,65 +653,19 @@
         ToastNotification.showToast(message, classes);
       }
       
-      // Função para formatar número no padrão brasileiro
-      function formatarNumero(numero) {
-        return typeof numero === 'number' 
-          ? numero.toLocaleString('pt-BR')
-          : numero.replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      // Função simplificada para trocar ponto por vírgula
+      function formatarDisplay(valor) {
+        return valor.toString().replace('.', ',');
       }
       
-      // Função para converter string para número, considerando formato brasileiro
+      // Função para converter string para número (vírgula para ponto)
       function converterParaNumero(valor) {
-        return parseFloat(valor.toString().replace(/\./g, '').replace(',', '.'));
+        return parseFloat(valor.toString().replace(',', '.'));
       }
       
-      // Função para determinar a classe do resultado com base no valor
-      function obterClasseResultado(valor) {
-        const numero = typeof valor === 'number' 
-          ? valor 
-          : converterParaNumero(valor);
-          
-        if (numero > 0) return 'resultado-positivo';
-        if (numero < 0) return 'resultado-negativo';
-        return 'resultado-zero';
-      }
-      
-      // Função para criar o HTML do item do histórico
-      function criarItemHistorico(expressao, resultado) {
-        const resultadoFormatado = typeof resultado === 'string' ? resultado : formatarNumero(resultado);
-        const classeResultado = obterClasseResultado(resultado);
-        
-        const li = document.createElement('li');
-        li.className = 'collection-item resultado-item fade-in';
-        
-        // Se a expressão já inclui o resultado, não adiciona novamente
-        const textoExpressao = expressao.includes(' = ') 
-          ? expressao 
-          : `${expressao} = ${resultadoFormatado}`;
-        
-        li.innerHTML = `
-          <div class="historico-conteudo">
-            <span class="historico-expressao">${textoExpressao}</span>
-            <span class="historico-resultado ${classeResultado}">${resultadoFormatado}</span>
-          </div>
-        `;
-        
-        return li;
-      }
-      
-      // Atualiza o display com um valor formatado
-      function atualizarDisplay(valor = valorAtual, incluirOperacao = false) {
-        // Se estiver no meio de uma operação e precisar mostrar a expressão completa
-        if (incluirOperacao && operacao !== null && valorAnterior !== '') {
-          const valorAnteriorFormatado = formatarNumero(valorAnterior);
-          const valorAtualFormatado = formatarNumero(valor);
-          display.textContent = `${valorAnteriorFormatado} ${operacao} ${valorAtualFormatado}`;
-          return;
-        }
-        
-        // Caso contrário, apenas mostra o valor formatado
-        const valorFormatado = formatarNumero(valor);
-        display.textContent = valorFormatado;
+      // Atualiza o display
+      function atualizarDisplay(valor = valorAtual) {
+        display.textContent = valor;
       }
       
       // Adiciona um dígito ao valor atual
@@ -739,7 +675,6 @@
           resultadoExibido = false;
         }
         
-        // Lógica para decidir como adicionar o dígito
         if (valorAtual === '0' && digito !== ',') {
           valorAtual = digito;
         } else if (digito === ',' && !valorAtual.includes(',')) {
@@ -748,11 +683,10 @@
           valorAtual += digito;
         }
         
-        // Atualiza o display adequadamente
-        atualizarDisplay(valorAtual, true);
+        atualizarDisplay(valorAtual);
       }
       
-      // Configurar a operação
+      // Configura a operação
       function definirOperacao(op) {
         if (valorAtual !== '0' || valorAnterior !== '') {
           if (operacao !== null && valorAnterior !== '' && !resultadoExibido) {
@@ -764,28 +698,25 @@
           valorAtual = '0';
           resultadoExibido = false;
           
-          // Mostrar o operador no visor
-          const valorAnteriorFormatado = formatarNumero(valorAnterior);
-          display.textContent = `${valorAnteriorFormatado} ${op}`;
+          atualizarDisplay(`${valorAnterior} ${op}`);
         }
       }
       
-      // Realizar o cálculo
+      // Realiza o cálculo
       function calcular() {
         if (operacao === null || valorAnterior === '') return;
         
-        // Converte strings para números
         const anterior = converterParaNumero(valorAnterior);
         const atual = converterParaNumero(valorAtual);
         
-        // Verifica divisão por zero antes do cálculo
+        // Verifica divisão por zero
         if (operacao === '÷' && atual === 0) {
           showToast('Não é possível dividir por zero!', 'red rounded');
           limparTudo();
           return;
         }
         
-        // Realiza a operação adequada
+        // Realiza a operação
         let resultado;
         switch (operacao) {
           case '+': resultado = anterior + atual; break;
@@ -796,18 +727,18 @@
           default: return;
         }
         
-        // Formata a expressão para o histórico
-        const expressao = `${formatarNumero(valorAnterior)} ${operacao} ${formatarNumero(valorAtual)}`;
+        // Expressão simples para o histórico
+        const expressao = `${valorAnterior} ${operacao} ${valorAtual} = ${formatarDisplay(resultado)}`;
         
-        // Adicionar ao histórico
-        adicionarAoHistorico(expressao, resultado);
+        // Adiciona ao histórico de forma simplificada
+        adicionarAoHistorico(expressao);
         
-        valorAtual = resultado.toString().replace('.', ',');
+        valorAtual = formatarDisplay(resultado);
         valorAnterior = '';
         operacao = null;
         resultadoExibido = true;
         
-        atualizarDisplay();
+        atualizarDisplay(valorAtual);
       }
       
       // Limpar tudo
@@ -832,34 +763,34 @@
           valorAtual = '0';
         }
         
-        atualizarDisplay(valorAtual, true);
+        atualizarDisplay(valorAtual);
       }
       
-      // Adicionar ao histórico
-      function adicionarAoHistorico(expressao, resultado) {
+      // Adicionar ao histórico (versão simplificada)
+      function adicionarAoHistorico(expressao) {
         // Verifica se existe o componente EmptyHistory e remove se existir
         const emptyHistory = historicoList.querySelector('empty-history');
         if (emptyHistory) {
           historicoList.removeChild(emptyHistory);
         }
         
-        // Cria e adiciona o item ao histórico
-        const li = criarItemHistorico(expressao, resultado);
+        // Cria e adiciona o item ao histórico de forma simples
+        const li = document.createElement('li');
+        li.className = 'collection-item resultado-item fade-in';
+        li.innerHTML = `<div class="historico-conteudo"><span class="historico-expressao">${expressao}</span></div>`;
         historicoList.prepend(li);
         
-        // Armazenar no localStorage
-        const resultadoFormatado = formatarNumero(resultado);
-        const item = { expressao, resultado: resultadoFormatado };
-        salvarHistoricoItem(item);
+        // Armazenar no localStorage de forma simplificada
+        salvarHistoricoItem(expressao);
         
         // Mostrar o container de histórico
         document.getElementById('historico-container').classList.add('show');
       }
       
-      // Salvar um novo item no histórico
-      function salvarHistoricoItem(novoItem) {
+      // Salvar um novo item no histórico (simplificado)
+      function salvarHistoricoItem(expressao) {
         const itens = obterHistoricoSalvo() || [];
-        itens.unshift(novoItem); // Adiciona no início do array
+        itens.unshift(expressao); // Adiciona no início do array
         localStorage.setItem('calculo-padrao-historico', JSON.stringify(itens));
       }
       
@@ -869,15 +800,17 @@
         return historico ? JSON.parse(historico) : null;
       }
       
-      // Carregar histórico do localStorage
+      // Carregar histórico do localStorage (simplificado)
       function carregarHistorico() {
         const itens = obterHistoricoSalvo();
         
         if (itens && itens.length > 0) {
           document.getElementById('historico-container').classList.add('show');
           
-          itens.forEach(item => {
-            const li = criarItemHistorico(item.expressao, item.resultado);
+          itens.forEach(expressao => {
+            const li = document.createElement('li');
+            li.className = 'collection-item resultado-item fade-in';
+            li.innerHTML = `<div class="historico-conteudo"><span class="historico-expressao">${expressao}</span></div>`;
             historicoList.prepend(li);
           });
         } else {
@@ -902,9 +835,7 @@
         }
         
         // Remove todos os itens do histórico
-        while (historicoList.firstChild) {
-          historicoList.removeChild(historicoList.firstChild);
-        }
+        historicoList.innerHTML = '';
         
         localStorage.removeItem('calculo-padrao-historico');
         
