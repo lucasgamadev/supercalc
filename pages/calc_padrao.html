@@ -308,19 +308,43 @@
       }
 
       .historico-expressao .resultado-valor {
-        color: #4caf50;
         font-weight: 600;
         display: inline-block;
         position: relative;
         padding: 2px 8px;
         border-radius: 4px;
-        background-color: rgba(76, 175, 80, 0.1);
         transition: all 0.3s ease;
       }
 
+      .historico-expressao .resultado-positivo {
+        color: #4caf50;
+        background-color: rgba(76, 175, 80, 0.1);
+      }
+
+      .historico-expressao .resultado-zero {
+        color: #757575;
+        background-color: rgba(117, 117, 117, 0.1);
+      }
+
+      .historico-expressao .resultado-negativo {
+        color: #f44336;
+        background-color: rgba(244, 67, 54, 0.1);
+      }
+
       .historico-expressao .resultado-valor:hover {
-        background-color: rgba(76, 175, 80, 0.2);
         transform: scale(1.05);
+      }
+
+      .historico-expressao .resultado-positivo:hover {
+        background-color: rgba(76, 175, 80, 0.2);
+      }
+
+      .historico-expressao .resultado-zero:hover {
+        background-color: rgba(117, 117, 117, 0.2);
+      }
+
+      .historico-expressao .resultado-negativo:hover {
+        background-color: rgba(244, 67, 54, 0.2);
       }
 
       .material-icons.operator-icon {
@@ -902,6 +926,16 @@
           operadorClasse = 'operador-porcentagem';
         }
         
+        // Determinar a classe do resultado com base no valor
+        let resultadoClasse = 'resultado-positivo';
+        const valorNumerico = parseFloat(resultado.replace(',', '.'));
+        
+        if (valorNumerico === 0) {
+          resultadoClasse = 'resultado-zero';
+        } else if (valorNumerico < 0) {
+          resultadoClasse = 'resultado-negativo';
+        }
+        
         // Cria e adiciona o item ao histórico com estilo melhorado
         const li = document.createElement('li');
         li.className = 'collection-item resultado-item fade-in';
@@ -929,7 +963,7 @@
               <span class="historico-expressao" style="display: flex; align-items: center;">
                 ${iconContent}
                 <span style="flex: 1;">${operacao} =</span>
-                <span class="resultado-valor">${resultado}</span>
+                <span class="resultado-valor ${resultadoClasse}">${resultado}</span>
               </span>
             </div>
           </div>
@@ -1052,6 +1086,16 @@
               operadorClasse = 'operador-porcentagem';
             }
             
+            // Determinar a classe do resultado com base no valor
+            let resultadoClasse = 'resultado-positivo';
+            const valorNumerico = parseFloat(resultado.replace(',', '.'));
+            
+            if (valorNumerico === 0) {
+              resultadoClasse = 'resultado-zero';
+            } else if (valorNumerico < 0) {
+              resultadoClasse = 'resultado-negativo';
+            }
+            
             // Create symbols with simple square styling
             let iconContent;
             if (operacao.includes('÷')) {
@@ -1079,7 +1123,7 @@
                   <span class="historico-expressao" style="display: flex; align-items: center;">
                     ${iconContent}
                     <span style="flex: 1;">${operacao} =</span>
-                    <span class="resultado-valor">${resultado}</span>
+                    <span class="resultado-valor ${resultadoClasse}">${resultado}</span>
                   </span>
                 </div>
               </div>
