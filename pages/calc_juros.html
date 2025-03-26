@@ -1343,18 +1343,5 @@
         limparCampos();
       });
     </script>
-
-    <!-- Importar componentes do footer -->
-    <script>
-      // Carregar o componente de footer
-      fetch("/components/footer.html")
-        .then(response => response.text())
-        .then(data => {
-          const footerContainer = document.createElement("div");
-          footerContainer.innerHTML = data;
-          document.body.appendChild(footerContainer);
-        })
-        .catch(error => console.error("Erro ao carregar o footer:", error));
-    </script>
   </body>
 </html>
