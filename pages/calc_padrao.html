@@ -683,7 +683,12 @@
           valorAtual += digito;
         }
         
-        atualizarDisplay(valorAtual);
+        // Se estiver no meio de uma operação, mostra a expressão completa
+        if (operacao !== null && valorAnterior !== '') {
+          atualizarDisplay(`${valorAnterior} ${operacao} ${valorAtual}`);
+        } else {
+          atualizarDisplay(valorAtual);
+        }
       }
       
       // Configura a operação
