@@ -541,6 +541,43 @@
         color: #2196f3;
         font-size: 14px;
       }
+
+      #display {
+        width: 100%;
+        background: rgba(240, 248, 255, 0.8);
+        border: 1px solid rgba(0, 123, 255, 0.2);
+        border-radius: 8px;
+        padding: 15px;
+        font-size: 2rem;
+        text-align: right;
+        margin-bottom: 15px;
+        min-height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.1);
+        color: #333;
+        font-weight: 500;
+        overflow: hidden;
+        white-space: nowrap;
+        transition: all 0.2s ease;
+      }
+
+      /* Animação de fade-in para os cards */
+      .fade-in {
+        animation: fadeIn 0.5s ease forwards;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
     </style>
   </head>
   <body class="supercalc-background">
@@ -598,7 +635,7 @@
       <div class="row">
         <!-- Calculadora -->
         <div class="col s12 m6">
-          <div class="card">
+          <div class="card fade-in">
             <div class="card-content">
               <span class="card-title"><i class="fas fa-exchange-alt mr-2"></i>Conversor de Unidades</span>
               
@@ -671,7 +708,7 @@
         
         <!-- Histórico -->
         <div class="col s12 m6">
-          <div id="historico-container" class="card">
+          <div id="historico-container" class="card fade-in">
             <div class="card-content" style="position: relative; padding-bottom: 60px !important;">
               <span class="card-title"><i class="fas fa-history mr-2"></i>Histórico</span>
               <ul id="historico-list" class="collection">

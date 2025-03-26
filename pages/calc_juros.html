@@ -562,14 +562,9 @@
       @keyframes destaque {
         0% {
           background-color: #e3f2fd;
-          transform: scale(1.02);
-        }
-        50% {
-          background-color: rgba(227, 242, 253, 0.7);
         }
         100% {
-          background-color: transparent;
-          transform: scale(1);
+          background-color: rgba(240, 248, 255, 0.8);
         }
       }
       
@@ -882,6 +877,22 @@
       .historico-tipo .tipo-juros:hover {
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       }
+
+      /* Animação de fade-in para os cards */
+      .fade-in {
+        animation: fadeIn 0.5s ease forwards;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
     </style>
   </head>
   <body class="supercalc-background">
@@ -932,7 +943,7 @@
     <div class="container-principal">
       <div class="row">
         <div class="col s12 m6">
-          <div class="card">
+          <div class="card fade-in">
             <div class="card-content">
               <span class="card-title" role="heading" aria-level="1"><i class="fas fa-chart-line mr-2"></i>Calculadora de Juros</span>
               <div class="row">
@@ -1037,7 +1048,7 @@
           </div>
         </div>
         <div class="col s12 m6">
-          <div class="card">
+          <div id="historico-container" class="card fade-in">
             <div class="card-content" style="position: relative; padding-bottom: 60px !important;">
               <span class="card-title" role="heading" aria-level="1"><i class="fas fa-history mr-2"></i>Histórico de Cálculos</span>
               <!-- Função para validar e destacar campos -->
