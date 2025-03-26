@@ -332,7 +332,36 @@
         justify-content: center;
         width: 24px;
         height: 24px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
       }
+
+      .symbol-container {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 6px;
+        margin-right: 8px;
+        position: relative;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: box-shadow 0.2s ease;
+      }
+
+      /* Adicionando apenas efeito de sombra no hover */
+      .resultado-item:hover .symbol-container {
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+      }
+
+      .operador-soma { background: linear-gradient(to bottom, #4caf50, #8bc34a); }
+      .operador-subtracao { background: linear-gradient(to bottom, #f44336, #ff5252); }
+      .operador-multiplicacao { background: linear-gradient(to bottom, #ff9800, #ffb74d); }
+      .operador-divisao { background: linear-gradient(to bottom, #9c27b0, #ba68c8); }
+      .operador-porcentagem { background: linear-gradient(to bottom, #00bcd4, #4dd0e1); }
 
       .historico-resultado {
         font-weight: 600;
@@ -567,11 +596,6 @@
         }
       }
 
-      @keyframes shimmer {
-        0% { transform: translateX(-100%) rotate(45deg); }
-        100% { transform: translateX(100%) rotate(45deg); }
-      }
-
       .timestamp {
         display: none; /* Ocultar timestamp */
       }
@@ -591,13 +615,6 @@
         border-radius: 2px 0 0 2px;
         transition: all 0.3s ease;
       }
-
-      /* Estilos para operadores diferentes */
-      .operador-soma { color: #4caf50; }
-      .operador-subtracao { color: #f44336; }
-      .operador-multiplicacao { color: #ff9800; }
-      .operador-divisao { color: #9c27b0; }
-      .operador-porcentagem { color: #00bcd4; }
     </style>
   </head>
   <body class="supercalc-background">
@@ -890,10 +907,21 @@
         li.className = 'collection-item resultado-item fade-in';
         li.style.borderLeftColor = operadorCor;
         
-        // Use a special approach for division symbol
-        const iconContent = operacao.includes('÷') ? 
-          `<span class="division-symbol" style="color:${operadorCor}; font-size: 24px; font-weight: normal; margin-right: 8px; display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; vertical-align: middle; position: relative; top: -1px; line-height: 1;">÷</span>` : 
-          `<i class="material-icons operator-icon ${operadorClasse}" style="color:${operadorCor};">${operadorIcone}</i>`;
+        // Create symbols with simple square styling
+        let iconContent;
+        if (operacao.includes('÷')) {
+          iconContent = `<div class="symbol-container ${operadorClasse}"><span style="color: white; font-size: 16px; font-weight: bold;">÷</span></div>`;
+        } else if (operacao.includes('×')) {
+          iconContent = `<div class="symbol-container ${operadorClasse}"><span style="color: white; font-size: 16px; font-weight: bold;">×</span></div>`;
+        } else if (operacao.includes('−')) {
+          iconContent = `<div class="symbol-container ${operadorClasse}"><span style="color: white; font-size: 16px; font-weight: bold;">−</span></div>`;
+        } else if (operacao.includes('+')) {
+          iconContent = `<div class="symbol-container ${operadorClasse}"><span style="color: white; font-size: 16px; font-weight: bold;">+</span></div>`;
+        } else if (operacao.includes('%')) {
+          iconContent = `<div class="symbol-container ${operadorClasse}"><span style="color: white; font-size: 16px; font-weight: bold;">%</span></div>`;
+        } else {
+          iconContent = `<div class="symbol-container" style="background: linear-gradient(to bottom, #2196f3, #64b5f6);"><i class="material-icons" style="color: white; font-size: 16px;">${operadorIcone}</i></div>`;
+        }
         
         li.innerHTML = `
           <div class="historico-item-wrapper">
@@ -1024,10 +1052,21 @@
               operadorClasse = 'operador-porcentagem';
             }
             
-            // Use a special approach for division symbol
-            const iconContent = operacao.includes('÷') ? 
-              `<span class="division-symbol" style="color:${operadorCor}; font-size: 24px; font-weight: normal; margin-right: 8px; display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; vertical-align: middle; position: relative; top: -1px; line-height: 1;">÷</span>` : 
-              `<i class="material-icons operator-icon ${operadorClasse}" style="color:${operadorCor};">${operadorIcone}</i>`;
+            // Create symbols with simple square styling
+            let iconContent;
+            if (operacao.includes('÷')) {
+              iconContent = `<div class="symbol-container ${operadorClasse}"><span style="color: white; font-size: 16px; font-weight: bold;">÷</span></div>`;
+            } else if (operacao.includes('×')) {
+              iconContent = `<div class="symbol-container ${operadorClasse}"><span style="color: white; font-size: 16px; font-weight: bold;">×</span></div>`;
+            } else if (operacao.includes('−')) {
+              iconContent = `<div class="symbol-container ${operadorClasse}"><span style="color: white; font-size: 16px; font-weight: bold;">−</span></div>`;
+            } else if (operacao.includes('+')) {
+              iconContent = `<div class="symbol-container ${operadorClasse}"><span style="color: white; font-size: 16px; font-weight: bold;">+</span></div>`;
+            } else if (operacao.includes('%')) {
+              iconContent = `<div class="symbol-container ${operadorClasse}"><span style="color: white; font-size: 16px; font-weight: bold;">%</span></div>`;
+            } else {
+              iconContent = `<div class="symbol-container" style="background: linear-gradient(to bottom, #2196f3, #64b5f6);"><i class="material-icons" style="color: white; font-size: 16px;">${operadorIcone}</i></div>`;
+            }
             
             const li = document.createElement('li');
             li.className = 'collection-item resultado-item fade-in';
