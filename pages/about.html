@@ -15,6 +15,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <!-- Custom CSS -->
   <link rel="stylesheet" href="/assets/css/styles.css">
+  <!-- Componente de botão início -->
+  <script src="/assets/js/components/home-button.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -75,6 +77,11 @@
     <!-- Incluir Componente do Cabeçalho -->
     <div id="header-placeholder"></div>
 
+    <!-- Navegação -->
+    <div style="display: flex; justify-content: center; width: 100%; margin: 10px auto 20px;">
+      <home-button href="/index.html" text="Início" icon="fa-home"></home-button>
+    </div>
+    
     <!-- Conteúdo Principal -->
     <main class="bg-white bg-opacity-95 rounded-lg p-8 shadow-lg max-w-4xl mx-auto fade-in">
       <h2 class="text-3xl font-bold mb-6 card-title text-center">Sobre o SuperCalc</h2>
@@ -131,29 +138,19 @@
       .then(data => {
         document.getElementById('header-placeholder').innerHTML = data;
         
-        // Carrega o botão de início somente após o header ser carregado
-        setTimeout(() => {
-          // Adiciona o botão de início após o carregamento do header
-          const navMenu = document.querySelector('nav ul');
-          if (navMenu) {
-            const homeButtonLi = document.createElement('li');
-            homeButtonLi.innerHTML = '<home-button href="/index.html" text="Início" icon="fa-home"></home-button>';
-            navMenu.prepend(homeButtonLi);
-            
-            // Verifica se o componente já foi carregado
-            if (!customElements.get('home-button')) {
-              // Carrega o script do componente se ainda não estiver carregado
-              const script = document.createElement('script');
-              script.src = '/assets/js/components/home-button.js';
-              document.head.appendChild(script);
-            }
-            
-            console.log('Botão de início adicionado com sucesso');
-          } else {
-            console.log('Menu de navegação não encontrado');
+        // Adicionar estilo para reduzir espaço após o header
+        const header = document.querySelector('header');
+        if (header) {
+          header.style.marginBottom = '0';
+          
+          // Reduzir o espaço entre o texto e o botão início
+          const nav = header.querySelector('nav');
+          if (nav) {
+            nav.style.marginTop = '10px';
           }
-        }, 300); // Pequeno atraso para garantir que o DOM do header foi renderizado
-      });
+        }
+      })
+      .catch(error => console.error("Erro ao carregar o header:", error));
   </script>
 </body>
 </html>
