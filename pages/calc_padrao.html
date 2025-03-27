@@ -715,6 +715,24 @@
         transform: scale(1.1);
       }
 
+      /* Garantir que o botão mantenha a cor original após clicado */
+      .btn-copiar:visited,
+      .btn-copiar:focus,
+      .btn-copiar:active,
+      .btn-copiar:focus-visible {
+        color: #2196f3;
+        background-color: rgba(33, 150, 243, 0.1);
+        outline: none;
+      }
+
+      /* Garantir que o ícone dentro do botão mantenha sua cor */
+      .btn-copiar i,
+      .btn-copiar:focus i,
+      .btn-copiar:active i,
+      .btn-copiar:visited i {
+        color: #2196f3;
+      }
+
       .resultado-valor {
         font-weight: 600;
         display: inline-block;
