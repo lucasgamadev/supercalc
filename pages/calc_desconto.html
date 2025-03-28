@@ -14,6 +14,16 @@
     <link rel="stylesheet" href="/assets/css/styles.css">
     <!-- Componente de fundo -->
     <script src="/assets/js/components/background.js"></script>
+    <!-- Componentes de histórico -->
+    <script src="/assets/js/components/history-item.js"></script>
+    <script src="/assets/js/components/history-manager.js"></script>
+    <script>
+      const historyManager = new HistoryManager(
+        'calculo-desconto-historico', // Chave específica para calculadora de desconto
+        'historico-list',           // ID da lista de histórico
+        'historico-container'       // ID do container do histórico
+      );
+    </script>
     <script>
       tailwind.config = {
         theme: {
@@ -68,16 +78,7 @@
         font-family: "Roboto", sans-serif;
       }
 
-      #historico-container {
-        position: relative;
-        width: 100%;
-        transition: opacity 0.3s ease;
-        opacity: 0;
-      }
 
-      #historico-container.show {
-        opacity: 1;
-      }
 
       body {
         display: flex;
@@ -129,13 +130,7 @@
         flex-direction: column;
       }
 
-      #historico-list {
-        flex: 1;
-        margin: 0;
-        border: none;
-        max-height: 357px;
-        overflow-y: auto;
-      }
+
 
       .collection {
         border: none !important;
@@ -415,151 +410,9 @@
         animation: destaque 0.5s ease-out;
       }
 
-      .historico-item {
-        display: flex;
-        flex-direction: column;
-        padding: 16px !important;
-        margin: 8px 0 !important;
-        border-radius: 12px !important;
-        background: linear-gradient(145deg, #ffffff, #f5f5f5) !important;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
-        transition: all 0.3s ease !important;
-        border: 1px solid #cccccc !important;
-        position: relative;
-        overflow: hidden;
-      }
 
-      .historico-item::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0;
-        height: 100%;
-        width: 4px;
-        background: linear-gradient(to bottom, #2196f3, #00bcd4);
-        border-radius: 4px 0 0 4px;
-      }
 
-      .historico-item:hover {
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12) !important;
-      }
 
-      .historico-preco {
-        font-size: 1.1em;
-        margin-bottom: 12px;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .historico-preco .valor-original {
-        color: #2196f3;
-        font-weight: 500;
-      }
-
-      .historico-preco .desconto {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 0.9em;
-        font-weight: 600;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        margin-left: 8px;
-        transition: all 0.3s ease;
-      }
-      
-      .historico-preco .desconto.baixo {
-        background: linear-gradient(135deg, #4caf50, #8bc34a);
-      }
-      
-      .historico-preco .desconto.medio {
-        background: linear-gradient(135deg, #ff9800, #ffc107);
-      }
-      
-      .historico-preco .desconto.alto {
-        background: linear-gradient(135deg, #f44336, #ff5722);
-      }
-      
-      .historico-preco .desconto::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: rgba(255, 255, 255, 0.1);
-        transform: rotate(45deg);
-        animation: shimmer 2s infinite;
-      }
-      
-      .historico-preco .desconto:hover {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      }
-
-      .historico-final {
-        color: #4caf50;
-        font-weight: 600;
-        font-size: 1.2em;
-        padding: 12px 0 0 0;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        align-items: center;
-        gap: 8px;
-        border-top: 1px dashed rgba(0, 0, 0, 0.08);
-      }
-
-      .historico-final > span {
-        margin: 4px 0;
-      }
-
-      .historico-final > span:last-child {
-        width: 100%;
-        margin-top: 8px;
-      }
-
-      .historico-economia {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 12px 0 8px 0;
-        gap: 10px;
-        border-top: 1px dashed rgba(0, 0, 0, 0.08);
-      }
-      
-      .historico-economia .valor-economia {
-        flex: 1;
-        color: #f44336;
-        font-size: 0.9em;
-        background-color: rgba(244, 67, 54, 0.1);
-        padding: 4px 8px;
-        border-radius: 12px;
-      }
-
-      .historico-final {
-        color: #4caf50;
-        font-weight: 600;
-        font-size: 1.2em;
-        padding: 12px 0 0 0;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        gap: 8px;
-        border-top: 1px dashed rgba(0, 0, 0, 0.08);
-        width: 100%;
-      }
-
-      .historico-final > span {
-        margin: 4px 0;
-        width: 100%;
-      }
 
       @keyframes destaque {
         0% {
@@ -861,113 +714,7 @@
         }
       }
 
-      /* Estilos específicos para telas menores */
-      @media (max-width: 480px) {
-        .historico-economia, .historico-final {
-          padding: 8px 0;
-        }
-        
-        .valor-final, .valor-economia {
-          display: flex;
-          align-items: center;
-          justify-content: flex-start;
-          max-width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          font-size: 0.9em;
-        }
-        
-        .historico-preco {
-          margin-bottom: 8px;
-        }
-      }
 
-      /* Estilos específicos para telas menores */
-      @media (max-width: 480px) {
-        .historico-economia, .historico-final {
-          padding: 8px 0;
-        }
-        
-        .historico-economia {
-          flex-wrap: wrap;
-        }
-        
-        .historico-economia .desconto {
-          margin-left: auto;
-        }
-        
-        .valor-final, .valor-economia {
-          display: flex;
-          align-items: center;
-          justify-content: flex-start;
-          max-width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          font-size: 0.9em;
-        }
-        
-        .historico-preco {
-          margin-bottom: 8px;
-        }
-      }
-
-      /* Estilo para o desconto na seção de economia */
-      .historico-economia .desconto {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 0.9em;
-        font-weight: 600;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        margin-left: 8px;
-        transition: all 0.3s ease;
-      }
-      
-      .historico-economia .desconto.baixo {
-        background: linear-gradient(135deg, #4caf50, #8bc34a);
-      }
-      
-      .historico-economia .desconto.medio {
-        background: linear-gradient(135deg, #ff9800, #ffc107);
-      }
-      
-      .historico-economia .desconto.alto {
-        background: linear-gradient(135deg, #f44336, #ff5722);
-      }
-      
-      .historico-economia .desconto::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: rgba(255, 255, 255, 0.1);
-        transform: rotate(45deg);
-        animation: shimmer 2s infinite;
-      }
-      
-      .historico-economia .desconto:hover {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      }
-
-      .historico-final {
-        color: #4caf50;
-        font-weight: 600;
-        font-size: 1.2em;
-        padding: 12px 0 0 0;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        gap: 8px;
-        border-top: 1px dashed rgba(0, 0, 0, 0.08);
-        width: 100%;
-      }
 
       /* Animação de fade-in para os cards */
       .fade-in {
@@ -1029,11 +776,13 @@
         scriptClear.src = '/assets/js/components/clear-button.js';
         document.head.appendChild(scriptClear);
       }
+      
+
     </script>
 
     <div class="container-principal">
       <div class="row">
-        <div class="col s12 m6">
+        <div class="col s12">
           <div class="card fade-in">
             <div class="card-content">
               <span class="card-title" role="heading" aria-level="1"><i class="fas fa-percent mr-2"></i>Calculadora de Desconto</span>
@@ -1109,40 +858,7 @@
             </div>
           </div>
         </div>
-        <div class="col s12 m6">
-          <div id="historico-container" class="card fade-in">
-            <div class="card-content" style="position: relative; padding-bottom: 60px !important;">
-              <span class="card-title" role="heading" aria-level="1"><i class="fas fa-history mr-2"></i>Histórico de Cálculos</span>
-              <!-- Função para validar e destacar campos -->
-              <script>
-                function validarCampo(input, condicao, mensagem) {
-                  if (!condicao) {
-                    input.classList.add("invalid");
-                    showToast(mensagem, "rounded red");
-                    input.focus();
-                    return false;
-                  }
-                  input.classList.remove("invalid");
-                  return true;
-                }
-              </script>
-              <ul
-                id="historico-list"
-                class="collection"
-                style="max-height: 400px; overflow-y: auto"
-              >
-                <!-- History items will be appended here -->
-              </ul>
-              <div class="btn-container" style="margin-top: auto; text-align: center; position: absolute; bottom: 10px; left: 0; right: 0; display: flex; justify-content: center;">
-                <clear-history-button
-                  storage-key="historico-desconto"
-                  history-list-id="historico-list"
-                  container-id="historico-container"
-                  success-message="Histórico limpo com sucesso!"
-                  empty-message="O histórico já está vazio!"
-                ></clear-history-button>
-              </div>
-            </div>
+
           </div>
         </div>
       </div>
@@ -1242,23 +958,11 @@
       }
 
       function adicionarAoHistorico(preco, desconto, resultado) {
-        const historico = document.getElementById("historico-list");
-        const maxHistoricoItems = 5;
+        const historyManager = document.getElementById("historico-desconto");
         
-        // Remover o componente empty-history se existir
-        const emptyHistory = historico.querySelector('empty-history');
-        if (emptyHistory) {
-          historico.removeChild(emptyHistory);
-        }
-
-        const item = document.createElement("li");
-        item.className = "collection-item historico-item";
-
         // Formata os valores para garantir que sempre tenham duas casas decimais
-        const precoFormatado =
-          typeof preco === "string" ? preco : preco.toFixed(2).replace(".", ",");
-        const resultadoFormatado =
-          typeof resultado === "string" ? resultado : resultado.toFixed(2).replace(".", ",");
+        const precoFormatado = typeof preco === "string" ? preco : preco.toFixed(2).replace(".", ",");
+        const resultadoFormatado = typeof resultado === "string" ? resultado : resultado.toFixed(2).replace(".", ",");
         
         // Calcula a economia (diferença entre preço original e final)
         const precoOriginal = typeof preco === "string" 
@@ -1277,68 +981,18 @@
         } else if (descontoNum >= 15) {
           descontoClasse = "medio";
         }
-
-        item.innerHTML = `
-            <div class="historico-preco">
-                <span class="valor-original">Valor Original: R$ ${precoFormatado}</span> 
-            </div>
-            <div class="historico-economia">
-                <span class="valor-economia">
-                    <i class="material-icons" style="font-size: 14px; vertical-align: middle; margin-right: 2px;">savings</i>
-                    Economia: R$ ${economia}
-                </span>
-                <span class="desconto ${descontoClasse}">
-                    <i class="material-icons" style="font-size: 14px; margin-right: 4px;">trending_down</i>
-                    ${desconto}%
-                </span>
-            </div>
-            <div class="historico-final">
-                <span class="valor-final">Valor Final: R$ ${resultadoFormatado}</span>
-            </div>
-        `;
-
-        // Adiciona efeito de fade in com animação melhorada
-        item.style.opacity = "0";
-        item.style.transform = "scale(0.95)";
-        item.style.transition = "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
         
-        // Adiciona um ID único para o item
-        const itemId = 'historico-' + Date.now();
-        item.setAttribute('id', itemId);
+        // Cria um novo item de histórico
+        const historyItem = document.createElement('history-item');
+        historyItem.setAttribute('title', 'Cálculo de Desconto');
+        historyItem.setAttribute('original-value', `R$ ${precoFormatado}`);
+        historyItem.setAttribute('discount', `${desconto}%`);
+        historyItem.setAttribute('discount-class', descontoClasse);
+        historyItem.setAttribute('final-value', `R$ ${resultadoFormatado}`);
+        historyItem.setAttribute('savings', `R$ ${economia}`);
         
-        // Remove itens antigos se exceder o limite
-        while (historico.children.length >= maxHistoricoItems) {
-          const lastItem = historico.lastChild;
-          lastItem.style.opacity = "0";
-          lastItem.style.transform = "scale(0.9)";
-          setTimeout(() => {
-            if (lastItem.parentNode) {
-              historico.removeChild(lastItem);
-            }
-          }, 300);
-        }
-
-        historico.insertBefore(item, historico.firstChild);
-
-        // Força o reflow para a animação funcionar
-        item.offsetHeight;
-
-        // Aplica a animação
-        setTimeout(() => {
-          item.style.opacity = "1";
-          item.style.transform = "scale(1)";
-        }, 50);
-        
-        // Adiciona efeito de destaque
-        setTimeout(() => {
-          const newItem = document.getElementById(itemId);
-          if (newItem) {
-            newItem.style.backgroundColor = "rgba(33, 150, 243, 0.05)";
-            setTimeout(() => {
-              newItem.style.backgroundColor = "";
-            }, 1000);
-          }
-        }, 500);
+        // Adiciona o item ao histórico
+        historyManager.addItem(historyItem);
       }
 
       // Adicionar validação de input para permitir números e separadores decimais
@@ -1460,30 +1114,24 @@
         showToast("Campos limpos!", "rounded blue");
       }
 
-      // Função para carregar o histórico
-      function carregarHistorico() {
-        const historicoList = document.getElementById("historico-list");
-        
-        // Verificar se já existem itens no histórico
-        if (historicoList.children.length === 0) {
-          // Mostrar o componente de histórico vazio
-          historicoList.innerHTML = '';
-          const emptyHistory = document.createElement('empty-history');
-          emptyHistory.setAttribute('message', 'Nenhum cálculo no histórico');
-          emptyHistory.setAttribute('sub-message', 'Os cálculos realizados aparecerão aqui');
-          historicoList.appendChild(emptyHistory);
-        }
-      }
-      
       // Inicializar componentes Materialize
       document.addEventListener("DOMContentLoaded", function () {
         M.updateTextFields();
         // Definir foco inicial no campo de valor
         document.getElementById("valor").focus();
-        // Carregar histórico
-        carregarHistorico();
       });
     </script>
+    
+    <!-- Container do Histórico -->
+    <div id="historico-container" class="historico-container">
+      <div class="historico-header">
+        <h5>Histórico de Descontos</h5>
+        <button id="limpar-historico" class="btn-flat waves-effect waves-light">
+          <i class="material-icons">delete</i>
+        </button>
+      </div>
+      <ul id="historico-list" class="collection"></ul>
+    </div>
     
     </body>
     </html>

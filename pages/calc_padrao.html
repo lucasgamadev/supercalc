@@ -14,7 +14,31 @@
     <link rel="stylesheet" href="/assets/css/styles.css">
     <!-- Componente de fundo -->
     <script src="/assets/js/components/background.js"></script>
+    <!-- Componentes de Histórico -->
+    <script src="/assets/js/components/history-item.js"></script>
+    <script src="/assets/js/components/history-manager.js"></script>
     <script>
+      // Inicializa o gerenciador de histórico
+      const historyManager = new HistoryManager(
+        'calculo-padrao-historico', // Chave específica para calculadora padrão
+        'historico-list',           // ID da lista de histórico
+        'historico-container'       // ID do container do histórico
+      );
+
+      // Carrega o histórico ao iniciar
+      document.addEventListener('DOMContentLoaded', function() {
+        historyManager.loadHistory();
+      });
+
+      // Listeners para eventos de cópia
+      document.addEventListener('copy-success', function(e) {
+        showToast(e.detail.message, 'green rounded');
+      });
+      
+      document.addEventListener('copy-error', function(e) {
+        showToast(e.detail.message, 'red rounded');
+      });
+
       tailwind.config = {
         theme: {
           extend: {
@@ -801,6 +825,9 @@
     
     <!-- Componente de fundo -->
     <script src="/assets/js/components/background.js"></script>
+    <!-- Componentes de Histórico -->
+    <script src="/assets/js/components/history-item.js"></script>
+    <script src="/assets/js/components/history-manager.js"></script>
 
     <div class="container-principal">
       <div class="row">
