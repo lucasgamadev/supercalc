@@ -89,6 +89,17 @@
         margin: 0;
       }
 
+      #historico-container {
+        position: relative;
+        width: 100%;
+        transition: opacity 0.3s ease;
+        opacity: 0;
+      }
+
+      #historico-container.show {
+        opacity: 1;
+      }
+
       .container-principal {
         position: relative;
         display: flex;
@@ -782,7 +793,8 @@
 
     <div class="container-principal">
       <div class="row">
-        <div class="col s12">
+        <!-- Coluna da Calculadora de Desconto -->
+        <div class="col s12 m6">
           <div class="card fade-in">
             <div class="card-content">
               <span class="card-title" role="heading" aria-level="1"><i class="fas fa-percent mr-2"></i>Calculadora de Desconto</span>
@@ -859,10 +871,32 @@
           </div>
         </div>
 
+        <!-- Coluna do Histórico -->
+        <div class="col s12 m6">
+          <div id="historico-container" class="card fade-in show">
+            <div class="card-content" style="position: relative; padding: 10px !important; padding-bottom: 50px !important;">
+              <span class="card-title" role="heading" aria-level="1" style="margin-bottom: 10px;"><i class="fas fa-history mr-2"></i>Histórico de Cálculos</span>
+              
+              <!-- Nova div para envolver o histórico e sua barra de rolagem -->
+              <div class="historico-wrapper">
+                <ul id="historico-list" class="collection"></ul>
+              </div>
+              
+              <div class="btn-container" style="margin-top: 10px; padding: 0; text-align: center; position: absolute; bottom: 10px; left: 0; right: 0;">
+                <clear-history-button
+                  storage-key="calculo-desconto-historico"
+                  history-list-id="historico-list"
+                  container-id="historico-container"
+                  success-message="Histórico limpo com sucesso!"
+                  empty-message="O histórico já está vazio!"
+                ></clear-history-button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
+    
     <!-- Importando Materialize JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <!-- Importando componentes web personalizados -->
@@ -1120,18 +1154,23 @@
         // Definir foco inicial no campo de valor
         document.getElementById("valor").focus();
       });
+      
+      // Carrega o histórico ao iniciar
+      document.addEventListener('DOMContentLoaded', function() {
+        historyManager.loadHistory();
+      });
+
+      // Listeners para eventos de cópia
+      document.addEventListener('copy-success', function(e) {
+        showToast(e.detail.message, 'green rounded');
+      });
+      
+      document.addEventListener('copy-error', function(e) {
+        showToast(e.detail.message, 'red rounded');
+      });
     </script>
     
     <!-- Container do Histórico -->
-    <div id="historico-container" class="historico-container">
-      <div class="historico-header">
-        <h5>Histórico de Descontos</h5>
-        <button id="limpar-historico" class="btn-flat waves-effect waves-light">
-          <i class="material-icons">delete</i>
-        </button>
-      </div>
-      <ul id="historico-list" class="collection"></ul>
-    </div>
     
     </body>
     </html>
