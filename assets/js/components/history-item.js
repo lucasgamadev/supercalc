@@ -3,13 +3,13 @@ class HistoryItem extends HTMLElement {
     super();
 
     // Cria Shadow DOM
-    this.attachShadow({ mode: "open" });
+    this.attachShadow({ mode: 'open' });
 
     // Inicializa propriedades
-    this.operation = "";
-    this.result = "";
-    this.resultClass = "resultado-positivo";
-    this.operatorType = "default";
+    this.operation = '';
+    this.result = '';
+    this.resultClass = 'resultado-positivo';
+    this.operatorType = 'default';
   }
 
   // Ciclo de vida: quando o componente é adicionado ao DOM
@@ -20,26 +20,26 @@ class HistoryItem extends HTMLElement {
 
   // Define quais atributos devem ser observados
   static get observedAttributes() {
-    return ["operation", "result", "result-class", "operator-type"];
+    return ['operation', 'result', 'result-class', 'operator-type'];
   }
 
   // Ciclo de vida: quando um atributo observado é alterado
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue !== newValue) {
       switch (name) {
-        case "operation":
+        case 'operation':
           this.operation = newValue;
           break;
 
-        case "result":
+        case 'result':
           this.result = newValue;
           break;
 
-        case "result-class":
+        case 'result-class':
           this.resultClass = newValue;
           break;
 
-        case "operator-type":
+        case 'operator-type':
           this.operatorType = newValue;
           break;
       }
@@ -54,25 +54,25 @@ class HistoryItem extends HTMLElement {
   // Renderiza o conteúdo no Shadow DOM
   render() {
     // Determina qual ícone será exibido com base no tipo de operador
-    let iconContent = "";
+    let iconContent = '';
 
     switch (this.operatorType) {
-      case "conversao-moeda":
+      case 'conversao-moeda':
         iconContent =
           '<i class="material-icons" style="font-size: 18px;">currency_exchange</i>';
         break;
 
-      case "juros-simples":
+      case 'juros-simples':
         iconContent =
           '<i class="material-icons" style="font-size: 18px;">percent</i>';
         break;
 
-      case "juros-compostos":
+      case 'juros-compostos':
         iconContent =
           '<i class="material-icons" style="font-size: 18px;">analytics</i>';
         break;
 
-      case "desconto":
+      case 'desconto':
         iconContent =
           '<i class="material-icons" style="font-size: 18px;">discount</i>';
         break;
@@ -204,9 +204,9 @@ class HistoryItem extends HTMLElement {
 
   // Adiciona event listeners
   addEventListeners() {
-    const btnCopiar = this.shadowRoot.querySelector(".btn-copiar");
+    const btnCopiar = this.shadowRoot.querySelector('.btn-copiar');
     if (btnCopiar) {
-      btnCopiar.addEventListener("click", this.copiarResultado.bind(this));
+      btnCopiar.addEventListener('click', this.copiarResultado.bind(this));
     }
   }
 
@@ -219,22 +219,22 @@ class HistoryItem extends HTMLElement {
       .then(() => {
         // Dispara um evento personalizado para notificar que o texto foi copiado
         this.dispatchEvent(
-          new CustomEvent("copy-success", {
+          new CustomEvent('copy-success', {
             bubbles: true,
             composed: true,
             detail: {
-              message: "Resultado copiado para a área de transferência!",
+              message: 'Resultado copiado para a área de transferência!',
             },
           })
         );
       })
       .catch((err) => {
-        console.error("Erro ao copiar: ", err);
+        console.error('Erro ao copiar: ', err);
         this.dispatchEvent(
-          new CustomEvent("copy-error", {
+          new CustomEvent('copy-error', {
             bubbles: true,
             composed: true,
-            detail: { message: "Não foi possível copiar o resultado." },
+            detail: { message: 'Não foi possível copiar o resultado.' },
           })
         );
       });
@@ -242,4 +242,4 @@ class HistoryItem extends HTMLElement {
 }
 
 // Registra o componente
-customElements.define("history-item", HistoryItem);
+customElements.define('history-item', HistoryItem);
