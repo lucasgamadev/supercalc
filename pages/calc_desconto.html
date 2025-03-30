@@ -8,7 +8,7 @@
       content="Calculadora de desconto simples e eficiente para calcular valores com desconto em Reais"
     />
     <title>Calculadora de Desconto</title>
-    <!-- TailwindCSS via CDN -->
+    <!-- TailwindCSS via CDN - Apenas para desenvolvimento. Para produção usar método recomendado: https://tailwindcss.com/docs/installation -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/assets/css/styles.css" />
@@ -959,6 +959,26 @@
         scriptClear.src = '/assets/js/components/clear-button.js';
         document.head.appendChild(scriptClear);
       }
+
+      // Carrega os demais componentes necessários
+      if (!customElements.get('clear-history-button')) {
+        const scriptClearHistory = document.createElement('script');
+        scriptClearHistory.src =
+          '/assets/js/components/clear-history-button.js';
+        document.head.appendChild(scriptClearHistory);
+      }
+
+      if (!customElements.get('empty-history')) {
+        const scriptEmptyHistory = document.createElement('script');
+        scriptEmptyHistory.src = '/assets/js/components/empty-history.js';
+        document.head.appendChild(scriptEmptyHistory);
+      }
+
+      if (!customElements.get('toast-notification')) {
+        const scriptToast = document.createElement('script');
+        scriptToast.src = '/assets/js/components/toast-notification.js';
+        document.head.appendChild(scriptToast);
+      }
     </script>
 
     <div class="container-principal">
@@ -1147,13 +1167,9 @@
 
     <!-- Importando Materialize JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <!-- Importando componentes web personalizados -->
-    <script src="/assets/js/components/toast-notification.js"></script>
-    <script src="/assets/js/components/home-button.js"></script>
-    <script src="/assets/js/components/calculate-button.js"></script>
-    <script src="/assets/js/components/clear-button.js"></script>
-    <script src="/assets/js/components/clear-history-button.js"></script>
-    <script src="/assets/js/components/empty-history.js"></script>
+
+    <!-- Removidos os imports duplicados dos componentes web personalizados -->
+
     <script>
       // Script inicializado
 
