@@ -1048,16 +1048,7 @@
               <!-- Nova div para envolver o histórico e sua barra de rolagem -->
               <div class="historico-wrapper">
                 <ul id="historico-list" class="collection">
-                  <!-- Exibe mensagem de histórico vazio -->
-                  <li class="collection-item empty-history">
-                    <div class="empty-message">
-                      <i class="material-icons">history</i>
-                      <p>Nenhum cálculo no histórico</p>
-                      <p class="sub-message">
-                        Os cálculos realizados aparecerão aqui
-                      </p>
-                    </div>
-                  </li>
+                  <!-- O componente empty-history será adicionado via JavaScript quando necessário -->
                 </ul>
               </div>
 
@@ -1095,6 +1086,7 @@
     <script src="/assets/js/components/calculate-button.js"></script>
     <script src="/assets/js/components/clear-button.js"></script>
     <script src="/assets/js/components/clear-history-button.js"></script>
+    <script src="/assets/js/components/empty-history.js"></script>
     <script>
       // Script inicializado
 
@@ -1235,9 +1227,9 @@
         const historicoList = document.getElementById('historico-list');
 
         // Antes de adicionar um novo item, verifica e remove a mensagem de histórico vazio
-        const emptyHistory = historicoList.querySelector('.empty-history');
+        const emptyHistory = historicoList.querySelector('empty-history');
         if (emptyHistory) {
-          emptyHistory.remove();
+          historicoList.removeChild(emptyHistory);
         }
 
         // Criar novo item de histórico
@@ -1352,16 +1344,18 @@
           // Mostrar o container de histórico
           document.getElementById('historico-container').classList.add('show');
         } else {
-          // Mostrar o componente de histórico vazio
-          historicoList.innerHTML = `
-            <li class="collection-item empty-history">
-              <div class="empty-message">
-                <i class="material-icons">history</i>
-                <p>Nenhum cálculo no histórico</p>
-                <p class="sub-message">Os cálculos realizados aparecerão aqui</p>
-              </div>
-            </li>
-          `;
+          // Mostrar o componente de histórico vazio usando o web component
+          historicoList.innerHTML = '';
+          const emptyHistory = document.createElement('empty-history');
+          emptyHistory.setAttribute(
+            'message',
+            'Nenhum registro encontrado no histórico.'
+          );
+          emptyHistory.setAttribute(
+            'sub-message',
+            'Os registros salvos aparecerão aqui.'
+          );
+          historicoList.appendChild(emptyHistory);
 
           // Mostrar o container de histórico
           document.getElementById('historico-container').classList.add('show');
@@ -1373,21 +1367,25 @@
         const historicoList = document.getElementById('historico-list');
 
         // Verificar se o histórico já está vazio
-        if (!historicoList || historicoList.querySelector('.empty-history')) {
+        if (!historicoList || historicoList.querySelector('empty-history')) {
           showToast('O histórico já está vazio!', 'orange rounded');
           return;
         }
 
         // Limpa a lista
-        historicoList.innerHTML = `
-          <li class="collection-item empty-history">
-            <div class="empty-message">
-              <i class="material-icons">history</i>
-              <p>Nenhum cálculo no histórico</p>
-              <p class="sub-message">Os cálculos realizados aparecerão aqui</p>
-            </div>
-          </li>
-        `;
+        historicoList.innerHTML = '';
+
+        // Adicionar o componente de histórico vazio
+        const emptyHistory = document.createElement('empty-history');
+        emptyHistory.setAttribute(
+          'message',
+          'Nenhum registro encontrado no histórico.'
+        );
+        emptyHistory.setAttribute(
+          'sub-message',
+          'Os registros salvos aparecerão aqui.'
+        );
+        historicoList.appendChild(emptyHistory);
 
         // Remover do localStorage
         localStorage.removeItem('calculo-desconto-historico');
