@@ -776,14 +776,28 @@
       /* Estilos para o histórico vazio */
       .empty-history {
         text-align: center;
-        padding: 30px 15px !important;
+        padding: 0 !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
       }
 
       .empty-history .empty-message {
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: center;
         color: #9e9e9e;
+        width: 100%;
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
       }
 
       .empty-history .empty-message i {
@@ -1430,10 +1444,13 @@
           // Mostrar o componente de histórico vazio usando o web component
           historicoList.innerHTML = '';
           const emptyHistory = document.createElement('empty-history');
-          emptyHistory.setAttribute('message', 'Nenhum cálculo no histórico');
+          emptyHistory.setAttribute(
+            'message',
+            'Nenhum registro encontrado no histórico.'
+          );
           emptyHistory.setAttribute(
             'sub-message',
-            'Os cálculos realizados aparecerão aqui'
+            'Os registros salvos aparecerão aqui.'
           );
           historicoList.appendChild(emptyHistory);
 
@@ -1457,10 +1474,13 @@
 
         // Adicionar o componente de histórico vazio
         const emptyHistory = document.createElement('empty-history');
-        emptyHistory.setAttribute('message', 'Nenhum cálculo no histórico');
+        emptyHistory.setAttribute(
+          'message',
+          'Nenhum registro encontrado no histórico.'
+        );
         emptyHistory.setAttribute(
           'sub-message',
-          'Os cálculos realizados aparecerão aqui'
+          'Os registros salvos aparecerão aqui.'
         );
         historicoList.appendChild(emptyHistory);
 
