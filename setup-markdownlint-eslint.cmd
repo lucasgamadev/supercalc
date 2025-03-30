@@ -471,6 +471,7 @@ echo       'react/react-in-jsx-scope': 'off',
 echo       'react/prop-types': 'off',
 echo       '@typescript-eslint/explicit-module-boundary-types': 'off',
 echo       '@typescript-eslint/no-explicit-any': 'warn',
+echo       'indent': ['error', 2, { 'SwitchCase': 1 }],
 echo       'prettier/prettier': [
 echo         'error',
 echo         {
@@ -498,6 +499,40 @@ if %errorlevel% equ 0 (
     echo %vermelho%Erro ao criar arquivo eslint.config.js.%reset%
     pause
     exit /b 1
+)
+
+rem Criar arquivo .eslintrc.json.bak para referência com configuração legada
+echo %ciano%Criando arquivo .eslintrc.json.bak para referência...%reset%
+(
+echo {
+echo   "env": {
+echo     "browser": true,
+echo     "es2021": true
+echo   },
+echo   "extends": "eslint:recommended",
+echo   "parserOptions": {
+echo     "ecmaVersion": "latest",
+echo     "sourceType": "module"
+echo   },
+echo   "rules": {
+echo     "indent": ["error", 2, { "SwitchCase": 1 }],
+echo     "linebreak-style": ["error", "windows"],
+echo     "quotes": ["error", "single"],
+echo     "semi": ["error", "always"]
+echo   },
+echo   "plugins": ["html"],
+echo   "overrides": [
+echo     {
+echo       "files": ["*.html"]
+echo     }
+echo   ]
+echo }
+) > ".eslintrc.json.bak"
+
+if %errorlevel% equ 0 (
+    echo %verde%Arquivo .eslintrc.json.bak criado com sucesso.%reset%
+) else (
+    echo %vermelho%Erro ao criar arquivo .eslintrc.json.bak.%reset%
 )
 
 rem Criar arquivo .prettierrc para garantir configuração consistente

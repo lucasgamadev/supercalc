@@ -8,16 +8,24 @@ export default [
       sourceType: 'module',
     },
     rules: {
-      indent: ['error', 2],
+      indent: [
+        'error',
+        2,
+        {
+          SwitchCase: 1,
+          flatTernaryExpressions: false,
+          ignoredNodes: [],
+        },
+      ],
       'linebreak-style': ['error', 'windows'],
       quotes: ['error', 'single'],
-      semi: ['error', 'always']
-    }
+      semi: ['error', 'always'],
+    },
   },
   {
     files: ['**/*.html'],
     plugins: {
-      html: htmlPlugin
-    }
-  }
+      html: htmlPlugin,
+    },
+  },
 ];
