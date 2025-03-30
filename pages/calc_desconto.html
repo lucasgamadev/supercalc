@@ -23,6 +23,16 @@
         'historico-list',           // ID da lista de histórico
         'historico-container'       // ID do container do histórico
       );
+
+      // Carrega o histórico ao iniciar
+      document.addEventListener('DOMContentLoaded', function() {
+        historyManager.loadHistory();
+      });
+
+      // Listeners para eventos de cópia
+      document.addEventListener('copy-success', function(e) {
+        showToast(e.detail.message, 'green rounded');
+      });
     </script>
     <script>
       tailwind.config = {
@@ -992,8 +1002,6 @@
       }
 
       function adicionarAoHistorico(preco, desconto, resultado) {
-        const historyManager = document.getElementById("historico-desconto");
-        
         // Formata os valores para garantir que sempre tenham duas casas decimais
         const precoFormatado = typeof preco === "string" ? preco : preco.toFixed(2).replace(".", ",");
         const resultadoFormatado = typeof resultado === "string" ? resultado : resultado.toFixed(2).replace(".", ",");
@@ -1016,17 +1024,11 @@
           descontoClasse = "medio";
         }
         
-        // Cria um novo item de histórico
-        const historyItem = document.createElement('history-item');
-        historyItem.setAttribute('title', 'Cálculo de Desconto');
-        historyItem.setAttribute('original-value', `R$ ${precoFormatado}`);
-        historyItem.setAttribute('discount', `${desconto}%`);
-        historyItem.setAttribute('discount-class', descontoClasse);
-        historyItem.setAttribute('final-value', `R$ ${resultadoFormatado}`);
-        historyItem.setAttribute('savings', `R$ ${economia}`);
+        // Em vez de criar um history-item, use o formato esperado pelo método addHistoryItem
+        const operacao = `R$ ${precoFormatado} - ${desconto}% = R$ ${resultadoFormatado}`;
         
-        // Adiciona o item ao histórico
-        historyManager.addItem(historyItem);
+        // Adiciona o item ao histórico usando a variável global historyManager e o método correto
+        historyManager.addHistoryItem(operacao, resultadoFormatado, 'discount');
       }
 
       // Adicionar validação de input para permitir números e separadores decimais
