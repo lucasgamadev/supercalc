@@ -8,7 +8,7 @@ class ToastNotification extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
-    
+
     // Configurações padrão
     this.duration = parseInt(this.getAttribute('duration')) || 2000;
     this.position = this.getAttribute('position') || 'center';
@@ -113,7 +113,7 @@ class ToastNotification extends HTMLElement {
     if (!document.getElementById(this.containerId)) {
       const container = document.createElement('div');
       container.id = this.containerId;
-      
+
       // Aplicar estilos diretamente ao criar o container com !important
       container.style.cssText = `
         display: flex !important;
@@ -129,7 +129,7 @@ class ToastNotification extends HTMLElement {
         pointer-events: none !important;
         z-index: 10000 !important;
       `;
-      
+
       document.body.appendChild(container);
     }
   }
@@ -144,12 +144,12 @@ class ToastNotification extends HTMLElement {
     // Remove toasts anteriores
     const existingToasts = document.querySelectorAll('.toast');
     existingToasts.forEach((toast) => toast.remove());
-    
+
     // Cria o elemento toast
     const toast = document.createElement('div');
     toast.className = `toast ${classes}`;
     toast.innerHTML = message;
-    
+
     // Adiciona ao container
     const container = document.getElementById(this.containerId);
     if (container) {
@@ -169,10 +169,10 @@ class ToastNotification extends HTMLElement {
         pointer-events: none !important;
         z-index: 10000 !important;
       `;
-      
+
       // Mostra com animação
       setTimeout(() => toast.classList.add('show'), 10);
-      
+
       // Remove após a duração
       setTimeout(() => {
         toast.classList.remove('show');
@@ -198,24 +198,24 @@ class ToastNotification extends HTMLElement {
     if (!customElements.get('toast-notification')) {
       customElements.define('toast-notification', ToastNotification);
     }
-    
+
     // Cria uma instância temporária se não existir no DOM
     let toastComponent = document.querySelector('toast-notification');
     if (!toastComponent) {
       toastComponent = document.createElement('toast-notification');
       document.body.appendChild(toastComponent);
     }
-    
+
     // Garante que o container de toast exista e esteja configurado corretamente
     const containerId = 'toast-container';
     let container = document.getElementById(containerId);
-    
+
     if (!container) {
       container = document.createElement('div');
       container.id = containerId;
       document.body.appendChild(container);
     }
-    
+
     // Reforça os estilos com !important para garantir centralização
     container.style.cssText = `
       display: flex !important;
@@ -231,7 +231,7 @@ class ToastNotification extends HTMLElement {
       pointer-events: none !important;
       z-index: 10000 !important;
     `;
-    
+
     // Exibe o toast
     toastComponent.show(message, classes, duration);
   }

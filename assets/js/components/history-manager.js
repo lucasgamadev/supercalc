@@ -35,7 +35,7 @@ class HistoryManager {
     // Determina a classe do resultado com base no valor
     let resultClass = 'resultado-positivo';
     const numericValue = parseFloat(result.toString().replace(',', '.'));
-    
+
     if (numericValue === 0) {
       resultClass = 'resultado-zero';
     } else if (numericValue < 0) {
@@ -48,7 +48,7 @@ class HistoryManager {
     historyItem.setAttribute('result', result);
     historyItem.setAttribute('operator-type', operatorType);
     historyItem.setAttribute('result-class', resultClass);
-    
+
     // Adiciona o item ao início da lista
     this.historyList.prepend(historyItem);
 
@@ -66,7 +66,7 @@ class HistoryManager {
       operation,
       result,
       operatorType,
-      resultClass
+      resultClass,
     });
 
     // Mostra o container de histórico
@@ -80,12 +80,12 @@ class HistoryManager {
   saveHistoryItem(item) {
     const items = this.getSavedHistory() || [];
     items.unshift(JSON.stringify(item)); // Adiciona no início do array
-    
+
     // Limita o número de itens no histórico
     if (items.length > 30) {
       items.pop(); // Remove o último item
     }
-    
+
     localStorage.setItem(this.storageKey, JSON.stringify(items));
   }
 
@@ -103,25 +103,31 @@ class HistoryManager {
    */
   loadHistory() {
     const items = this.getSavedHistory();
-    
+
     if (items && items.length > 0) {
       this.historyContainer.classList.add('show');
-      
+
       // Mostra todos os itens do histórico
       items.forEach((itemString) => {
         try {
           const item = JSON.parse(itemString);
-          
+
           // Cria o componente de item de histórico
           const historyItem = document.createElement('history-item');
           historyItem.setAttribute('operation', item.operation);
           historyItem.setAttribute('result', item.result);
-          historyItem.setAttribute('operator-type', item.operatorType || 'default');
-          historyItem.setAttribute('result-class', item.resultClass || 'resultado-positivo');
-          
+          historyItem.setAttribute(
+            'operator-type',
+            item.operatorType || 'default'
+          );
+          historyItem.setAttribute(
+            'result-class',
+            item.resultClass || 'resultado-positivo'
+          );
+
           // Adiciona o item à lista
           this.historyList.appendChild(historyItem);
-          
+
           // Adiciona evento para ouvir quando o item for copiado
           historyItem.addEventListener('copy-success', (e) => {
             this.showToast(e.detail.message, 'green rounded');
@@ -139,9 +145,12 @@ class HistoryManager {
       this.historyList.innerHTML = '';
       const emptyHistory = document.createElement('empty-history');
       emptyHistory.setAttribute('message', 'Nenhum cálculo no histórico');
-      emptyHistory.setAttribute('sub-message', 'Os cálculos realizados aparecerão aqui');
+      emptyHistory.setAttribute(
+        'sub-message',
+        'Os cálculos realizados aparecerão aqui'
+      );
       this.historyList.appendChild(emptyHistory);
-      
+
       // Adiciona um pequeno atraso para garantir que o componente seja renderizado antes de mostrar o container
       setTimeout(() => {
         this.historyContainer.classList.add('show');
@@ -158,19 +167,22 @@ class HistoryManager {
       this.showToast('O histórico já está vazio!', 'orange rounded');
       return;
     }
-    
+
     // Remove todos os itens do histórico
     this.historyList.innerHTML = '';
-    
+
     localStorage.removeItem(this.storageKey);
-    
+
     // Adiciona o componente de histórico vazio
     const emptyHistory = document.createElement('empty-history');
     emptyHistory.setAttribute('message', 'Nenhum cálculo no histórico');
-    emptyHistory.setAttribute('sub-message', 'Os cálculos realizados aparecerão aqui');
+    emptyHistory.setAttribute(
+      'sub-message',
+      'Os cálculos realizados aparecerão aqui'
+    );
     this.historyList.appendChild(emptyHistory);
     this.historyContainer.classList.add('show');
-    
+
     this.showToast('Histórico limpo com sucesso!', 'green rounded');
   }
 
@@ -207,7 +219,7 @@ class HistoryManager {
     } else {
       // Fallback para o Materialize Toast se o componente não estiver disponível
       if (typeof M !== 'undefined' && M.toast) {
-        M.toast({html: message, classes: classes});
+        M.toast({ html: message, classes: classes });
       } else {
         console.log(message);
       }

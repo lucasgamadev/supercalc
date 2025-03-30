@@ -71,4 +71,4 @@ class HeaderComponent extends HTMLElement {
 }
 
 // Registra o componente
-customElements.define('header-component', HeaderComponent); 
+customElements.define('header-component', HeaderComponent);

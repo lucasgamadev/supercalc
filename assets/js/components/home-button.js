@@ -103,15 +103,15 @@ class HomeButton extends HTMLElement {
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue !== newValue) {
       switch (name) {
-      case 'href':
-        this.href = newValue;
-        break;
-      case 'text':
-        this.text = newValue;
-        break;
-      case 'icon':
-        this.icon = newValue;
-        break;
+        case 'href':
+          this.href = newValue;
+          break;
+        case 'text':
+          this.text = newValue;
+          break;
+        case 'icon':
+          this.icon = newValue;
+          break;
       }
       this.render();
     }

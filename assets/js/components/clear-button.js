@@ -144,16 +144,16 @@ class ClearButton extends HTMLElement {
       const customEvent = new CustomEvent('clear', {
         bubbles: true,
         composed: true,
-        detail: { source: this, formId: this.formId }
+        detail: { source: this, formId: this.formId },
       });
       this.dispatchEvent(customEvent);
-      
+
       // Limpar os campos do formulário se um ID de formulário foi fornecido
       if (this.formId) {
         const form = document.getElementById(this.formId);
         if (form) {
           const inputs = form.querySelectorAll('input, select, textarea');
-          inputs.forEach(input => {
+          inputs.forEach((input) => {
             if (input.type === 'radio' || input.type === 'checkbox') {
               input.checked = false;
             } else {
@@ -162,7 +162,7 @@ class ClearButton extends HTMLElement {
           });
         }
       }
-      
+
       // Se houver um onclick definido, executá-lo
       if (this.onClick) {
         // Usar eval com cuidado - apenas para compatibilidade com código existente

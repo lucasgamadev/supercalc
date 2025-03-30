@@ -8,8 +8,12 @@ class EmptyHistory extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
-    this.message = this.getAttribute('message') || 'Nenhum registro encontrado no histórico.';
-    this.subMessage = this.getAttribute('sub-message') || 'Os registros salvos aparecerão aqui.';
+    this.message =
+      this.getAttribute('message') ||
+      'Nenhum registro encontrado no histórico.';
+    this.subMessage =
+      this.getAttribute('sub-message') ||
+      'Os registros salvos aparecerão aqui.';
   }
 
   connectedCallback() {

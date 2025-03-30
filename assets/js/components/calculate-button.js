@@ -143,10 +143,10 @@ class CalculateButton extends HTMLElement {
       const customEvent = new CustomEvent('calculate', {
         bubbles: true,
         composed: true,
-        detail: { source: this }
+        detail: { source: this },
       });
       this.dispatchEvent(customEvent);
-      
+
       // Se houver um onclick definido, executá-lo
       if (this.onClick) {
         // Usar eval com cuidado - apenas para compatibilidade com código existente

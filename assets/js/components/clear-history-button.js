@@ -9,10 +9,14 @@ class ClearHistoryButton extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open' });
     this.storageKey = this.getAttribute('storage-key') || 'historico';
-    this.historyListId = this.getAttribute('history-list-id') || 'historico-list';
-    this.historyContainerId = this.getAttribute('container-id') || 'historico-container';
-    this.successMessage = this.getAttribute('success-message') || 'Histórico limpo com sucesso!';
-    this.emptyMessage = this.getAttribute('empty-message') || 'O histórico já está vazio!';
+    this.historyListId =
+      this.getAttribute('history-list-id') || 'historico-list';
+    this.historyContainerId =
+      this.getAttribute('container-id') || 'historico-container';
+    this.successMessage =
+      this.getAttribute('success-message') || 'Histórico limpo com sucesso!';
+    this.emptyMessage =
+      this.getAttribute('empty-message') || 'O histórico já está vazio!';
   }
 
   connectedCallback() {
@@ -103,7 +107,7 @@ class ClearHistoryButton extends HTMLElement {
 
     // Verifica se o histórico já está vazio
     if (!historico || historico.children.length === 0) {
-      this.showToast(this.emptyMessage, "rounded orange");
+      this.showToast(this.emptyMessage, 'rounded orange');
       return;
     }
 
@@ -120,15 +124,18 @@ class ClearHistoryButton extends HTMLElement {
     // Adiciona o componente EmptyHistory para indicar que o histórico está vazio
     const emptyHistory = document.createElement('empty-history');
     emptyHistory.setAttribute('message', 'Nenhum cálculo no histórico');
-    emptyHistory.setAttribute('sub-message', 'Os cálculos realizados aparecerão aqui');
+    emptyHistory.setAttribute(
+      'sub-message',
+      'Os cálculos realizados aparecerão aqui'
+    );
     historico.appendChild(emptyHistory);
-    
+
     // Mostra o container de histórico se especificado
     if (historicoContainer) {
-      historicoContainer.classList.add("show");
+      historicoContainer.classList.add('show');
     }
 
-    this.showToast(this.successMessage, "rounded green");
+    this.showToast(this.successMessage, 'rounded green');
   }
 
   /**
@@ -138,14 +145,17 @@ class ClearHistoryButton extends HTMLElement {
    */
   showToast(message, classes) {
     // Usa o componente ToastNotification se disponível
-    if (typeof ToastNotification !== 'undefined' && ToastNotification.showToast) {
+    if (
+      typeof ToastNotification !== 'undefined' &&
+      ToastNotification.showToast
+    ) {
       ToastNotification.showToast(message, classes, 2000);
     } else if (typeof M !== 'undefined' && M.toast) {
       // Fallback para Materialize se ToastNotification não estiver disponível
       M.toast({
         html: message,
         classes: `${classes} center-align`,
-        displayLength: 1000
+        displayLength: 1000,
       });
     } else {
       // Fallback final
