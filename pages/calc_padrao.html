@@ -11,31 +11,34 @@
     <!-- TailwindCSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/assets/css/styles.css">
+    <link rel="stylesheet" href="/assets/css/styles.css" />
     <!-- Componente de fundo -->
     <script src="/assets/js/components/background.js"></script>
     <!-- Componentes de Histórico -->
     <script src="/assets/js/components/history-item.js"></script>
     <script src="/assets/js/components/history-manager.js"></script>
     <script>
-      // Inicializa o gerenciador de histórico
-      const historyManager = new HistoryManager(
-        'calculo-padrao-historico', // Chave específica para calculadora padrão
-        'historico-list',           // ID da lista de histórico
-        'historico-container'       // ID do container do histórico
-      );
+      // Inicializa o gerenciador de histórico após o carregamento do DOM
+      document.addEventListener('DOMContentLoaded', function () {
+        // Certifique-se de que os elementos existem antes de inicializar
+        setTimeout(() => {
+          const historyManager = new HistoryManager(
+            'calculo-padrao-historico', // Chave específica para calculadora padrão
+            'historico-list', // ID da lista de histórico
+            'historico-container' // ID do container do histórico
+          );
 
-      // Carrega o histórico ao iniciar
-      document.addEventListener('DOMContentLoaded', function() {
-        historyManager.loadHistory();
+          // Carrega o histórico após a inicialização
+          historyManager.loadHistory();
+        }, 100); // Pequeno atraso para garantir que o DOM está pronto
       });
 
       // Listeners para eventos de cópia
-      document.addEventListener('copy-success', function(e) {
+      document.addEventListener('copy-success', function (e) {
         showToast(e.detail.message, 'green rounded');
       });
-      
-      document.addEventListener('copy-error', function(e) {
+
+      document.addEventListener('copy-error', function (e) {
         showToast(e.detail.message, 'red rounded');
       });
 
@@ -69,27 +72,33 @@
               },
             },
             fontFamily: {
-              'roboto': ['Roboto', 'sans-serif'],
+              roboto: ['Roboto', 'sans-serif'],
             },
           },
         },
-      }
+      };
     </script>
     <!-- Importando Materialize CSS e Ícones -->
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
       rel="stylesheet"
     />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
     <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
       rel="stylesheet"
     />
     <style>
       * {
-        font-family: "Roboto", sans-serif;
+        font-family: 'Roboto', sans-serif;
       }
 
       #historico-container {
@@ -270,8 +279,12 @@
 
       /* Estilo direto e simplificado para o histórico */
       #historico-list {
-        height: calc(100% - 20px); /* Ajustado para considerar o padding superior e inferior */
-        width: calc(100% - 10px); /* Ajustado para considerar somente o padding esquerdo */
+        height: calc(
+          100% - 20px
+        ); /* Ajustado para considerar o padding superior e inferior */
+        width: calc(
+          100% - 10px
+        ); /* Ajustado para considerar somente o padding esquerdo */
         margin: 0;
         padding: 0; /* Removido padding extra à direita */
         list-style: none;
@@ -288,7 +301,7 @@
         padding: 8px 10px !important;
         margin-bottom: 5px !important;
         background-color: transparent !important;
-        border-bottom: 1px solid rgba(0,0,0,0.05) !important;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
       }
 
       /* Personalização da barra de rolagem - revisão completa */
@@ -328,9 +341,10 @@
         padding: 0 !important;
         overflow: visible !important;
       }
-      
+
       /* Remover qualquer overflow oculto que possa estar interferindo */
-      .card-content, .card {
+      .card-content,
+      .card {
         overflow: visible !important;
       }
 
@@ -340,7 +354,11 @@
         align-items: center;
         justify-content: space-between;
         padding: 10px 15px;
-        background: linear-gradient(145deg, rgba(255, 255, 255, 0.51), rgba(250, 250, 250, 0.51));
+        background: linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.51),
+          rgba(250, 250, 250, 0.51)
+        );
         border-radius: 12px;
         transition: all 0.3s ease;
         border-left: 4px solid #2196f3;
@@ -449,11 +467,21 @@
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       }
 
-      .operador-soma { background: linear-gradient(to bottom, #4caf50, #8bc34a); }
-      .operador-subtracao { background: linear-gradient(to bottom, #f44336, #ff5252); }
-      .operador-multiplicacao { background: linear-gradient(to bottom, #ff9800, #ffb74d); }
-      .operador-divisao { background: linear-gradient(to bottom, #9c27b0, #ba68c8); }
-      .operador-porcentagem { background: linear-gradient(to bottom, #00bcd4, #4dd0e1); }
+      .operador-soma {
+        background: linear-gradient(to bottom, #4caf50, #8bc34a);
+      }
+      .operador-subtracao {
+        background: linear-gradient(to bottom, #f44336, #ff5252);
+      }
+      .operador-multiplicacao {
+        background: linear-gradient(to bottom, #ff9800, #ffb74d);
+      }
+      .operador-divisao {
+        background: linear-gradient(to bottom, #9c27b0, #ba68c8);
+      }
+      .operador-porcentagem {
+        background: linear-gradient(to bottom, #00bcd4, #4dd0e1);
+      }
 
       .historico-resultado {
         font-weight: 600;
@@ -487,13 +515,13 @@
         #historico-list {
           max-height: 300px;
         }
-        
+
         .calculadora button {
           padding: 12px 5px;
           font-size: 1.1rem;
           min-height: 45px;
         }
-        
+
         #display {
           padding: 12px;
           font-size: 1.75rem;
@@ -505,23 +533,23 @@
         body {
           padding: 2px;
         }
-        
+
         .calculadora button {
           padding: 10px 5px;
           font-size: 1rem;
           min-height: 40px;
         }
-        
+
         #display {
           padding: 10px;
           font-size: 1.5rem;
           min-height: 50px;
         }
-        
+
         .card-title {
           font-size: 20px;
         }
-        
+
         .resultado-item {
           padding: 8px 12px;
         }
@@ -533,19 +561,19 @@
           font-size: 18px;
           margin-bottom: 10px !important;
         }
-        
+
         .calculadora button {
           padding: 8px 4px;
           font-size: 0.9rem;
           min-height: 36px;
         }
-        
+
         #display {
           padding: 8px;
           font-size: 1.25rem;
           min-height: 45px;
         }
-        
+
         .resultado-item {
           padding: 6px 10px;
           font-size: 0.85rem;
@@ -628,7 +656,7 @@
       }
 
       .card-title::after {
-        content: "";
+        content: '';
         position: absolute;
         bottom: 0;
         left: 50%;
@@ -802,16 +830,29 @@
         }
       </style>
       <div class="no-js-message">
-        Esta calculadora requer JavaScript para funcionar. Por favor, habilite o JavaScript em seu navegador.
+        Esta calculadora requer JavaScript para funcionar. Por favor, habilite o
+        JavaScript em seu navegador.
       </div>
     </noscript>
 
     <!-- Navegação -->
-    <div class="nav-links" style="display: flex; justify-content: center; width: 100%; margin: 30px auto 0;">
+    <div
+      class="nav-links"
+      style="
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin: 30px auto 0;
+      "
+    >
       <!-- Componente do Botão Início para SuperCalc -->
-      <home-button href="/index.html" text="Início" icon="fa-home"></home-button>
+      <home-button
+        href="/index.html"
+        text="Início"
+        icon="fa-home"
+      ></home-button>
     </div>
-    
+
     <!-- Importação do componente home-button -->
     <script>
       // Verifica se o componente já foi carregado
@@ -822,12 +863,9 @@
         document.head.appendChild(script);
       }
     </script>
-    
-    <!-- Componente de fundo -->
-    <script src="/assets/js/components/background.js"></script>
-    <!-- Componentes de Histórico -->
-    <script src="/assets/js/components/history-item.js"></script>
-    <script src="/assets/js/components/history-manager.js"></script>
+
+    <!-- Não repetir a importação destes scripts -->
+    <!-- Componente de fundo e componentes de histórico já foram importados no head -->
 
     <div class="container-principal">
       <div class="row">
@@ -835,31 +873,33 @@
         <div class="col s12 m6">
           <div class="card fade-in">
             <div class="card-content">
-              <span class="card-title" role="heading" aria-level="1"><i class="fas fa-calculator mr-2"></i>Calculadora Padrão</span>
-              
+              <span class="card-title" role="heading" aria-level="1"
+                ><i class="fas fa-calculator mr-2"></i>Calculadora Padrão</span
+              >
+
               <div id="display">0</div>
-              
+
               <div class="calculadora">
                 <button class="limpar" id="btn-clear">C</button>
                 <button class="backspace" id="btn-backspace">⌫</button>
                 <button class="operador" id="btn-percent">%</button>
                 <button class="operador" id="btn-divide">÷</button>
-                
+
                 <button class="numero" id="btn-7">7</button>
                 <button class="numero" id="btn-8">8</button>
                 <button class="numero" id="btn-9">9</button>
                 <button class="operador" id="btn-multiply">×</button>
-                
+
                 <button class="numero" id="btn-4">4</button>
                 <button class="numero" id="btn-5">5</button>
                 <button class="numero" id="btn-6">6</button>
                 <button class="operador" id="btn-subtract">−</button>
-                
+
                 <button class="numero" id="btn-1">1</button>
                 <button class="numero" id="btn-2">2</button>
                 <button class="numero" id="btn-3">3</button>
                 <button class="operador" id="btn-add">+</button>
-                
+
                 <button class="numero span-2" id="btn-0">0</button>
                 <button class="numero" id="btn-decimal">,</button>
                 <button class="igual" id="btn-equals">=</button>
@@ -871,15 +911,39 @@
         <!-- Coluna do Histórico -->
         <div class="col s12 m6">
           <div id="historico-container" class="card fade-in show">
-            <div class="card-content" style="position: relative; padding: 10px !important; padding-bottom: 50px !important;">
-              <span class="card-title" role="heading" aria-level="1" style="margin-bottom: 10px;"><i class="fas fa-history mr-2"></i>Histórico de Cálculos</span>
-              
+            <div
+              class="card-content"
+              style="
+                position: relative;
+                padding: 10px !important;
+                padding-bottom: 50px !important;
+              "
+            >
+              <span
+                class="card-title"
+                role="heading"
+                aria-level="1"
+                style="margin-bottom: 10px"
+                ><i class="fas fa-history mr-2"></i>Histórico de Cálculos</span
+              >
+
               <!-- Nova div para envolver o histórico e sua barra de rolagem -->
               <div class="historico-wrapper">
                 <ul id="historico-list" class="collection"></ul>
               </div>
-              
-              <div class="btn-container" style="margin-top: 10px; padding: 0; text-align: center; position: absolute; bottom: 10px; left: 0; right: 0;">
+
+              <div
+                class="btn-container"
+                style="
+                  margin-top: 10px;
+                  padding: 0;
+                  text-align: center;
+                  position: absolute;
+                  bottom: 10px;
+                  left: 0;
+                  right: 0;
+                "
+              >
                 <clear-history-button
                   storage-key="calculo-padrao-historico"
                   history-list-id="historico-list"
@@ -909,35 +973,35 @@
       let resultadoExibido = false;
       const display = document.getElementById('display');
       const historicoList = document.getElementById('historico-list');
-      
+
       // Função para mostrar toast de notificação usando o componente web
       function showToast(message, classes = 'rounded') {
         // Usa o método estático do componente ToastNotification
         ToastNotification.showToast(message, classes);
       }
-      
+
       // Função simplificada para trocar ponto por vírgula
       function formatarDisplay(valor) {
         return valor.toString().replace('.', ',');
       }
-      
+
       // Função para converter string para número (vírgula para ponto)
       function converterParaNumero(valor) {
         return parseFloat(valor.toString().replace(',', '.'));
       }
-      
+
       // Atualiza o display
       function atualizarDisplay(valor = valorAtual) {
         display.textContent = valor;
       }
-      
+
       // Adiciona um dígito ao valor atual
       function adicionarDigito(digito) {
         if (resultadoExibido) {
           valorAtual = '0';
           resultadoExibido = false;
         }
-        
+
         if (valorAtual === '0' && digito !== ',') {
           valorAtual = digito;
         } else if (digito === ',' && !valorAtual.includes(',')) {
@@ -945,7 +1009,7 @@
         } else if (digito !== ',' || !valorAtual.includes(',')) {
           valorAtual += digito;
         }
-        
+
         // Se estiver no meio de uma operação, mostra a expressão completa
         if (operacao !== null && valorAnterior !== '') {
           atualizarDisplay(`${valorAnterior} ${operacao} ${valorAtual}`);
@@ -953,62 +1017,73 @@
           atualizarDisplay(valorAtual);
         }
       }
-      
+
       // Configura a operação
       function definirOperacao(op) {
         if (valorAtual !== '0' || valorAnterior !== '') {
           if (operacao !== null && valorAnterior !== '' && !resultadoExibido) {
             calcular();
           }
-          
+
           operacao = op;
           valorAnterior = valorAtual;
           valorAtual = '0';
           resultadoExibido = false;
-          
+
           atualizarDisplay(`${valorAnterior} ${op}`);
         }
       }
-      
+
       // Realiza o cálculo
       function calcular() {
         if (operacao === null || valorAnterior === '') return;
-        
+
         const anterior = converterParaNumero(valorAnterior);
         const atual = converterParaNumero(valorAtual);
-        
+
         // Verifica divisão por zero
         if (operacao === '÷' && atual === 0) {
           showToast('Não é possível dividir por zero!', 'red rounded');
           limparTudo();
           return;
         }
-        
+
         // Realiza a operação
         let resultado;
         switch (operacao) {
-          case '+': resultado = anterior + atual; break;
-          case '−': resultado = anterior - atual; break;
-          case '×': resultado = anterior * atual; break;
-          case '÷': resultado = anterior / atual; break;
-          case '%': resultado = anterior * (atual / 100); break;
-          default: return;
+          case '+':
+            resultado = anterior + atual;
+            break;
+          case '−':
+            resultado = anterior - atual;
+            break;
+          case '×':
+            resultado = anterior * atual;
+            break;
+          case '÷':
+            resultado = anterior / atual;
+            break;
+          case '%':
+            resultado = anterior * (atual / 100);
+            break;
+          default:
+            return;
         }
-        
+
         // Expressão simples para o histórico
         const expressao = `${valorAnterior} ${operacao} ${valorAtual} = ${formatarDisplay(resultado)}`;
-        
+
         // Adiciona ao histórico de forma simplificada
         adicionarAoHistorico(expressao);
-        
+
         valorAtual = formatarDisplay(resultado);
         valorAnterior = '';
         operacao = null;
         resultadoExibido = true;
-        
+
         atualizarDisplay(valorAtual);
       }
-      
+
       // Limpar tudo
       function limparTudo() {
         valorAtual = '0';
@@ -1017,35 +1092,39 @@
         resultadoExibido = false;
         atualizarDisplay();
       }
-      
+
       // Apagar último dígito
       function apagarDigito() {
         if (resultadoExibido) {
           limparTudo();
           return;
         }
-        
+
         if (valorAtual.length > 1) {
           valorAtual = valorAtual.slice(0, -1);
         } else {
           valorAtual = '0';
         }
-        
+
         atualizarDisplay(valorAtual);
       }
-      
+
       // Função para copiar para a área de transferência
       function copiarParaAreaDeTransferencia(texto) {
-        navigator.clipboard.writeText(texto)
+        navigator.clipboard
+          .writeText(texto)
           .then(() => {
-            showToast('Resultado copiado para a área de transferência!', 'green rounded');
+            showToast(
+              'Resultado copiado para a área de transferência!',
+              'green rounded'
+            );
           })
           .catch((err) => {
             console.error('Erro ao copiar: ', err);
             showToast('Não foi possível copiar o resultado.', 'red rounded');
           });
       }
-      
+
       // Adicionar ao histórico (versão simplificada)
       function adicionarAoHistorico(expressao) {
         // Verifica se existe o componente EmptyHistory e remove se existir
@@ -1053,17 +1132,17 @@
         if (emptyHistory) {
           historicoList.removeChild(emptyHistory);
         }
-        
+
         // Divide a expressão para separar a operação do resultado
         const partes = expressao.split('=');
         const operacao = partes[0].trim();
         const resultado = partes[1].trim();
-        
+
         // Identifica o tipo de operação para aplicar uma cor diferente
         let operadorCor = '#2196f3'; // Azul padrão
         let operadorIcone = 'calculate';
         let operadorClasse = '';
-        
+
         if (operacao.includes('+')) {
           operadorCor = '#4caf50'; // Verde para adição
           operadorIcone = 'add';
@@ -1078,24 +1157,24 @@
           operadorClasse = 'operador-multiplicacao';
         } else if (operacao.includes('÷')) {
           operadorCor = '#9c27b0'; // Roxo para divisão
-          operadorIcone = 'calculate';  // Substituído "functions" por "calculate"
+          operadorIcone = 'calculate'; // Substituído "functions" por "calculate"
           operadorClasse = 'operador-divisao';
         } else if (operacao.includes('%')) {
           operadorCor = '#00bcd4'; // Ciano para porcentagem
           operadorIcone = 'percent';
           operadorClasse = 'operador-porcentagem';
         }
-        
+
         // Determinar a classe do resultado com base no valor
         let resultadoClasse = 'resultado-positivo';
         const valorNumerico = parseFloat(resultado.replace(',', '.'));
-        
+
         if (valorNumerico === 0) {
           resultadoClasse = 'resultado-zero';
         } else if (valorNumerico < 0) {
           resultadoClasse = 'resultado-negativo';
         }
-        
+
         // Create symbols with simple square styling
         let iconContent;
         if (operacao.includes('÷')) {
@@ -1111,12 +1190,12 @@
         } else {
           iconContent = `<div class="symbol-container" style="background: linear-gradient(to bottom, #2196f3, #64b5f6);"><i class="material-icons" style="color: white; font-size: 16px;">${operadorIcone}</i></div>`;
         }
-        
+
         // Cria e adiciona o item ao histórico com estilo melhorado - ESTRUTURA SIMPLIFICADA
         const li = document.createElement('li');
         li.className = 'collection-item resultado-item fade-in';
         li.style.borderLeftColor = operadorCor;
-        
+
         li.innerHTML = `
           <div class="historico-conteudo">
             ${iconContent}
@@ -1127,72 +1206,73 @@
             <i class="material-icons" style="font-size: 18px;">content_copy</i>
           </button>
         `;
-        
+
         // Efeito de entrada suave
         li.style.opacity = '0';
         li.style.transform = 'translateY(-10px)';
-        
+
         historicoList.prepend(li);
-        
+
         // Adicionar evento de clique ao botão de cópia
         const btnCopiar = li.querySelector('.btn-copiar');
         if (btnCopiar) {
-          btnCopiar.addEventListener('click', function(e) {
+          btnCopiar.addEventListener('click', function (e) {
             e.stopPropagation();
             const valor = this.getAttribute('data-valor');
             copiarParaAreaDeTransferencia(valor);
           });
         }
-        
+
         // Força o reflow para a animação funcionar
         li.offsetHeight;
-        
+
         // Aplica a transição
         li.style.transition = 'all 0.3s ease';
         li.style.opacity = '1';
         li.style.transform = 'translateY(0)';
-        
+
         // Armazenar no localStorage de forma simplificada com timestamp
         const historicoItem = {
-          expressao: expressao
+          expressao: expressao,
         };
         salvarHistoricoItem(JSON.stringify(historicoItem));
-        
+
         // Mostrar o container de histórico
         document.getElementById('historico-container').classList.add('show');
       }
-      
+
       // Salvar um novo item no histórico (simplificado)
       function salvarHistoricoItem(expressao) {
         const itens = obterHistoricoSalvo() || [];
         itens.unshift(expressao); // Adiciona no início do array
-        
-        // Aumentar para permitir mais itens no histórico 
-        if (itens.length > 30) { // Aumentado de 10 para 30
+
+        // Aumentar para permitir mais itens no histórico
+        if (itens.length > 30) {
+          // Aumentado de 10 para 30
           itens.pop(); // Remove o último item
         }
-        
+
         localStorage.setItem('calculo-padrao-historico', JSON.stringify(itens));
       }
-      
+
       // Obter histórico salvo no localStorage
       function obterHistoricoSalvo() {
         const historico = localStorage.getItem('calculo-padrao-historico');
         return historico ? JSON.parse(historico) : null;
       }
-      
+
       // Carregar histórico do localStorage (simplificado)
       function carregarHistorico() {
         const itens = obterHistoricoSalvo();
-        
+
         if (itens && itens.length > 0) {
           document.getElementById('historico-container').classList.add('show');
-          
+
           // Mostrar todos os itens do histórico
           itens.forEach((item, index) => {
             // Verifica se o item é um objeto JSON serializado
             let expressao;
-            
+
             try {
               const itemObj = JSON.parse(item);
               expressao = itemObj.expressao;
@@ -1200,17 +1280,17 @@
               // Se não for um objeto, assume que é apenas a expressão
               expressao = item;
             }
-            
+
             // Divide a expressão para separar a operação do resultado
             const partes = expressao.split('=');
             const operacao = partes[0].trim();
             const resultado = partes[1]?.trim() || '';
-            
+
             // Identifica o tipo de operação para aplicar uma cor diferente
             let operadorCor = '#2196f3'; // Azul padrão
             let operadorIcone = 'calculate';
             let operadorClasse = '';
-            
+
             if (operacao.includes('+')) {
               operadorCor = '#4caf50'; // Verde para adição
               operadorIcone = 'add';
@@ -1225,24 +1305,24 @@
               operadorClasse = 'operador-multiplicacao';
             } else if (operacao.includes('÷')) {
               operadorCor = '#9c27b0'; // Roxo para divisão
-              operadorIcone = 'calculate';  // Substituído "functions" por "calculate"
+              operadorIcone = 'calculate'; // Substituído "functions" por "calculate"
               operadorClasse = 'operador-divisao';
             } else if (operacao.includes('%')) {
               operadorCor = '#00bcd4'; // Ciano para porcentagem
               operadorIcone = 'percent';
               operadorClasse = 'operador-porcentagem';
             }
-            
+
             // Determinar a classe do resultado com base no valor
             let resultadoClasse = 'resultado-positivo';
             const valorNumerico = parseFloat(resultado.replace(',', '.'));
-            
+
             if (valorNumerico === 0) {
               resultadoClasse = 'resultado-zero';
             } else if (valorNumerico < 0) {
               resultadoClasse = 'resultado-negativo';
             }
-            
+
             // Create symbols with simple square styling
             let iconContent;
             if (operacao.includes('÷')) {
@@ -1258,12 +1338,12 @@
             } else {
               iconContent = `<div class="symbol-container" style="background: linear-gradient(to bottom, #2196f3, #64b5f6);"><i class="material-icons" style="color: white; font-size: 16px;">${operadorIcone}</i></div>`;
             }
-            
+
             const li = document.createElement('li');
             li.className = 'collection-item resultado-item fade-in';
             li.style.borderLeftColor = operadorCor;
             li.style.animationDelay = `${Math.min(index, 10) * 0.05}s`; // Limitar atraso de animação
-            
+
             li.innerHTML = `
               <div class="historico-conteudo">
                 ${iconContent}
@@ -1274,13 +1354,13 @@
                 <i class="material-icons" style="font-size: 18px;">content_copy</i>
               </button>
             `;
-            
+
             historicoList.prepend(li);
-            
+
             // Adicionar evento de clique ao botão de cópia
             const btnCopiar = li.querySelector('.btn-copiar');
             if (btnCopiar) {
-              btnCopiar.addEventListener('click', function(e) {
+              btnCopiar.addEventListener('click', function (e) {
                 e.stopPropagation();
                 const valor = this.getAttribute('data-valor');
                 copiarParaAreaDeTransferencia(valor);
@@ -1292,90 +1372,113 @@
           historicoList.innerHTML = '';
           const emptyHistory = document.createElement('empty-history');
           emptyHistory.setAttribute('message', 'Nenhum cálculo no histórico');
-          emptyHistory.setAttribute('sub-message', 'Os cálculos realizados aparecerão aqui');
+          emptyHistory.setAttribute(
+            'sub-message',
+            'Os cálculos realizados aparecerão aqui'
+          );
           historicoList.appendChild(emptyHistory);
-          
+
           // Adicionar um pequeno atraso para garantir que o componente seja renderizado antes de mostrar o container
           setTimeout(() => {
-            document.getElementById('historico-container').classList.add('show');
+            document
+              .getElementById('historico-container')
+              .classList.add('show');
           }, 50);
         }
-        
+
         // Forçar um reflow para garantir que as barras de rolagem sejam calculadas corretamente
         document.getElementById('historico-list').offsetHeight;
       }
-      
+
       // Limpar histórico
       function limparHistorico() {
         const historicoList = document.getElementById('historico-list');
-        
+
         // Verifica se o histórico já está vazio
         if (!historicoList || historicoList.children.length === 0) {
           showToast('O histórico já está vazio!', 'orange rounded');
           return;
         }
-        
+
         // Remove todos os itens do histórico
         historicoList.innerHTML = '';
-        
+
         localStorage.removeItem('calculo-padrao-historico');
-        
+
         // Adicionar o componente de histórico vazio
         const emptyHistory = document.createElement('empty-history');
         emptyHistory.setAttribute('message', 'Nenhum cálculo no histórico');
-        emptyHistory.setAttribute('sub-message', 'Os cálculos realizados aparecerão aqui');
+        emptyHistory.setAttribute(
+          'sub-message',
+          'Os cálculos realizados aparecerão aqui'
+        );
         historicoList.appendChild(emptyHistory);
         document.getElementById('historico-container').classList.add('show');
-        
+
         showToast('Histórico limpo com sucesso!', 'green rounded');
       }
-      
+
       // Registrar eventos para os botões
       function registrarEventos() {
         // Botões numéricos
         const botoes = {
-          numeros: ['btn-0', 'btn-1', 'btn-2', 'btn-3', 'btn-4', 'btn-5', 'btn-6', 'btn-7', 'btn-8', 'btn-9'],
+          numeros: [
+            'btn-0',
+            'btn-1',
+            'btn-2',
+            'btn-3',
+            'btn-4',
+            'btn-5',
+            'btn-6',
+            'btn-7',
+            'btn-8',
+            'btn-9',
+          ],
           operadores: {
             'btn-add': '+',
             'btn-subtract': '−',
             'btn-multiply': '×',
             'btn-divide': '÷',
-            'btn-percent': '%'
+            'btn-percent': '%',
           },
           especiais: {
             'btn-equals': calcular,
             'btn-clear': limparTudo,
             'btn-backspace': apagarDigito,
-            'btn-decimal': () => adicionarDigito(',')
-          }
+            'btn-decimal': () => adicionarDigito(','),
+          },
         };
-        
+
         // Registra eventos para números
-        botoes.numeros.forEach(id => {
+        botoes.numeros.forEach((id) => {
           const numero = id.replace('btn-', '');
-          document.getElementById(id).addEventListener('click', () => adicionarDigito(numero));
+          document
+            .getElementById(id)
+            .addEventListener('click', () => adicionarDigito(numero));
         });
-        
+
         // Registra eventos para operadores
         Object.entries(botoes.operadores).forEach(([id, op]) => {
-          document.getElementById(id).addEventListener('click', () => definirOperacao(op));
+          document
+            .getElementById(id)
+            .addEventListener('click', () => definirOperacao(op));
         });
-        
+
         // Registra eventos para botões especiais
         Object.entries(botoes.especiais).forEach(([id, funcao]) => {
           document.getElementById(id).addEventListener('click', funcao);
         });
-        
+
         // Suporte ao teclado
         document.addEventListener('keydown', gerenciarTeclado);
       }
-      
+
       // Gerenciar eventos de teclado
       function gerenciarTeclado(e) {
         // Números
         if (/^[0-9]$/.test(e.key)) {
           adicionarDigito(e.key);
-        } 
+        }
         // Operações
         else if (e.key === '+') {
           definirOperacao('+');
@@ -1388,34 +1491,34 @@
           definirOperacao('÷');
         } else if (e.key === '%') {
           definirOperacao('%');
-        } 
+        }
         // Decimal
         else if (e.key === ',' || e.key === '.') {
           adicionarDigito(',');
-        } 
+        }
         // Igual / Enter
         else if (e.key === '=' || e.key === 'Enter') {
           e.preventDefault();
           calcular();
-        } 
+        }
         // Backspace
         else if (e.key === 'Backspace') {
           apagarDigito();
-        } 
+        }
         // Escape / Delete (Limpar)
         else if (e.key === 'Escape' || e.key === 'Delete') {
           limparTudo();
         }
       }
-      
+
       // Inicialização
-      document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener('DOMContentLoaded', function () {
         registrarEventos();
         atualizarDisplay();
         carregarHistorico();
-        
+
         // Corrigir problemas de rolagem após o carregamento completo
-        setTimeout(function() {
+        setTimeout(function () {
           const historicoList = document.getElementById('historico-list');
           if (historicoList) {
             // Reset forçado para garantir rolagem
@@ -1424,26 +1527,38 @@
             historicoList.offsetHeight;
             // Restaurar scroll
             historicoList.style.overflow = 'auto';
-            
+
             // Impedir propagação de eventos de rolagem
-            historicoList.addEventListener('wheel', function(e) {
-              if (this.scrollHeight > this.clientHeight) {
-                e.stopPropagation();
-              }
-            }, { passive: false }); // Important para permitir preventDefault
-            
+            historicoList.addEventListener(
+              'wheel',
+              function (e) {
+                if (this.scrollHeight > this.clientHeight) {
+                  e.stopPropagation();
+                }
+              },
+              { passive: false }
+            ); // Important para permitir preventDefault
+
             // Garantir que o touch scroll funcione em dispositivos móveis
-            historicoList.addEventListener('touchstart', function(e) {
-              if (this.scrollHeight > this.clientHeight) {
-                e.stopPropagation();
-              }
-            }, { passive: true });
-            
-            historicoList.addEventListener('touchmove', function(e) {
-              if (this.scrollHeight > this.clientHeight) {
-                e.stopPropagation();
-              }
-            }, { passive: true });
+            historicoList.addEventListener(
+              'touchstart',
+              function (e) {
+                if (this.scrollHeight > this.clientHeight) {
+                  e.stopPropagation();
+                }
+              },
+              { passive: true }
+            );
+
+            historicoList.addEventListener(
+              'touchmove',
+              function (e) {
+                if (this.scrollHeight > this.clientHeight) {
+                  e.stopPropagation();
+                }
+              },
+              { passive: true }
+            );
           }
         }, 100); // Atraso pequeno para garantir que tudo esteja renderizado
       });
