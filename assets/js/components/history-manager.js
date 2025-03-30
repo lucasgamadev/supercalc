@@ -23,7 +23,7 @@ class HistoryManager {
    * Adiciona um item ao histórico
    * @param {string} operation - A operação realizada (ex: "2 + 2")
    * @param {string} result - O resultado da operação (ex: "4")
-   * @param {string} operatorType - O tipo de operador (soma, subtracao, multiplicacao, divisao, porcentagem, default)
+   * @param {string} operatorType - O tipo de operador (soma, subtracao, multiplicacao, divisao, porcentagem, desconto, default)
    */
   addHistoryItem(operation, result, operatorType = 'default') {
     // Verifica se existe o componente EmptyHistory e remove se existir

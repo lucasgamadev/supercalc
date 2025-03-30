@@ -11,23 +11,19 @@
     <!-- TailwindCSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/assets/css/styles.css">
+    <link rel="stylesheet" href="/assets/css/styles.css" />
     <!-- Componente de fundo -->
     <script src="/assets/js/components/background.js"></script>
-    <!-- Componentes de histórico -->
-    <script src="/assets/js/components/history-item.js"></script>
-    <script src="/assets/js/components/history-manager.js"></script>
-    <script>
-      // Inicializar o gerenciador de histórico
-      let historyManager;
 
-      // Carrega o histórico ao iniciar - esta inicialização está correta
-      document.addEventListener('DOMContentLoaded', function() {
-        historyManager.loadHistory();
+    <script>
+      // Função para mostrar toast
+      document.addEventListener('DOMContentLoaded', function () {
+        // Carregar o histórico quando a página carregar
+        carregarHistorico();
       });
 
       // Listeners para eventos de cópia
-      document.addEventListener('copy-success', function(e) {
+      document.addEventListener('copy-success', function (e) {
         showToast(e.detail.message, 'green rounded');
       });
     </script>
@@ -62,30 +58,34 @@
               },
             },
             fontFamily: {
-              'roboto': ['Roboto', 'sans-serif'],
+              roboto: ['Roboto', 'sans-serif'],
             },
           },
         },
-      }
+      };
     </script>
     <!-- Importando Materialize CSS e Ícones -->
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
       rel="stylesheet"
     />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
     <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
       rel="stylesheet"
     />
     <style>
       * {
-        font-family: "Roboto", sans-serif;
+        font-family: 'Roboto', sans-serif;
       }
-
-
 
       body {
         display: flex;
@@ -148,8 +148,6 @@
         flex-direction: column;
       }
 
-
-
       .collection {
         border: none !important;
         margin: 0 !important;
@@ -187,7 +185,7 @@
       }
 
       .card-title::after {
-        content: "";
+        content: '';
         position: absolute;
         bottom: 0;
         left: 50%;
@@ -218,13 +216,13 @@
         text-indent: 0 !important;
         box-sizing: border-box;
         font-size: 14px;
-        font-family: "Roboto", sans-serif !important;
+        font-family: 'Roboto', sans-serif !important;
       }
 
       .input-field label {
         left: 10px;
         font-size: 14px;
-        font-family: "Roboto", sans-serif !important;
+        font-family: 'Roboto', sans-serif !important;
       }
 
       .btn-container {
@@ -241,7 +239,7 @@
         text-transform: none;
         border-radius: 6px;
         box-shadow: none;
-        font-family: "Roboto", sans-serif !important;
+        font-family: 'Roboto', sans-serif !important;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -249,7 +247,7 @@
         position: relative;
         overflow: hidden;
       }
-      
+
       /* Shimmer effect for buttons */
       .btn::before {
         content: '';
@@ -275,7 +273,7 @@
         overflow: hidden;
         transition: all 0.3s ease;
       }
-      
+
       #resultado-container::before {
         content: '';
         position: absolute;
@@ -285,7 +283,7 @@
         height: 4px;
         background: linear-gradient(90deg, #2196f3, #00bcd4);
       }
-      
+
       #resultado-container:hover {
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
       }
@@ -299,7 +297,7 @@
         border-radius: 8px;
         background: rgba(240, 248, 255, 0.8);
         font-size: 14px;
-        font-family: "Roboto", sans-serif;
+        font-family: 'Roboto', sans-serif;
         position: relative;
         overflow: hidden;
         margin-bottom: 10px;
@@ -310,7 +308,7 @@
       .material-icons {
         font-size: 18px !important;
       }
-      
+
       /* Reduzindo o espaçamento entre o ícone e o texto nos botões */
       .material-icons.left {
         margin-right: 2px !important;
@@ -331,7 +329,7 @@
         gap: 10px; /* Adiciona espaçamento entre os botões */
         flex-wrap: wrap; /* Permite que os botões quebrem para a próxima linha em telas pequenas */
       }
-      
+
       /* Estilo para o botão de voltar */
       .btn-voltar {
         display: inline-flex;
@@ -351,11 +349,11 @@
         position: relative;
         overflow: hidden;
       }
-      
+
       .btn-voltar:hover {
         box-shadow: 0 4px 8px rgba(33, 150, 243, 0.4);
       }
-      
+
       .btn-voltar::before {
         content: '';
         position: absolute;
@@ -368,7 +366,7 @@
         animation: shimmer 2s infinite;
         pointer-events: none;
       }
-      
+
       .btn-voltar .material-icons {
         margin-right: 4px;
       }
@@ -417,10 +415,12 @@
       .resultado-item {
         transition: all 0.3s ease;
       }
-      
+
       .resultado-item:hover {
         background-color: rgba(240, 248, 255, 0.95);
-        box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);
+        box-shadow:
+          inset 0 1px 5px rgba(0, 0, 0, 0.15),
+          0 4px 8px rgba(0, 0, 0, 0.1);
         border: 1px solid rgba(0, 123, 255, 0.3);
       }
 
@@ -429,9 +429,15 @@
       }
 
       @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.05); }
-        100% { transform: scale(1); }
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
       }
 
       .resultado-item:hover {
@@ -448,7 +454,7 @@
         color: #2196f3;
         font-size: 16px;
       }
-      
+
       /* Estilo moderno para o desconto aplicado */
       .desconto-badge {
         display: inline-flex;
@@ -464,28 +470,28 @@
         position: relative;
         overflow: hidden;
       }
-      
+
       /* Removed hover animation for the desconto badge */
       .desconto-badge:hover {
         box-shadow: 0 4px 10px rgba(33, 150, 243, 0.4);
       }
-      
+
       /* Variações de cores para o desconto aplicado baseado no valor */
       .desconto-badge.baixo {
         background: linear-gradient(135deg, #4caf50, #8bc34a);
         box-shadow: 0 2px 5px rgba(76, 175, 80, 0.3);
       }
-      
+
       .desconto-badge.medio {
         background: linear-gradient(135deg, #ff9800, #ffc107);
         box-shadow: 0 2px 5px rgba(255, 152, 0, 0.3);
       }
-      
+
       .desconto-badge.alto {
         background: linear-gradient(135deg, #f44336, #ff5722);
         box-shadow: 0 2px 5px rgba(244, 67, 54, 0.3);
       }
-      
+
       .desconto-badge::before {
         content: '';
         position: absolute;
@@ -497,17 +503,21 @@
         transform: rotate(45deg);
         animation: shimmer 2s infinite;
       }
-      
+
       @keyframes shimmer {
-        0% { transform: translateX(-100%) rotate(45deg); }
-        100% { transform: translateX(100%) rotate(45deg); }
+        0% {
+          transform: translateX(-100%) rotate(45deg);
+        }
+        100% {
+          transform: translateX(100%) rotate(45deg);
+        }
       }
-      
+
       .preco-original {
         position: relative;
         color: #757575;
       }
-      
+
       /* Estilo moderno para o preço original */
       .preco-original-badge {
         display: inline-flex;
@@ -523,11 +533,11 @@
         position: relative;
         overflow: hidden;
       }
-      
+
       .preco-original-badge:hover {
         box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
       }
-      
+
       .preco-original-badge::before {
         content: '';
         position: absolute;
@@ -539,7 +549,7 @@
         transform: rotate(45deg);
         animation: shimmer 2s infinite;
       }
-      
+
       .preco-final {
         /* Removing this style as we're using badge styling now */
         display: none;
@@ -549,7 +559,7 @@
         display: flex;
         align-items: center;
       }
-      
+
       .preco-final::before {
         content: '\e5ca';
         font-family: 'Material Icons';
@@ -662,8 +672,6 @@
         }
       }
 
-
-
       /* Animação de fade-in para os cards */
       .fade-in {
         animation: fadeIn 0.5s ease forwards;
@@ -679,6 +687,152 @@
           transform: translateY(0);
         }
       }
+
+      /* Estilos para o histórico vazio */
+      .empty-history {
+        text-align: center;
+        padding: 30px 15px !important;
+      }
+
+      .empty-history .empty-message {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: #9e9e9e;
+      }
+
+      .empty-history .empty-message i {
+        font-size: 48px;
+        margin-bottom: 10px;
+        color: #e0e0e0;
+      }
+
+      .empty-history .empty-message p {
+        margin: 5px 0;
+        font-size: 16px;
+      }
+
+      .empty-history .empty-message .sub-message {
+        font-size: 14px;
+        color: #bdbdbd;
+      }
+
+      /* Estilos para os itens do histórico */
+      .historico-item {
+        padding: 12px 15px !important;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        border: 1px solid #f0f0f0;
+        background-color: #f9f9f9;
+        transition: all 0.2s ease;
+      }
+
+      .historico-item:hover {
+        background-color: #f5f5f5;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .historico-preco {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .historico-resultado {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .valor-original {
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        color: #424242;
+      }
+
+      .valor-original i {
+        margin-right: 5px;
+        color: #2196f3;
+      }
+
+      .desconto {
+        display: flex;
+        align-items: center;
+        padding: 3px 8px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .desconto i {
+        font-size: 14px !important;
+        margin-right: 2px;
+      }
+
+      .desconto.baixo {
+        background-color: rgba(76, 175, 80, 0.15);
+        color: #4caf50;
+      }
+
+      .desconto.medio {
+        background-color: rgba(255, 152, 0, 0.15);
+        color: #ff9800;
+      }
+
+      .desconto.alto {
+        background-color: rgba(244, 67, 54, 0.15);
+        color: #f44336;
+      }
+
+      .resultado-economia {
+        font-size: 13px;
+        color: #757575;
+      }
+
+      .resultado-final {
+        font-weight: 600;
+        color: #2196f3;
+        font-size: 16px;
+      }
+
+      .btn-copiar {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+        border-radius: 50%;
+        color: #9e9e9e;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .btn-copiar:hover {
+        background-color: rgba(33, 150, 243, 0.1);
+        color: #2196f3;
+      }
+
+      .historico-wrapper {
+        max-height: 400px;
+        overflow-y: auto;
+        padding-right: 5px;
+      }
+
+      #resultado-container {
+        background: linear-gradient(to bottom, #ffffff, #f7f9fc);
+        border-radius: 16px;
+        padding: 20px;
+        margin-top: 15px;
+        border: 1px solid rgba(224, 224, 224, 0.5);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
     </style>
   </head>
   <body class="supercalc-background">
@@ -692,15 +846,29 @@
           margin-top: 20px;
         }
       </style>
-      <div class="no-js-message">Por favor, habilite o JavaScript para usar a calculadora.</div>
+      <div class="no-js-message">
+        Por favor, habilite o JavaScript para usar a calculadora.
+      </div>
     </noscript>
-    
+
     <!-- Navegação -->
-    <div class="nav-links" style="display: flex; justify-content: center; width: 100%; margin: 30px auto 0;">
+    <div
+      class="nav-links"
+      style="
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin: 30px auto 0;
+      "
+    >
       <!-- Componente do Botão Início para SuperCalc -->
-      <home-button href="/index.html" text="Início" icon="fa-home"></home-button>
+      <home-button
+        href="/index.html"
+        text="Início"
+        icon="fa-home"
+      ></home-button>
     </div>
-    
+
     <!-- Importação dos componentes -->
     <script>
       // Verifica se os componentes já foram carregados
@@ -710,22 +878,20 @@
         script.src = '/assets/js/components/home-button.js';
         document.head.appendChild(script);
       }
-      
+
       // Carrega o componente calculate-button
       if (!customElements.get('calculate-button')) {
         const scriptCalc = document.createElement('script');
         scriptCalc.src = '/assets/js/components/calculate-button.js';
         document.head.appendChild(scriptCalc);
       }
-      
+
       // Carrega o componente clear-button
       if (!customElements.get('clear-button')) {
         const scriptClear = document.createElement('script');
         scriptClear.src = '/assets/js/components/clear-button.js';
         document.head.appendChild(scriptClear);
       }
-      
-
     </script>
 
     <div class="container-principal">
@@ -734,9 +900,13 @@
         <div class="col s12 m6">
           <div class="card fade-in">
             <div class="card-content">
-              <span class="card-title" role="heading" aria-level="1"><i class="fas fa-percent mr-2"></i>Calculadora de Desconto</span>
+              <span class="card-title" role="heading" aria-level="1"
+                ><i class="fas fa-percent mr-2"></i>Calculadora de
+                Desconto</span
+              >
               <div class="row">
-                <div class="input-field col s12 outlined">  <!-- Added 'outlined' class here -->
+                <div class="input-field col s12 outlined">
+                  <!-- Added 'outlined' class here -->
                   <input
                     id="valor"
                     type="text"
@@ -776,31 +946,79 @@
                   aria-label="Limpar campos"
                 ></clear-button>
               </div>
-              <div id="resultado-container" role="region" aria-label="Resultados">
+              <div
+                id="resultado-container"
+                role="region"
+                aria-label="Resultados"
+              >
                 <div class="resultado-item">
                   <span>Preço Original:</span>
-                  <span class="preco-original-badge"><i class="material-icons" style="font-size: 14px; margin-right: 4px;">attach_money</i>R$ <span id="preco-original">0,00</span></span>
+                  <span class="preco-original-badge"
+                    ><i
+                      class="material-icons"
+                      style="font-size: 14px; margin-right: 4px"
+                      >attach_money</i
+                    >R$ <span id="preco-original">0,00</span></span
+                  >
                 </div>
                 <div class="resultado-item">
                   <span>Desconto Aplicado:</span>
-                  <span class="desconto-badge"><i class="material-icons" style="font-size: 14px; margin-right: 4px;">trending_down</i><span id="desconto-aplicado">0</span>%</span>
+                  <span class="desconto-badge"
+                    ><i
+                      class="material-icons"
+                      style="font-size: 14px; margin-right: 4px"
+                      >trending_down</i
+                    ><span id="desconto-aplicado">0</span>%</span
+                  >
                 </div>
                 <div class="resultado-item">
                   <span>Valor do Desconto:</span>
-                  <span class="desconto-badge valor-desconto-badge"><i class="material-icons" style="font-size: 14px; margin-right: 4px;">savings</i>R$ <span id="valor-desconto">0,00</span></span>
+                  <span class="desconto-badge valor-desconto-badge"
+                    ><i
+                      class="material-icons"
+                      style="font-size: 14px; margin-right: 4px"
+                      >savings</i
+                    >R$ <span id="valor-desconto">0,00</span></span
+                  >
                 </div>
-                <div class="resultado-item" style="border: 2px solid #4caf50; background: rgba(76, 175, 80, 0.05); padding: 10px 15px; margin-top: 5px;">
-                  <span style="font-size: 16px; font-weight: 600; color: #4caf50;">Preço Final:</span>
-                  <span class="desconto-badge" style="background: linear-gradient(135deg, #4caf50, #8bc34a); 
-                    box-shadow: 0 4px 10px rgba(76, 175, 80, 0.5); 
-                    color: white; 
-                    font-size: 18px;
-                    padding: 8px 16px;
-                    border-radius: 30px;
-                    position: relative;
-                    transform: scale(1.05);">
-                    <i class="material-icons" style="font-size: 18px; margin-right: 6px; vertical-align: middle;">check_circle</i>R$ 
-                    <span id="resultado" style="color: white; font-weight: 700;">0,00</span>
+                <div
+                  class="resultado-item"
+                  style="
+                    border: 2px solid #4caf50;
+                    background: rgba(76, 175, 80, 0.05);
+                    padding: 10px 15px;
+                    margin-top: 5px;
+                  "
+                >
+                  <span
+                    style="font-size: 16px; font-weight: 600; color: #4caf50"
+                    >Preço Final:</span
+                  >
+                  <span
+                    class="desconto-badge"
+                    style="
+                      background: linear-gradient(135deg, #4caf50, #8bc34a);
+                      box-shadow: 0 4px 10px rgba(76, 175, 80, 0.5);
+                      color: white;
+                      font-size: 18px;
+                      padding: 8px 16px;
+                      border-radius: 30px;
+                      position: relative;
+                      transform: scale(1.05);
+                    "
+                  >
+                    <i
+                      class="material-icons"
+                      style="
+                        font-size: 18px;
+                        margin-right: 6px;
+                        vertical-align: middle;
+                      "
+                      >check_circle</i
+                    >R$
+                    <span id="resultado" style="color: white; font-weight: 700"
+                      >0,00</span
+                    >
                   </span>
                 </div>
               </div>
@@ -811,21 +1029,50 @@
         <!-- Coluna do Histórico -->
         <div class="col s12 m6">
           <div id="historico-container" class="card fade-in show">
-            <div class="card-content" style="position: relative; padding: 10px !important; padding-bottom: 50px !important;">
-              <span class="card-title" role="heading" aria-level="1" style="margin-bottom: 10px;"><i class="fas fa-history mr-2"></i>Histórico de Cálculos</span>
-              
+            <div
+              class="card-content"
+              style="
+                position: relative;
+                padding: 10px !important;
+                padding-bottom: 50px !important;
+              "
+            >
+              <span
+                class="card-title"
+                role="heading"
+                aria-level="1"
+                style="margin-bottom: 10px"
+                ><i class="fas fa-history mr-2"></i>Histórico de Cálculos</span
+              >
+
               <!-- Nova div para envolver o histórico e sua barra de rolagem -->
               <div class="historico-wrapper">
                 <ul id="historico-list" class="collection">
-                  <!-- Adiciona o componente de histórico vazio diretamente na estrutura HTML -->
-                  <empty-history 
-                    message="Nenhum cálculo no histórico" 
-                    sub-message="Os cálculos realizados aparecerão aqui">
-                  </empty-history>
+                  <!-- Exibe mensagem de histórico vazio -->
+                  <li class="collection-item empty-history">
+                    <div class="empty-message">
+                      <i class="material-icons">history</i>
+                      <p>Nenhum cálculo no histórico</p>
+                      <p class="sub-message">
+                        Os cálculos realizados aparecerão aqui
+                      </p>
+                    </div>
+                  </li>
                 </ul>
               </div>
-              
-              <div class="btn-container" style="margin-top: 10px; padding: 0; text-align: center; position: absolute; bottom: 10px; left: 0; right: 0;">
+
+              <div
+                class="btn-container"
+                style="
+                  margin-top: 10px;
+                  padding: 0;
+                  text-align: center;
+                  position: absolute;
+                  bottom: 10px;
+                  left: 0;
+                  right: 0;
+                "
+              >
                 <clear-history-button
                   storage-key="calculo-desconto-historico"
                   history-list-id="historico-list"
@@ -839,18 +1086,18 @@
         </div>
       </div>
     </div>
-    
+
     <!-- Importando Materialize JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <!-- Importando componentes web personalizados -->
     <script src="/assets/js/components/toast-notification.js"></script>
+    <script src="/assets/js/components/home-button.js"></script>
+    <script src="/assets/js/components/calculate-button.js"></script>
+    <script src="/assets/js/components/clear-button.js"></script>
     <script src="/assets/js/components/clear-history-button.js"></script>
-    <script src="/assets/js/components/empty-history.js"></script>
-    <script src="/assets/js/components/history-item.js"></script>
-    <script src="/assets/js/components/history-manager.js"></script>
     <script>
       // Script inicializado
-      
+
       // Função para mostrar toast usando o componente web
       function showToast(message, classes = 'rounded') {
         const toast = document.createElement('toast-notification');
@@ -859,58 +1106,66 @@
         document.body.appendChild(toast);
       }
 
-      document.getElementById("desconto").addEventListener("input", function (e) {
-        const valor = parseFloat(this.value);
-        if (valor > 100) {
-          this.value = 100;
-          this.classList.add("invalid");
-          showToast("O desconto máximo é 100%", "rounded orange");
-        } else if (valor <= 0) {
-          this.value = "";
-          this.classList.add("invalid");
-          showToast("O desconto deve ser maior que 0%", "rounded orange");
-        } else {
-          this.classList.remove("invalid");
-        }
-      });
+      document
+        .getElementById('desconto')
+        .addEventListener('input', function (e) {
+          const valor = parseFloat(this.value);
+          if (valor > 100) {
+            this.value = 100;
+            this.classList.add('invalid');
+            showToast('O desconto máximo é 100%', 'rounded orange');
+          } else if (valor <= 0) {
+            this.value = '';
+            this.classList.add('invalid');
+            showToast('O desconto deve ser maior que 0%', 'rounded orange');
+          } else {
+            this.classList.remove('invalid');
+          }
+        });
 
       // Melhorar a validação em tempo real
       function validarCampos() {
-        const valorStr = document.getElementById("valor").value.trim();
-        const desconto = document.getElementById("desconto").value.trim();
+        const valorStr = document.getElementById('valor').value.trim();
+        const desconto = document.getElementById('desconto').value.trim();
 
         // Validação do valor
-        if (valorStr === "") {
-          const valorInput = document.getElementById("valor");
-          valorInput.classList.add("invalid");
+        if (valorStr === '') {
+          const valorInput = document.getElementById('valor');
+          valorInput.classList.add('invalid');
           valorInput.focus();
-          showToast("Por favor, insira um valor", "rounded orange");
+          showToast('Por favor, insira um valor', 'rounded orange');
           return false;
         }
-        
+
         // Normaliza o valor (substitui vírgula por ponto para cálculos)
-        const valorNormalizado = valorStr.replace(",", ".");
+        const valorNormalizado = valorStr.replace(',', '.');
         const valor = parseFloat(valorNormalizado);
-        
+
         if (isNaN(valor) || valor <= 0) {
-          const valorInput = document.getElementById("valor");
-          valorInput.classList.add("invalid");
+          const valorInput = document.getElementById('valor');
+          valorInput.classList.add('invalid');
           valorInput.focus();
-          showToast("Por favor, insira um valor válido positivo", "rounded orange");
+          showToast(
+            'Por favor, insira um valor válido positivo',
+            'rounded orange'
+          );
           return false;
         }
 
         // Validação de desconto
         if (
-          desconto === "" ||
+          desconto === '' ||
           isNaN(parseFloat(desconto)) ||
           parseFloat(desconto) <= 0 ||
           parseFloat(desconto) > 100
         ) {
-          const descontoInput = document.getElementById("desconto");
-          descontoInput.classList.add("invalid");
+          const descontoInput = document.getElementById('desconto');
+          descontoInput.classList.add('invalid');
           descontoInput.focus();
-          showToast("Por favor, insira um desconto válido (maior que 0 e até 100)", "rounded orange");
+          showToast(
+            'Por favor, insira um desconto válido (maior que 0 e até 100)',
+            'rounded orange'
+          );
           return false;
         }
 
@@ -919,12 +1174,14 @@
 
       // A função showToast já foi declarada anteriormente
 
-      document.getElementById("calcular").addEventListener("click", calcularDesconto);
-      document.getElementById("limpar").addEventListener("click", limparCampos);
+      document
+        .getElementById('calcular')
+        .addEventListener('click', calcularDesconto);
+      document.getElementById('limpar').addEventListener('click', limparCampos);
 
       // Adicionar suporte a tecla Enter
-      document.addEventListener("keypress", function (e) {
-        if (e.key === "Enter") {
+      document.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
           calcularDesconto();
         }
       });
@@ -932,196 +1189,363 @@
       // Função para validar e destacar campos
       function validarCampo(input, condicao, mensagem) {
         if (!condicao) {
-          input.classList.add("invalid");
-          showToast(mensagem, "rounded red");
+          input.classList.add('invalid');
+          showToast(mensagem, 'rounded red');
           input.focus();
           return false;
         }
-        input.classList.remove("invalid");
+        input.classList.remove('invalid');
         return true;
       }
 
       function adicionarAoHistorico(preco, desconto, resultado) {
         // Formata os valores para garantir que sempre tenham duas casas decimais
-        const precoFormatado = typeof preco === "string" ? preco : preco.toFixed(2).replace(".", ",");
-        const resultadoFormatado = typeof resultado === "string" ? resultado : resultado.toFixed(2).replace(".", ",");
-        
+        const precoFormatado =
+          typeof preco === 'string'
+            ? preco
+            : preco.toFixed(2).replace('.', ',');
+        const resultadoFormatado =
+          typeof resultado === 'string'
+            ? resultado
+            : resultado.toFixed(2).replace('.', ',');
+
         // Calcula a economia (diferença entre preço original e final)
-        const precoOriginal = typeof preco === "string" 
-          ? parseFloat(preco.replace(",", ".")) 
-          : preco;
-        const precoFinal = typeof resultado === "string" 
-          ? parseFloat(resultado.replace(",", ".")) 
-          : resultado;
-        const economia = (precoOriginal - precoFinal).toFixed(2).replace(".", ",");
-        
+        const precoOriginal =
+          typeof preco === 'string'
+            ? parseFloat(preco.replace(',', '.'))
+            : preco;
+        const precoFinal =
+          typeof resultado === 'string'
+            ? parseFloat(resultado.replace(',', '.'))
+            : resultado;
+        const economia = (precoOriginal - precoFinal)
+          .toFixed(2)
+          .replace('.', ',');
+
         // Determina a classe do desconto com base no valor percentual
         const descontoNum = parseFloat(desconto);
-        let descontoClasse = "baixo";
+        let descontoClasse = 'baixo';
         if (descontoNum >= 30) {
-          descontoClasse = "alto";
+          descontoClasse = 'alto';
         } else if (descontoNum >= 15) {
-          descontoClasse = "medio";
+          descontoClasse = 'medio';
         }
-        
-        // Antes de adicionar um novo item, verifica e remove o componente empty-history
-        const emptyHistory = document.querySelector('#historico-list empty-history');
+
+        // Obtém a lista de histórico
+        const historicoList = document.getElementById('historico-list');
+
+        // Antes de adicionar um novo item, verifica e remove a mensagem de histórico vazio
+        const emptyHistory = historicoList.querySelector('.empty-history');
         if (emptyHistory) {
           emptyHistory.remove();
         }
-        
-        // Em vez de criar um history-item, use o formato esperado pelo método addHistoryItem
-        const operacao = `R$ ${precoFormatado} - ${desconto}% = R$ ${resultadoFormatado}`;
-        
-        // Adiciona o item ao histórico usando a variável global historyManager e o método correto
-        historyManager.addHistoryItem(operacao, resultadoFormatado, 'discount');
+
+        // Criar novo item de histórico
+        const novoItem = document.createElement('li');
+        novoItem.className = 'collection-item historico-item';
+
+        // Formatando o HTML do item
+        novoItem.innerHTML = `
+          <div class="historico-preco">
+            <span class="valor-original">
+              <i class="material-icons">attach_money</i> R$ ${precoFormatado}
+            </span>
+            <span class="desconto ${descontoClasse}">
+              <i class="material-icons">trending_down</i> ${desconto}%
+            </span>
+          </div>
+          <div class="historico-resultado">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="resultado-economia">Economia: R$ ${economia}</span>
+              <span class="resultado-final">R$ ${resultadoFormatado}</span>
+            </div>
+            <button class="btn-copiar" title="Copiar resultado">
+              <i class="material-icons">content_copy</i>
+            </button>
+          </div>
+        `;
+
+        // Adicionar evento para o botão de copiar
+        const btnCopiar = novoItem.querySelector('.btn-copiar');
+        if (btnCopiar) {
+          btnCopiar.addEventListener('click', function () {
+            copiarParaAreaDeTransferencia(`R$ ${resultadoFormatado}`);
+          });
+        }
+
+        // Adicionar ao início da lista
+        historicoList.insertBefore(novoItem, historicoList.firstChild);
+
+        // Limitar o histórico a 30 itens
+        if (historicoList.children.length > 30) {
+          historicoList.removeChild(historicoList.lastChild);
+        }
+
+        // Salvar no localStorage
+        salvarHistorico();
+
+        // Mostrar o container de histórico
+        document.getElementById('historico-container').classList.add('show');
       }
 
-      // Adicionar validação de input para permitir números e separadores decimais
-      document.getElementById("valor").addEventListener("keypress", function (e) {
-        // Permite apenas números
-        if (!/\d/.test(e.key)) {
-          e.preventDefault();
-        }
-      });
+      // Função para copiar para a área de transferência
+      function copiarParaAreaDeTransferencia(texto) {
+        navigator.clipboard
+          .writeText(texto)
+          .then(() => {
+            showToast(
+              'Resultado copiado para a área de transferência!',
+              'green rounded'
+            );
+          })
+          .catch((err) => {
+            console.error('Erro ao copiar: ', err);
+            showToast('Não foi possível copiar o resultado.', 'red rounded');
+          });
+      }
 
-      document.getElementById("desconto").addEventListener("keypress", function (e) {
-        if (!/[\d.]/.test(e.key)) {
-          e.preventDefault();
-        }
-      });
+      // Função para salvar o histórico no localStorage
+      function salvarHistorico() {
+        const historicoList = document.getElementById('historico-list');
+        const itens = Array.from(historicoList.children)
+          .filter((item) => !item.matches('empty-history'))
+          .map((item) => item.outerHTML);
 
-      document.getElementById("desconto").addEventListener("wheel", function (e) {
-        e.preventDefault();
-        let valor = parseInt(this.value);
-        if (e.deltaY < 0) {
-          valor = Math.min(100, valor + 1);
+        localStorage.setItem(
+          'calculo-desconto-historico',
+          JSON.stringify(itens)
+        );
+      }
+
+      // Função para carregar o histórico do localStorage
+      function carregarHistorico() {
+        const historicoSalvo = localStorage.getItem(
+          'calculo-desconto-historico'
+        );
+        const historicoList = document.getElementById('historico-list');
+
+        if (historicoSalvo && JSON.parse(historicoSalvo).length > 0) {
+          const itens = JSON.parse(historicoSalvo);
+
+          // Limpar a lista atual
+          historicoList.innerHTML = '';
+
+          // Adicionar os itens salvos
+          itens.forEach((item) => {
+            const novoItemElement = document.createElement('div');
+            novoItemElement.innerHTML = item;
+            const novoItem = novoItemElement.firstChild;
+
+            // Readicionar evento para o botão de copiar
+            const btnCopiar = novoItem.querySelector('.btn-copiar');
+            if (btnCopiar) {
+              btnCopiar.addEventListener('click', function () {
+                const resultadoFinal =
+                  novoItem.querySelector('.resultado-final').textContent;
+                copiarParaAreaDeTransferencia(resultadoFinal);
+              });
+            }
+
+            historicoList.appendChild(novoItem);
+          });
+
+          // Mostrar o container de histórico
+          document.getElementById('historico-container').classList.add('show');
         } else {
-          valor = Math.max(0, valor - 1);
-        }
-        this.value = valor;
-      });
+          // Mostrar o componente de histórico vazio
+          historicoList.innerHTML = `
+            <li class="collection-item empty-history">
+              <div class="empty-message">
+                <i class="material-icons">history</i>
+                <p>Nenhum cálculo no histórico</p>
+                <p class="sub-message">Os cálculos realizados aparecerão aqui</p>
+              </div>
+            </li>
+          `;
 
-      document.getElementById("valor").addEventListener("input", function (e) {
-        let valor = e.target.value.replace(/\D/g, "");
-        if (valor === "") return;
-        
-        valor = (parseFloat(valor) / 100).toFixed(2);
-        e.target.value = valor.replace(".", ",");
-      });
+          // Mostrar o container de histórico
+          document.getElementById('historico-container').classList.add('show');
+        }
+      }
+
+      // Função para limpar o histórico
+      function limparHistorico() {
+        const historicoList = document.getElementById('historico-list');
+
+        // Verificar se o histórico já está vazio
+        if (!historicoList || historicoList.querySelector('.empty-history')) {
+          showToast('O histórico já está vazio!', 'orange rounded');
+          return;
+        }
+
+        // Limpa a lista
+        historicoList.innerHTML = `
+          <li class="collection-item empty-history">
+            <div class="empty-message">
+              <i class="material-icons">history</i>
+              <p>Nenhum cálculo no histórico</p>
+              <p class="sub-message">Os cálculos realizados aparecerão aqui</p>
+            </div>
+          </li>
+        `;
+
+        // Remover do localStorage
+        localStorage.removeItem('calculo-desconto-historico');
+
+        // Mostrar toast de sucesso
+        showToast('Histórico limpo com sucesso!', 'green rounded');
+      }
 
       function calcularDesconto() {
-        const valorInput = document.getElementById("valor");
-        const descontoInput = document.getElementById("desconto");
-        
+        const valorInput = document.getElementById('valor');
+        const descontoInput = document.getElementById('desconto');
+
         if (!validarCampos()) return;
 
         // Obter o valor e normalizar (substituir vírgula por ponto para cálculos)
         const valorStr = valorInput.value.trim();
-        const valorNormalizado = valorStr.replace(",", ".");
+        const valorNormalizado = valorStr.replace(',', '.');
         const precoOriginal = parseFloat(valorNormalizado);
-        
+
         const desconto = parseFloat(descontoInput.value.trim());
-        
+
         // Calcular o valor do desconto
         const valorDescontoCalculado = precoOriginal * (desconto / 100);
-        
+
         // Calcular o preço final
         const precoFinal = precoOriginal - valorDescontoCalculado;
-        
+
         // Atualizar os elementos na interface
-        document.getElementById("preco-original").textContent = precoOriginal.toFixed(2).replace(".", ",");
-        document.getElementById("desconto-aplicado").textContent = desconto;
-        document.getElementById("valor-desconto").textContent = valorDescontoCalculado.toFixed(2).replace(".", ",");
-        document.getElementById("resultado").textContent = precoFinal.toFixed(2).replace(".", ",");
-        
+        document.getElementById('preco-original').textContent = precoOriginal
+          .toFixed(2)
+          .replace('.', ',');
+        document.getElementById('desconto-aplicado').textContent = desconto;
+        document.getElementById('valor-desconto').textContent =
+          valorDescontoCalculado.toFixed(2).replace('.', ',');
+        document.getElementById('resultado').textContent = precoFinal
+          .toFixed(2)
+          .replace('.', ',');
+
         // Adicionar ao histórico
         adicionarAoHistorico(
-          precoOriginal.toFixed(2).replace(".", ","),
+          precoOriginal.toFixed(2).replace('.', ','),
           desconto,
-          precoFinal.toFixed(2).replace(".", ",")
+          precoFinal.toFixed(2).replace('.', ',')
         );
-        
+
         // Mostrar toast de sucesso
-        showToast("Desconto calculado com sucesso!", "rounded green");
+        showToast('Desconto calculado com sucesso!', 'rounded green');
       }
 
       function limparCampos() {
-        const valorInput = document.getElementById("valor");
-        const descontoInput = document.getElementById("desconto");
-        const precoOriginal = document.getElementById("preco-original");
-        const descontoAplicado = document.getElementById("desconto-aplicado");
-        const valorDesconto = document.getElementById("valor-desconto");
-        const resultado = document.getElementById("resultado");
+        const valorInput = document.getElementById('valor');
+        const descontoInput = document.getElementById('desconto');
+        const precoOriginal = document.getElementById('preco-original');
+        const descontoAplicado = document.getElementById('desconto-aplicado');
+        const valorDesconto = document.getElementById('valor-desconto');
+        const resultado = document.getElementById('resultado');
 
         // Verifica se os campos já estão limpos
         if (
-          valorInput.value === "" &&
-          descontoInput.value === "" &&
-          precoOriginal.textContent === "0,00" &&
-          descontoAplicado.textContent === "0" &&
-          valorDesconto.textContent === "0,00" &&
-          resultado.textContent === "0,00"
+          valorInput.value === '' &&
+          descontoInput.value === '' &&
+          precoOriginal.textContent === '0,00' &&
+          descontoAplicado.textContent === '0' &&
+          valorDesconto.textContent === '0,00' &&
+          resultado.textContent === '0,00'
         ) {
-          showToast("Os campos já estão limpos!", "rounded orange");
+          showToast('Os campos já estão limpos!', 'rounded orange');
           return;
         }
 
         // Limpa os campos
-        valorInput.value = "";
-        descontoInput.value = "";
-        precoOriginal.textContent = "0,00";
-        descontoAplicado.textContent = "0";
-        valorDesconto.textContent = "0,00";
-        resultado.textContent = "0,00";
+        valorInput.value = '';
+        descontoInput.value = '';
+        precoOriginal.textContent = '0,00';
+        descontoAplicado.textContent = '0';
+        valorDesconto.textContent = '0,00';
+        resultado.textContent = '0,00';
 
         // Remove classes de invalidação
-        valorInput.classList.remove("invalid");
-        descontoInput.classList.remove("invalid");
+        valorInput.classList.remove('invalid');
+        descontoInput.classList.remove('invalid');
 
         // Remove a classe active dos labels
-        const labels = document.querySelectorAll(".input-field label");
+        const labels = document.querySelectorAll('.input-field label');
         labels.forEach((label) => {
-          label.classList.remove("active");
+          label.classList.remove('active');
         });
 
         // Remove qualquer estilo inline que possa ter sido adicionado
-        valorInput.style.borderBottom = "";
-        valorInput.style.boxShadow = "";
-        descontoInput.style.borderBottom = "";
-        descontoInput.style.boxShadow = "";
+        valorInput.style.borderBottom = '';
+        valorInput.style.boxShadow = '';
+        descontoInput.style.borderBottom = '';
+        descontoInput.style.boxShadow = '';
 
         // Atualiza campos do Materialize
         M.updateTextFields();
-        showToast("Campos limpos!", "rounded blue");
+        showToast('Campos limpos!', 'rounded blue');
       }
 
       // Inicializar componentes Materialize
-      document.addEventListener("DOMContentLoaded", function () {
+      document.addEventListener('DOMContentLoaded', function () {
         M.updateTextFields();
         // Definir foco inicial no campo de valor
-        document.getElementById("valor").focus();
-        
-        // Inicializar o gerenciador de histórico
-        historyManager = new HistoryManager(
-          'calculo-desconto-historico', // storageKey - Chave para armazenamento no localStorage
-          'historico-list',             // historyListId - ID do elemento HTML que contém a lista de histórico
-          'historico-container'         // historyContainerId - ID do container do histórico
-        );
+        document.getElementById('valor').focus();
+
+        // A inicialização do gerenciador de histórico já foi feita no início do arquivo
       });
-      
+
       // Listeners para eventos de cópia
-      document.addEventListener('copy-success', function(e) {
+      document.addEventListener('copy-success', function (e) {
         showToast(e.detail.message, 'green rounded');
       });
-      
+
       // Adicionando o listener para eventos de erro na cópia que estava faltando
-      document.addEventListener('copy-error', function(e) {
+      document.addEventListener('copy-error', function (e) {
         showToast(e.detail.message, 'red rounded');
       });
+
+      // Adicionar validação de input para permitir números e separadores decimais
+      document
+        .getElementById('valor')
+        .addEventListener('keypress', function (e) {
+          // Permite apenas números
+          if (!/\d/.test(e.key)) {
+            e.preventDefault();
+          }
+        });
+
+      document
+        .getElementById('desconto')
+        .addEventListener('keypress', function (e) {
+          if (!/[\d.]/.test(e.key)) {
+            e.preventDefault();
+          }
+        });
+
+      document
+        .getElementById('desconto')
+        .addEventListener('wheel', function (e) {
+          e.preventDefault();
+          let valor = parseInt(this.value);
+          if (e.deltaY < 0) {
+            valor = Math.min(100, valor + 1);
+          } else {
+            valor = Math.max(0, valor - 1);
+          }
+          this.value = valor;
+        });
+
+      document.getElementById('valor').addEventListener('input', function (e) {
+        let valor = e.target.value.replace(/\D/g, '');
+        if (valor === '') return;
+
+        valor = (parseFloat(valor) / 100).toFixed(2);
+        e.target.value = valor.replace('.', ',');
+      });
     </script>
-    
+
     <!-- Container do Histórico -->
-    
-    </body>
-    </html>
+  </body>
+</html>
