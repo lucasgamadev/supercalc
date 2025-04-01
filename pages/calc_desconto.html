@@ -691,15 +691,16 @@
       /* Estilos para o container do histórico e scrollbar - revisão completa */
       .historico-wrapper {
         position: relative;
-        height: 380px; /* Altura fixa para garantir o scroll */
+        height: 550px; /* Aumentado de 400px para 550px */
+        max-height: 550px; /* Aumentado de 400px para 550px */
         margin-top: 10px;
-        margin-bottom: 10px; /* Mantendo igual ao espaçamento superior */
+        margin-bottom: 5px;
         border-radius: 8px;
         background: rgba(217, 217, 217, 0.05);
-        display: block; /* Alterado de flex para block */
+        display: block;
         box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
-        overflow: hidden; /* Contém overflow apenas neste nível */
-        padding: 10px 0 10px 10px; /* Espaço à esquerda, em cima e embaixo, mas não à direita */
+        overflow: hidden;
+        padding: 10px 0 10px 10px;
       }
 
       /* Estilo direto e simplificado para o histórico */
