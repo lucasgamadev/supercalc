@@ -1358,7 +1358,8 @@
         const btnCopiar = novoItem.querySelector('.btn-copiar');
         if (btnCopiar) {
           btnCopiar.addEventListener('click', function () {
-            copiarParaAreaDeTransferencia(`R$ ${resultadoFormatado}`);
+            // Copiar apenas o valor numérico sem o símbolo R$
+            copiarParaAreaDeTransferencia(resultadoFormatado);
           });
         }
 
@@ -1431,7 +1432,9 @@
               btnCopiar.addEventListener('click', function () {
                 const resultadoFinal =
                   novoItem.querySelector('.resultado-final').textContent;
-                copiarParaAreaDeTransferencia(resultadoFinal);
+                // Remover o símbolo R$ antes de copiar
+                const valorNumerico = resultadoFinal.replace('R$ ', '');
+                copiarParaAreaDeTransferencia(valorNumerico);
               });
             }
 
