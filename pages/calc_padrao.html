@@ -28,6 +28,9 @@
             'historico-container' // ID do container do histórico
           );
 
+          // Torna o historyManager acessível globalmente
+          window.historyManager = historyManager;
+
           // Carrega o histórico após a inicialização
           historyManager.loadHistory();
         }, 100); // Pequeno atraso para garantir que o DOM está pronto
@@ -1070,13 +1073,28 @@
             return;
         }
 
-        // Expressão simples para o histórico
-        const expressao = `${valorAnterior} ${operacao} ${valorAtual} = ${formatarDisplay(resultado)}`;
+        // Formata a expressão e resultado
+        const expressao = `${valorAnterior} ${operacao} ${valorAtual}`;
+        const resultadoFormatado = formatarDisplay(resultado);
 
-        // Adiciona ao histórico de forma simplificada
-        adicionarAoHistorico(expressao);
+        // Adiciona ao histórico usando o HistoryManager
+        if (window.historyManager) {
+          // Determinar o tipo de operador para o HistoryManager
+          let operationType = 'default';
+          if (operacao === '+') operationType = 'soma';
+          else if (operacao === '−') operationType = 'subtracao';
+          else if (operacao === '×') operationType = 'multiplicacao';
+          else if (operacao === '÷') operationType = 'divisao';
+          else if (operacao === '%') operationType = 'porcentagem';
 
-        valorAtual = formatarDisplay(resultado);
+          window.historyManager.addHistoryItem(
+            expressao,
+            resultadoFormatado,
+            operationType
+          );
+        }
+
+        valorAtual = resultadoFormatado;
         valorAnterior = '';
         operacao = null;
         resultadoExibido = true;
@@ -1123,299 +1141,6 @@
             console.error('Erro ao copiar: ', err);
             showToast('Não foi possível copiar o resultado.', 'red rounded');
           });
-      }
-
-      // Adicionar ao histórico (versão simplificada)
-      function adicionarAoHistorico(expressao) {
-        // Verifica se existe o componente EmptyHistory e remove se existir
-        const emptyHistory = historicoList.querySelector('empty-history');
-        if (emptyHistory) {
-          historicoList.removeChild(emptyHistory);
-        }
-
-        // Divide a expressão para separar a operação do resultado
-        const partes = expressao.split('=');
-        const operacao = partes[0].trim();
-        const resultado = partes[1].trim();
-
-        // Identifica o tipo de operação para aplicar uma cor diferente
-        let operadorCor = '#2196f3'; // Azul padrão
-        let operadorIcone = 'calculate';
-        let operadorClasse = '';
-
-        if (operacao.includes('+')) {
-          operadorCor = '#4caf50'; // Verde para adição
-          operadorIcone = 'add';
-          operadorClasse = 'operador-soma';
-        } else if (operacao.includes('−')) {
-          operadorCor = '#f44336'; // Vermelho para subtração
-          operadorIcone = 'remove';
-          operadorClasse = 'operador-subtracao';
-        } else if (operacao.includes('×')) {
-          operadorCor = '#ff9800'; // Laranja para multiplicação
-          operadorIcone = 'close';
-          operadorClasse = 'operador-multiplicacao';
-        } else if (operacao.includes('÷')) {
-          operadorCor = '#9c27b0'; // Roxo para divisão
-          operadorIcone = 'calculate'; // Substituído "functions" por "calculate"
-          operadorClasse = 'operador-divisao';
-        } else if (operacao.includes('%')) {
-          operadorCor = '#00bcd4'; // Ciano para porcentagem
-          operadorIcone = 'percent';
-          operadorClasse = 'operador-porcentagem';
-        }
-
-        // Determinar a classe do resultado com base no valor
-        let resultadoClasse = 'resultado-positivo';
-        const valorNumerico = parseFloat(resultado.replace(',', '.'));
-
-        if (valorNumerico === 0) {
-          resultadoClasse = 'resultado-zero';
-        } else if (valorNumerico < 0) {
-          resultadoClasse = 'resultado-negativo';
-        }
-
-        // Create symbols with simple square styling
-        let iconContent;
-        if (operacao.includes('÷')) {
-          iconContent = `<div class="symbol-container ${operadorClasse}"><span style="color: white; font-size: 16px; font-weight: bold;">÷</span></div>`;
-        } else if (operacao.includes('×')) {
-          iconContent = `<div class="symbol-container ${operadorClasse}"><span style="color: white; font-size: 16px; font-weight: bold;">×</span></div>`;
-        } else if (operacao.includes('−')) {
-          iconContent = `<div class="symbol-container ${operadorClasse}"><span style="color: white; font-size: 16px; font-weight: bold;">−</span></div>`;
-        } else if (operacao.includes('+')) {
-          iconContent = `<div class="symbol-container ${operadorClasse}"><span style="color: white; font-size: 16px; font-weight: bold;">+</span></div>`;
-        } else if (operacao.includes('%')) {
-          iconContent = `<div class="symbol-container ${operadorClasse}"><span style="color: white; font-size: 16px; font-weight: bold;">%</span></div>`;
-        } else {
-          iconContent = `<div class="symbol-container" style="background: linear-gradient(to bottom, #2196f3, #64b5f6);"><i class="material-icons" style="color: white; font-size: 16px;">${operadorIcone}</i></div>`;
-        }
-
-        // Cria e adiciona o item ao histórico com estilo melhorado - ESTRUTURA SIMPLIFICADA
-        const li = document.createElement('li');
-        li.className = 'collection-item resultado-item fade-in';
-        li.style.borderLeftColor = operadorCor;
-
-        li.innerHTML = `
-          <div class="historico-conteudo">
-            ${iconContent}
-            <span>${operacao} =</span>
-            <span class="resultado-valor ${resultadoClasse}">${resultado}</span>
-          </div>
-          <button class="btn-copiar" data-valor="${resultado}" title="Copiar resultado">
-            <i class="material-icons" style="font-size: 18px;">content_copy</i>
-          </button>
-        `;
-
-        // Efeito de entrada suave
-        li.style.opacity = '0';
-        li.style.transform = 'translateY(-10px)';
-
-        historicoList.prepend(li);
-
-        // Adicionar evento de clique ao botão de cópia
-        const btnCopiar = li.querySelector('.btn-copiar');
-        if (btnCopiar) {
-          btnCopiar.addEventListener('click', function (e) {
-            e.stopPropagation();
-            const valor = this.getAttribute('data-valor');
-            copiarParaAreaDeTransferencia(valor);
-          });
-        }
-
-        // Força o reflow para a animação funcionar
-        li.offsetHeight;
-
-        // Aplica a transição
-        li.style.transition = 'all 0.3s ease';
-        li.style.opacity = '1';
-        li.style.transform = 'translateY(0)';
-
-        // Armazenar no localStorage de forma simplificada com timestamp
-        const historicoItem = {
-          expressao: expressao,
-        };
-        salvarHistoricoItem(JSON.stringify(historicoItem));
-
-        // Mostrar o container de histórico
-        document.getElementById('historico-container').classList.add('show');
-      }
-
-      // Salvar um novo item no histórico (simplificado)
-      function salvarHistoricoItem(expressao) {
-        const itens = obterHistoricoSalvo() || [];
-        itens.unshift(expressao); // Adiciona no início do array
-
-        // Aumentar para permitir mais itens no histórico
-        if (itens.length > 30) {
-          // Aumentado de 10 para 30
-          itens.pop(); // Remove o último item
-        }
-
-        localStorage.setItem('calculo-padrao-historico', JSON.stringify(itens));
-      }
-
-      // Obter histórico salvo no localStorage
-      function obterHistoricoSalvo() {
-        const historico = localStorage.getItem('calculo-padrao-historico');
-        return historico ? JSON.parse(historico) : null;
-      }
-
-      // Carregar histórico do localStorage (simplificado)
-      function carregarHistorico() {
-        const itens = obterHistoricoSalvo();
-
-        if (itens && itens.length > 0) {
-          document.getElementById('historico-container').classList.add('show');
-
-          // Mostrar todos os itens do histórico
-          itens.forEach((item, index) => {
-            // Verifica se o item é um objeto JSON serializado
-            let expressao;
-
-            try {
-              const itemObj = JSON.parse(item);
-              expressao = itemObj.expressao;
-            } catch (e) {
-              // Se não for um objeto, assume que é apenas a expressão
-              expressao = item;
-            }
-
-            // Divide a expressão para separar a operação do resultado
-            const partes = expressao.split('=');
-            const operacao = partes[0].trim();
-            const resultado = partes[1]?.trim() || '';
-
-            // Identifica o tipo de operação para aplicar uma cor diferente
-            let operadorCor = '#2196f3'; // Azul padrão
-            let operadorIcone = 'calculate';
-            let operadorClasse = '';
-
-            if (operacao.includes('+')) {
-              operadorCor = '#4caf50'; // Verde para adição
-              operadorIcone = 'add';
-              operadorClasse = 'operador-soma';
-            } else if (operacao.includes('−')) {
-              operadorCor = '#f44336'; // Vermelho para subtração
-              operadorIcone = 'remove';
-              operadorClasse = 'operador-subtracao';
-            } else if (operacao.includes('×')) {
-              operadorCor = '#ff9800'; // Laranja para multiplicação
-              operadorIcone = 'close';
-              operadorClasse = 'operador-multiplicacao';
-            } else if (operacao.includes('÷')) {
-              operadorCor = '#9c27b0'; // Roxo para divisão
-              operadorIcone = 'calculate'; // Substituído "functions" por "calculate"
-              operadorClasse = 'operador-divisao';
-            } else if (operacao.includes('%')) {
-              operadorCor = '#00bcd4'; // Ciano para porcentagem
-              operadorIcone = 'percent';
-              operadorClasse = 'operador-porcentagem';
-            }
-
-            // Determinar a classe do resultado com base no valor
-            let resultadoClasse = 'resultado-positivo';
-            const valorNumerico = parseFloat(resultado.replace(',', '.'));
-
-            if (valorNumerico === 0) {
-              resultadoClasse = 'resultado-zero';
-            } else if (valorNumerico < 0) {
-              resultadoClasse = 'resultado-negativo';
-            }
-
-            // Create symbols with simple square styling
-            let iconContent;
-            if (operacao.includes('÷')) {
-              iconContent = `<div class="symbol-container ${operadorClasse}"><span style="color: white; font-size: 16px; font-weight: bold;">÷</span></div>`;
-            } else if (operacao.includes('×')) {
-              iconContent = `<div class="symbol-container ${operadorClasse}"><span style="color: white; font-size: 16px; font-weight: bold;">×</span></div>`;
-            } else if (operacao.includes('−')) {
-              iconContent = `<div class="symbol-container ${operadorClasse}"><span style="color: white; font-size: 16px; font-weight: bold;">−</span></div>`;
-            } else if (operacao.includes('+')) {
-              iconContent = `<div class="symbol-container ${operadorClasse}"><span style="color: white; font-size: 16px; font-weight: bold;">+</span></div>`;
-            } else if (operacao.includes('%')) {
-              iconContent = `<div class="symbol-container ${operadorClasse}"><span style="color: white; font-size: 16px; font-weight: bold;">%</span></div>`;
-            } else {
-              iconContent = `<div class="symbol-container" style="background: linear-gradient(to bottom, #2196f3, #64b5f6);"><i class="material-icons" style="color: white; font-size: 16px;">${operadorIcone}</i></div>`;
-            }
-
-            const li = document.createElement('li');
-            li.className = 'collection-item resultado-item fade-in';
-            li.style.borderLeftColor = operadorCor;
-            li.style.animationDelay = `${Math.min(index, 10) * 0.05}s`; // Limitar atraso de animação
-
-            li.innerHTML = `
-              <div class="historico-conteudo">
-                ${iconContent}
-                <span>${operacao} =</span>
-                <span class="resultado-valor ${resultadoClasse}">${resultado}</span>
-              </div>
-              <button class="btn-copiar" data-valor="${resultado}" title="Copiar resultado">
-                <i class="material-icons" style="font-size: 18px;">content_copy</i>
-              </button>
-            `;
-
-            historicoList.prepend(li);
-
-            // Adicionar evento de clique ao botão de cópia
-            const btnCopiar = li.querySelector('.btn-copiar');
-            if (btnCopiar) {
-              btnCopiar.addEventListener('click', function (e) {
-                e.stopPropagation();
-                const valor = this.getAttribute('data-valor');
-                copiarParaAreaDeTransferencia(valor);
-              });
-            }
-          });
-        } else {
-          // Mostrar o componente de histórico vazio
-          historicoList.innerHTML = '';
-          const emptyHistory = document.createElement('empty-history');
-          emptyHistory.setAttribute('message', 'Nenhum cálculo no histórico');
-          emptyHistory.setAttribute(
-            'sub-message',
-            'Os cálculos realizados aparecerão aqui'
-          );
-          historicoList.appendChild(emptyHistory);
-
-          // Adicionar um pequeno atraso para garantir que o componente seja renderizado antes de mostrar o container
-          setTimeout(() => {
-            document
-              .getElementById('historico-container')
-              .classList.add('show');
-          }, 50);
-        }
-
-        // Forçar um reflow para garantir que as barras de rolagem sejam calculadas corretamente
-        document.getElementById('historico-list').offsetHeight;
-      }
-
-      // Limpar histórico
-      function limparHistorico() {
-        const historicoList = document.getElementById('historico-list');
-
-        // Verifica se o histórico já está vazio
-        if (!historicoList || historicoList.children.length === 0) {
-          showToast('O histórico já está vazio!', 'orange rounded');
-          return;
-        }
-
-        // Remove todos os itens do histórico
-        historicoList.innerHTML = '';
-
-        localStorage.removeItem('calculo-padrao-historico');
-
-        // Adicionar o componente de histórico vazio
-        const emptyHistory = document.createElement('empty-history');
-        emptyHistory.setAttribute('message', 'Nenhum cálculo no histórico');
-        emptyHistory.setAttribute(
-          'sub-message',
-          'Os cálculos realizados aparecerão aqui'
-        );
-        historicoList.appendChild(emptyHistory);
-        document.getElementById('historico-container').classList.add('show');
-
-        showToast('Histórico limpo com sucesso!', 'green rounded');
       }
 
       // Registrar eventos para os botões
@@ -1515,7 +1240,6 @@
       document.addEventListener('DOMContentLoaded', function () {
         registrarEventos();
         atualizarDisplay();
-        carregarHistorico();
 
         // Corrigir problemas de rolagem após o carregamento completo
         setTimeout(function () {

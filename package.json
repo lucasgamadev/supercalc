@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "npx tailwindcss -i ./assets/css/styles.css -o ./assets/css/output.css --watch",
     "build": "npx tailwindcss -i ./assets/css/styles.css -o ./assets/css/output.css --minify",
-    "lint": "eslint --ext .js,.html ."
+    "lint": "eslint --ext .js,.html .",
+    "lint:fix": "eslint --ext .js,.html . --fix"
   },
   "keywords": [
     "calculadora",
