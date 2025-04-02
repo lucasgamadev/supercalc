@@ -1018,27 +1018,44 @@
         margin-left: 4px; /* Pequeno espaço após o label */
       }
 
+      /* Botão de copiar simples e visível */
       .btn-copiar {
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        padding: 6px;
+        width: 30px;
+        height: 30px;
+        min-width: 30px;
         border-radius: 50%;
-        color: #9e9e9e;
-        transition: all 0.2s ease;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-left: 12px;
+        color: #2196f3;
+        background-color: rgba(33, 150, 243, 0.1);
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin-left: 5px;
       }
 
       .btn-copiar:hover {
-        background-color: rgba(33, 150, 243, 0.1);
-        color: #2196f3;
+        background-color: rgba(33, 150, 243, 0.2);
         transform: scale(1.1);
       }
 
-      .btn-copiar i {
+      /* Garantir que o botão mantenha a cor original após clicado */
+      .btn-copiar:visited,
+      .btn-copiar:focus,
+      .btn-copiar:active,
+      .btn-copiar:focus-visible {
+        color: #2196f3;
+        background-color: rgba(33, 150, 243, 0.1);
+        outline: none;
+      }
+
+      /* Garantir que o ícone dentro do botão mantenha sua cor */
+      .btn-copiar i,
+      .btn-copiar:focus i,
+      .btn-copiar:active i,
+      .btn-copiar:visited i {
+        color: #2196f3;
         font-size: 18px !important;
       }
 
