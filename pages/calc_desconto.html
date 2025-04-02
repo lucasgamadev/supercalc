@@ -26,6 +26,10 @@
       document.addEventListener('copy-success', function (e) {
         showToast(e.detail.message, 'green rounded');
       });
+      
+      document.addEventListener('copy-error', function (e) {
+        showToast(e.detail.message, 'orange rounded');
+      });
     </script>
     <script>
       tailwind.config = {
@@ -1330,24 +1334,45 @@
     <script>
       // Script inicializado
 
-      // Função para mostrar toast usando o componente web
+      // Função para mostrar toast de notificação usando o componente web
       function showToast(message, classes = 'rounded') {
+        // Cria uma instância do componente toast-notification
         const toast = document.createElement('toast-notification');
         toast.setAttribute('message', message);
         toast.setAttribute('classes', classes);
         document.body.appendChild(toast);
+        
+        // Como alternativa, também podemos usar o método estático se disponível
+        if (typeof ToastNotification !== 'undefined' && ToastNotification.showToast) {
+          ToastNotification.showToast(message, classes);
+        }
       }
 
       document
         .getElementById('desconto')
         .addEventListener('input', function (e) {
-          const valor = parseFloat(this.value);
+          const valorStr = this.value.trim();
+          
+          // Se o campo estiver vazio, apenas remove a classe de inválido
+          if (valorStr === '') {
+            this.classList.remove('invalid');
+            return;
+          }
+          
+          // Normaliza o valor (substitui vírgula por ponto para cálculos)
+          const valorNormalizado = valorStr.replace(',', '.');
+          const valor = parseFloat(valorNormalizado);
+          
+          if (isNaN(valor)) {
+            this.classList.add('invalid');
+            return;
+          }
+          
           if (valor > 100) {
             this.value = 100;
             this.classList.add('invalid');
             showToast('O desconto máximo é 100%', 'rounded orange');
           } else if (valor <= 0) {
-            this.value = '';
             this.classList.add('invalid');
             showToast('O desconto deve ser maior que 0%', 'rounded orange');
           } else {
@@ -1357,51 +1382,61 @@
 
       // Melhorar a validação em tempo real
       function validarCampos() {
-        const valorStr = document.getElementById('valor').value.trim();
-        const desconto = document.getElementById('desconto').value.trim();
+        const valorInput = document.getElementById('valor');
+        const descontoInput = document.getElementById('desconto');
+        const valorStr = valorInput.value.trim();
+        const desconto = descontoInput.value.trim();
+        let isValid = true;
 
-        // Validação do valor
+        // Remover classes de invalidação anteriores
+        valorInput.classList.remove('invalid');
+        descontoInput.classList.remove('invalid');
+
+        // Validação do valor - verificar primeiro se está vazio
         if (valorStr === '') {
-          const valorInput = document.getElementById('valor');
           valorInput.classList.add('invalid');
           valorInput.focus();
           showToast('Por favor, insira um valor', 'rounded orange');
-          return false;
-        }
-
+          return false; // Retorna imediatamente, sem verificar o campo de desconto
+        } 
+        
         // Normaliza o valor (substitui vírgula por ponto para cálculos)
         const valorNormalizado = valorStr.replace(',', '.');
         const valor = parseFloat(valorNormalizado);
 
         if (isNaN(valor) || valor <= 0) {
-          const valorInput = document.getElementById('valor');
           valorInput.classList.add('invalid');
           valorInput.focus();
           showToast(
             'Por favor, insira um valor válido positivo',
             'rounded orange'
           );
-          return false;
+          isValid = false;
         }
 
-        // Validação de desconto
-        if (
-          desconto === '' ||
-          isNaN(parseFloat(desconto)) ||
-          parseFloat(desconto) <= 0 ||
-          parseFloat(desconto) > 100
-        ) {
-          const descontoInput = document.getElementById('desconto');
-          descontoInput.classList.add('invalid');
-          descontoInput.focus();
-          showToast(
-            'Por favor, insira um desconto válido (maior que 0 e até 100)',
-            'rounded orange'
-          );
-          return false;
+        // Validação de desconto - só verifica se o valor estiver válido
+        if (isValid) {
+          if (desconto === '') {
+            descontoInput.classList.add('invalid');
+            descontoInput.focus();
+            showToast('Por favor, insira um percentual de desconto', 'rounded orange');
+            isValid = false;
+          } else if (
+            isNaN(parseFloat(desconto)) ||
+            parseFloat(desconto) <= 0 ||
+            parseFloat(desconto) > 100
+          ) {
+            descontoInput.classList.add('invalid');
+            descontoInput.focus();
+            showToast(
+              'Por favor, insira um desconto válido (maior que 0 e até 100)',
+              'rounded orange'
+            );
+            isValid = false;
+          }
         }
 
-        return true;
+        return isValid;
       }
 
       // A função showToast já foi declarada anteriormente
@@ -1422,7 +1457,7 @@
       function validarCampo(input, condicao, mensagem) {
         if (!condicao) {
           input.classList.add('invalid');
-          showToast(mensagem, 'rounded red');
+          showToast(mensagem, 'rounded orange');
           input.focus();
           return false;
         }
@@ -1539,7 +1574,7 @@
           })
           .catch((err) => {
             console.error('Erro ao copiar: ', err);
-            showToast('Não foi possível copiar o resultado.', 'red rounded');
+            showToast('Não foi possível copiar o resultado.', 'orange rounded');
           });
       }
 
@@ -1680,8 +1715,11 @@
           precoFinal.toFixed(2).replace('.', ',')
         );
 
-        // Mostrar toast de sucesso
-        showToast('Desconto calculado com sucesso!', 'rounded green');
+        // Mostrar toast de sucesso - Garantindo que a notificação seja exibida
+        const toast = document.createElement('toast-notification');
+        toast.setAttribute('message', 'Desconto calculado com sucesso!');
+        toast.setAttribute('classes', 'green rounded');
+        document.body.appendChild(toast);
       }
 
       function limparCampos() {
@@ -1701,7 +1739,20 @@
           valorDesconto.textContent === '0,00' &&
           resultado.textContent === '0,00'
         ) {
-          showToast('Os campos já estão limpos!', 'rounded orange');
+          // Destaca visualmente os campos já vazios com uma animação sutil
+          valorInput.classList.add('invalid');
+          descontoInput.classList.add('invalid');
+          
+          setTimeout(() => {
+            valorInput.classList.remove('invalid');
+            descontoInput.classList.remove('invalid');
+          }, 800);
+          
+          // Mostrar toast de aviso - Garantindo que a notificação seja exibida
+          const toast = document.createElement('toast-notification');
+          toast.setAttribute('message', 'Os campos já estão limpos!');
+          toast.setAttribute('classes', 'orange rounded');
+          document.body.appendChild(toast);
           return;
         }
 
@@ -1731,7 +1782,12 @@
 
         // Atualiza campos do Materialize
         M.updateTextFields();
-        showToast('Campos limpos!', 'rounded blue');
+        
+        // Mostrar toast de sucesso - Garantindo que a notificação seja exibida
+        const toast = document.createElement('toast-notification');
+        toast.setAttribute('message', 'Campos limpos com sucesso!');
+        toast.setAttribute('classes', 'blue rounded');
+        document.body.appendChild(toast);
       }
 
       // Inicializar componentes Materialize
@@ -1750,23 +1806,54 @@
 
       // Adicionando o listener para eventos de erro na cópia que estava faltando
       document.addEventListener('copy-error', function (e) {
-        showToast(e.detail.message, 'red rounded');
+        showToast(e.detail.message, 'orange rounded');
       });
 
       // Adicionar validação de input para permitir números e separadores decimais
       document
         .getElementById('valor')
         .addEventListener('keypress', function (e) {
-          // Permite apenas números
-          if (!/\d/.test(e.key)) {
+          // Permite apenas números e vírgula
+          if (!/[\d,.]/.test(e.key)) {
             e.preventDefault();
+          }
+          // Evita mais de uma vírgula ou ponto
+          if ((e.key === ',' || e.key === '.') && 
+              (this.value.includes(',') || this.value.includes('.'))) {
+            e.preventDefault();
+          }
+        });
+        
+      // Validação em tempo real para o campo valor
+      document
+        .getElementById('valor')
+        .addEventListener('input', function (e) {
+          const valor = this.value.trim();
+          if (valor === '') {
+            this.classList.remove('invalid');
+            return;
+          }
+          
+          const valorNormalizado = valor.replace(',', '.');
+          const valorNumerico = parseFloat(valorNormalizado);
+          
+          if (isNaN(valorNumerico) || valorNumerico <= 0) {
+            this.classList.add('invalid');
+          } else {
+            this.classList.remove('invalid');
           }
         });
 
       document
         .getElementById('desconto')
         .addEventListener('keypress', function (e) {
-          if (!/[\d.]/.test(e.key)) {
+          // Permite apenas números, vírgula e ponto
+          if (!/[\d,.]/.test(e.key)) {
+            e.preventDefault();
+          }
+          // Evita mais de uma vírgula ou ponto
+          if ((e.key === ',' || e.key === '.') && 
+              (this.value.includes(',') || this.value.includes('.'))) {
             e.preventDefault();
           }
         });
