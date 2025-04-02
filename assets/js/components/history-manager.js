@@ -35,7 +35,6 @@ class HistoryManager {
     // Determina a classe do resultado com base no valor
     let resultClass = 'resultado-positivo';
     const numericValue = parseFloat(result.toString().replace(',', '.'));
-
     if (numericValue === 0) {
       resultClass = 'resultado-zero';
     } else if (numericValue < 0) {
@@ -99,18 +98,57 @@ class HistoryManager {
   }
 
   /**
+   * Verifica se um item do histórico é válido
+   * @param {Object} item - O item a ser validado
+   * @returns {boolean} - True se o item for válido, false caso contrário
+   */
+  isValidHistoryItem(item) {
+    // Verifica se o item contém as propriedades necessárias
+    if (!item || typeof item !== 'object') return false;
+
+    // Verifica se as propriedades esperadas existem e são do tipo correto
+    if (typeof item.operation !== 'string' || typeof item.result !== 'string') {
+      return false;
+    }
+
+    // Verifica se a operação ou resultado contém HTML (possível indicador de corrupção)
+    if (item.operation.includes('<') || item.result.includes('<')) {
+      return false;
+    }
+
+    // Verifica se o resultado é um número válido
+    const numericValue = parseFloat(item.result.toString().replace(',', '.'));
+    if (isNaN(numericValue)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
    * Carrega o histórico do localStorage
    */
   loadHistory() {
     const items = this.getSavedHistory();
-
     if (items && items.length > 0) {
       this.historyContainer.classList.add('show');
+      let validItemCount = 0;
 
       // Mostra todos os itens do histórico
       items.forEach((itemString) => {
         try {
           const item = JSON.parse(itemString);
+
+          // Verifica se o item é válido antes de renderizá-lo
+          if (!this.isValidHistoryItem(item)) {
+            console.warn(
+              'Item inválido de histórico encontrado e ignorado:',
+              item
+            );
+            return; // Pula este item
+          }
+
+          validItemCount++;
 
           // Cria o componente de item de histórico
           const historyItem = document.createElement('history-item');
@@ -140,22 +178,34 @@ class HistoryManager {
           console.error('Erro ao carregar item do histórico:', e);
         }
       });
-    } else {
-      // Mostra o componente de histórico vazio
-      this.historyList.innerHTML = '';
-      const emptyHistory = document.createElement('empty-history');
-      emptyHistory.setAttribute('message', 'Nenhum cálculo no histórico');
-      emptyHistory.setAttribute(
-        'sub-message',
-        'Os cálculos realizados aparecerão aqui'
-      );
-      this.historyList.appendChild(emptyHistory);
 
-      // Adiciona um pequeno atraso para garantir que o componente seja renderizado antes de mostrar o container
-      setTimeout(() => {
-        this.historyContainer.classList.add('show');
-      }, 100);
+      // Se não houver itens válidos, exibe mensagem de histórico vazio
+      if (validItemCount === 0) {
+        this.showEmptyHistory();
+      }
+    } else {
+      this.showEmptyHistory();
     }
+  }
+
+  /**
+   * Exibe o componente de histórico vazio
+   */
+  showEmptyHistory() {
+    // Mostra o componente de histórico vazio
+    this.historyList.innerHTML = '';
+    const emptyHistory = document.createElement('empty-history');
+    emptyHistory.setAttribute('message', 'Nenhum cálculo no histórico');
+    emptyHistory.setAttribute(
+      'sub-message',
+      'Os cálculos realizados aparecerão aqui'
+    );
+    this.historyList.appendChild(emptyHistory);
+
+    // Adiciona um pequeno atraso para garantir que o componente seja renderizado antes de mostrar o container
+    setTimeout(() => {
+      this.historyContainer.classList.add('show');
+    }, 100);
   }
 
   /**
@@ -170,7 +220,6 @@ class HistoryManager {
 
     // Remove todos os itens do histórico
     this.historyList.innerHTML = '';
-
     localStorage.removeItem(this.storageKey);
 
     // Adiciona o componente de histórico vazio
@@ -181,8 +230,8 @@ class HistoryManager {
       'Os cálculos realizados aparecerão aqui'
     );
     this.historyList.appendChild(emptyHistory);
-    this.historyContainer.classList.add('show');
 
+    this.historyContainer.classList.add('show');
     this.showToast('Histórico limpo com sucesso!', 'green rounded');
   }
 
@@ -203,6 +252,7 @@ class HistoryManager {
     } else if (operation.includes('%')) {
       return 'porcentagem';
     }
+
     return 'default';
   }
 
