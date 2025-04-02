@@ -278,6 +278,7 @@
         box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
         overflow: hidden; /* Contém overflow apenas neste nível */
         padding: 10px 0 10px 10px; /* Espaço à esquerda, em cima e embaixo, mas não à direita */
+        max-width: 100%; /* Garantir que não ultrapasse a largura máxima disponível */
       }
 
       /* Estilo direto e simplificado para o histórico */
@@ -292,11 +293,12 @@
         padding: 0; /* Removido padding extra à direita */
         list-style: none;
         overflow-y: auto !important; /* Alterado de scroll para auto - só mostra quando necessário */
-        overflow-x: hidden;
+        overflow-x: hidden !important; /* Forçar ocultar a barra horizontal */
         position: relative;
         z-index: 1; /* Garante que a lista fique acima de outros elementos */
         transform: translateZ(0); /* Ativa aceleração de hardware */
         will-change: scroll-position; /* Otimização para rolagem */
+        box-sizing: border-box; /* Garantir que padding e border sejam incluídos na largura */
       }
 
       /* Estilos limpos para os itens da lista */
@@ -305,6 +307,8 @@
         margin-bottom: 5px !important;
         background-color: transparent !important;
         border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+        width: 100% !important; /* Garantir que os itens não excedam a largura da lista */
+        box-sizing: border-box !important; /* Garantir que padding e border sejam incluídos na largura */
       }
 
       /* Personalização da barra de rolagem - revisão completa */
@@ -368,6 +372,12 @@
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
         margin-bottom: 15px;
         transform-origin: center;
+        width: calc(
+          100% - 10px
+        ) !important; /* Garantir largura adequada com margem */
+        box-sizing: border-box !important; /* Garantir que padding e border sejam incluídos na largura */
+        max-width: 100%; /* Garantir que não ultrapasse o container */
+        overflow: hidden; /* Esconder o conteúdo que passar da largura */
       }
 
       .resultado-item:hover {
@@ -380,6 +390,9 @@
         align-items: center;
         gap: 8px;
         flex: 1;
+        min-width: 0; /* Permitir que o elemento possa encolher abaixo da largura do conteúdo */
+        overflow: hidden; /* Cortar conteúdo excessivo */
+        text-overflow: ellipsis; /* Mostrar reticências para texto cortado */
       }
 
       .historico-expressao {
@@ -389,6 +402,10 @@
         font-size: 1rem;
         color: #333;
         font-weight: 500;
+        white-space: nowrap; /* Manter texto em uma linha */
+        overflow: hidden; /* Esconder overflow */
+        text-overflow: ellipsis; /* Mostrar ... para texto cortado */
+        max-width: 100%; /* Limitar largura máxima */
       }
 
       .historico-expressao::before {
@@ -810,6 +827,14 @@
       .resultado-negativo {
         color: #f44336;
         background-color: rgba(244, 67, 54, 0.1);
+      }
+
+      /* Garantir que o card de histórico não tenha overflow horizontal */
+      #historico-container.card,
+      #historico-container .card-content {
+        overflow: hidden !important;
+        max-width: 100%;
+        box-sizing: border-box;
       }
     </style>
   </head>
