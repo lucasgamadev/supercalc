@@ -87,6 +87,20 @@
       rel="stylesheet"
     />
     <style>
+      :root {
+        /* Cores para as faixas de desconto */
+        --faixa-10-color: #4caf50;
+        --faixa-20-color: #8bc34a;
+        --faixa-30-color: #cddc39;
+        --faixa-40-color: #ffeb3b;
+        --faixa-50-color: #ffc107;
+        --faixa-60-color: #ff9800;
+        --faixa-70-color: #ff5722;
+        --faixa-80-color: #f44336;
+        --faixa-90-color: #e91e63;
+        --faixa-100-color: #9c27b0;
+      }
+      
       * {
         font-family: 'Roboto', sans-serif;
       }
@@ -934,7 +948,7 @@
         background-color: #f8f9fa;
         transform: translateY(-1px);
         box-shadow: 0 5px 15px rgba(33, 150, 243, 0.15);
-        border-left: 3px solid #2196f3;
+        /* A borda esquerda será definida pelas classes de faixa de desconto */
       }
 
       .historico-preco {
@@ -1169,7 +1183,7 @@
         font-size: 18px !important;
       }
 
-      /* Melhorando os estados dos itens do histórico */
+      /* Melhorando os estados dos itens do histórico - cores baseadas nas faixas de desconto */
       .historico-item.resultado-positivo {
         border-left: 3px solid #4caf50;
       }
@@ -1180,6 +1194,12 @@
 
       .historico-item.resultado-negativo {
         border-left: 3px solid #f44336;
+      }
+      
+      /* As cores da borda lateral são aplicadas via JavaScript */
+      
+      .historico-item .desconto.faixa-100 ~ .historico-resultado {
+        border-left: 3px solid #9c27b0;
       }
 
       .historico-item .label {
@@ -1620,11 +1640,13 @@
         const descontoNum = parseFloat(desconto);
         let faixaClasse = 'faixa-10'; // Classe para escala de cores expandida
         let bgClass = 'resultado-positivo'; // Classe de fundo para o estilo da calc padrão
+        // Calcular a faixa arredondando para cima para o próximo múltiplo de 10
+        let faixa = 10; // Valor padrão
 
         // Determinar a faixa de 10% correspondente ao desconto
         if (descontoNum > 0) {
           // Calcular a faixa arredondando para cima para o próximo múltiplo de 10
-          const faixa = Math.min(Math.ceil(descontoNum / 10) * 10, 100);
+          faixa = Math.min(Math.ceil(descontoNum / 10) * 10, 100);
           faixaClasse = `faixa-${faixa}`;
           
           // Definir a classe de fundo com base na faixa de desconto
@@ -1649,6 +1671,9 @@
         // Criar novo item de histórico
         const novoItem = document.createElement('li');
         novoItem.className = `collection-item historico-item ${bgClass}`;
+        
+        // Aplicar a cor da borda lateral baseada na faixa de desconto
+        novoItem.style.borderLeft = `3px solid var(--faixa-${faixa}-color, #2196f3)`;
 
         // Formatando o HTML do item
         novoItem.innerHTML = `
