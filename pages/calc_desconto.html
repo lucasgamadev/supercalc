@@ -534,21 +534,58 @@
         box-shadow: 0 4px 10px rgba(33, 150, 243, 0.4);
       }
 
-      /* Variações de cores para o desconto aplicado baseado no valor */
-      .desconto-badge.baixo {
+      /* Variações de cores para o desconto aplicado baseado no valor (escala de 10% a 100%) */
+      .desconto-badge.faixa-10 {
         background: linear-gradient(135deg, #4caf50, #8bc34a);
         box-shadow: 0 2px 5px rgba(76, 175, 80, 0.3);
       }
 
-      .desconto-badge.medio {
-        background: linear-gradient(135deg, #ff9800, #ffc107);
+      .desconto-badge.faixa-20 {
+        background: linear-gradient(135deg, #8bc34a, #cddc39);
+        box-shadow: 0 2px 5px rgba(139, 195, 74, 0.3);
+      }
+
+      .desconto-badge.faixa-30 {
+        background: linear-gradient(135deg, #cddc39, #ffeb3b);
+        box-shadow: 0 2px 5px rgba(205, 220, 57, 0.3);
+      }
+
+      .desconto-badge.faixa-40 {
+        background: linear-gradient(135deg, #ffeb3b, #ffc107);
+        box-shadow: 0 2px 5px rgba(255, 235, 59, 0.3);
+      }
+
+      .desconto-badge.faixa-50 {
+        background: linear-gradient(135deg, #ffc107, #ff9800);
+        box-shadow: 0 2px 5px rgba(255, 193, 7, 0.3);
+      }
+
+      .desconto-badge.faixa-60 {
+        background: linear-gradient(135deg, #ff9800, #ff5722);
         box-shadow: 0 2px 5px rgba(255, 152, 0, 0.3);
       }
 
-      .desconto-badge.alto {
-        background: linear-gradient(135deg, #f44336, #ff5722);
+      .desconto-badge.faixa-70 {
+        background: linear-gradient(135deg, #ff5722, #f44336);
+        box-shadow: 0 2px 5px rgba(255, 87, 34, 0.3);
+      }
+
+      .desconto-badge.faixa-80 {
+        background: linear-gradient(135deg, #f44336, #e91e63);
         box-shadow: 0 2px 5px rgba(244, 67, 54, 0.3);
       }
+
+      .desconto-badge.faixa-90 {
+        background: linear-gradient(135deg, #e91e63, #9c27b0);
+        box-shadow: 0 2px 5px rgba(233, 30, 99, 0.3);
+      }
+
+      .desconto-badge.faixa-100 {
+        background: linear-gradient(135deg, #9c27b0, #673ab7);
+        box-shadow: 0 2px 5px rgba(156, 39, 176, 0.3);
+      }
+      
+      /* Classes antigas removidas - usando apenas o sistema de faixas */
 
       .desconto-badge::before {
         content: '';
@@ -935,19 +972,20 @@
       .desconto {
         display: flex;
         align-items: center;
-        padding: 4px 10px;
+        padding: 6px 12px;
         border-radius: 20px;
-        font-size: 12px;
+        font-size: 14px;
         font-weight: 600;
         letter-spacing: 0.3px;
       }
 
       .desconto i {
-        font-size: 14px !important;
+        font-size: 16px !important;
         margin-right: 4px;
       }
 
-      .desconto.baixo {
+      /* Variações de cores para o elemento .desconto (escala de 10% a 100%) */
+      .desconto.faixa-10 {
         background: linear-gradient(
           135deg,
           rgba(76, 175, 80, 0.8),
@@ -957,25 +995,97 @@
         box-shadow: 0 2px 5px rgba(76, 175, 80, 0.3);
       }
 
-      .desconto.medio {
+      .desconto.faixa-20 {
+        background: linear-gradient(
+          135deg,
+          rgba(139, 195, 74, 0.8),
+          rgba(205, 220, 57, 0.8)
+        );
+        color: white;
+        box-shadow: 0 2px 5px rgba(139, 195, 74, 0.3);
+      }
+
+      .desconto.faixa-30 {
+        background: linear-gradient(
+          135deg,
+          rgba(205, 220, 57, 0.8),
+          rgba(255, 235, 59, 0.8)
+        );
+        color: white;
+        box-shadow: 0 2px 5px rgba(205, 220, 57, 0.3);
+      }
+
+      .desconto.faixa-40 {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 235, 59, 0.8),
+          rgba(255, 193, 7, 0.8)
+        );
+        color: white;
+        box-shadow: 0 2px 5px rgba(255, 235, 59, 0.3);
+      }
+
+      .desconto.faixa-50 {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 193, 7, 0.8),
+          rgba(255, 152, 0, 0.8)
+        );
+        color: white;
+        box-shadow: 0 2px 5px rgba(255, 193, 7, 0.3);
+      }
+
+      .desconto.faixa-60 {
         background: linear-gradient(
           135deg,
           rgba(255, 152, 0, 0.8),
-          rgba(255, 193, 7, 0.8)
+          rgba(255, 87, 34, 0.8)
         );
         color: white;
         box-shadow: 0 2px 5px rgba(255, 152, 0, 0.3);
       }
 
-      .desconto.alto {
+      .desconto.faixa-70 {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 87, 34, 0.8),
+          rgba(244, 67, 54, 0.8)
+        );
+        color: white;
+        box-shadow: 0 2px 5px rgba(255, 87, 34, 0.3);
+      }
+
+      .desconto.faixa-80 {
         background: linear-gradient(
           135deg,
           rgba(244, 67, 54, 0.8),
-          rgba(255, 87, 34, 0.8)
+          rgba(233, 30, 99, 0.8)
         );
         color: white;
         box-shadow: 0 2px 5px rgba(244, 67, 54, 0.3);
       }
+
+      .desconto.faixa-90 {
+        background: linear-gradient(
+          135deg,
+          rgba(233, 30, 99, 0.8),
+          rgba(156, 39, 176, 0.8)
+        );
+        color: white;
+        box-shadow: 0 2px 5px rgba(233, 30, 99, 0.3);
+      }
+
+      .desconto.faixa-100 {
+        background: linear-gradient(
+          135deg,
+          rgba(156, 39, 176, 0.8),
+          rgba(103, 58, 183, 0.8)
+        );
+        color: white;
+        box-shadow: 0 2px 5px rgba(156, 39, 176, 0.3);
+      }
+
+      /* Classes antigas removidas - usando apenas o sistema de faixas */
 
       .resultado-economia {
         font-size: 13px;
@@ -1508,17 +1618,23 @@
 
         // Determina a classe do desconto com base no valor percentual
         const descontoNum = parseFloat(desconto);
-        let descontoClasse = 'baixo';
+        let faixaClasse = 'faixa-10'; // Classe para escala de cores expandida
         let bgClass = 'resultado-positivo'; // Classe de fundo para o estilo da calc padrão
 
-        if (descontoNum >= 30) {
-          descontoClasse = 'alto';
-          bgClass = 'resultado-negativo'; // Vermelho para descontos altos
-        } else if (descontoNum >= 15) {
-          descontoClasse = 'medio';
-          bgClass = 'resultado-zero'; // Cinza para descontos médios
-        } else {
-          bgClass = 'resultado-positivo'; // Verde para descontos baixos
+        // Determinar a faixa de 10% correspondente ao desconto
+        if (descontoNum > 0) {
+          // Calcular a faixa arredondando para cima para o próximo múltiplo de 10
+          const faixa = Math.min(Math.ceil(descontoNum / 10) * 10, 100);
+          faixaClasse = `faixa-${faixa}`;
+          
+          // Definir a classe de fundo com base na faixa de desconto
+          if (descontoNum >= 30) {
+            bgClass = 'resultado-negativo'; // Vermelho para descontos altos
+          } else if (descontoNum >= 15) {
+            bgClass = 'resultado-zero'; // Cinza para descontos médios
+          } else {
+            bgClass = 'resultado-positivo'; // Verde para descontos baixos
+          }
         }
 
         // Obtém a lista de histórico
@@ -1540,7 +1656,7 @@
             <span class="valor-original">
               <i class="material-icons">payments</i> <span class="label">Original:</span> R$ ${precoFormatado}
             </span>
-            <span class="desconto ${descontoClasse}">
+            <span class="desconto ${faixaClasse}">
               <i class="material-icons">trending_down</i> ${desconto}%
             </span>
           </div>
@@ -1714,6 +1830,10 @@
         // Calcular o preço final
         const precoFinal = precoOriginal - valorDescontoCalculado;
 
+        // Determinar a faixa de cor baseada no percentual de desconto
+        const faixa = Math.min(Math.ceil(desconto / 10) * 10, 100);
+        const faixaClasse = `faixa-${faixa}`;
+        
         // Atualizar os elementos na interface
         document.getElementById('preco-original').textContent = precoOriginal
           .toFixed(2)
@@ -1724,6 +1844,17 @@
         document.getElementById('resultado').textContent = precoFinal
           .toFixed(2)
           .replace('.', ',');
+        
+        // Atualizar as classes de cor do desconto na interface
+        const descontoBadge = document.querySelector('.desconto-badge');
+        if (descontoBadge) {
+          // Remover todas as classes de faixa existentes
+          for (let i = 10; i <= 100; i += 10) {
+            descontoBadge.classList.remove(`faixa-${i}`);
+          }
+          // Adicionar a nova classe de faixa
+          descontoBadge.classList.add(faixaClasse);
+        }
 
         // Adicionar ao histórico
         adicionarAoHistorico(
