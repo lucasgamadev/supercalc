@@ -79,5 +79,8 @@
   "files.associations": {
     "*.md": "markdown",
     "*.json": "json"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
   }
 }
