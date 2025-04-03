@@ -1921,11 +1921,12 @@
             descontoInput.classList.remove('invalid');
           }, 800);
           
-          // Mostrar toast de aviso - Garantindo que a notificação seja exibida
-          const toast = document.createElement('toast-notification');
-          toast.setAttribute('message', 'Os campos já estão limpos!');
-          toast.setAttribute('classes', 'orange rounded');
-          document.body.appendChild(toast);
+          // Mostrar toast de aviso usando o método estático
+          if (typeof ToastNotification !== 'undefined' && ToastNotification.showToast) {
+            ToastNotification.showToast('Os campos já estão limpos!', 'orange rounded');
+          } else {
+            showToast('Os campos já estão limpos!', 'orange rounded');
+          }
           return;
         }
 
@@ -1956,11 +1957,12 @@
         // Atualiza campos do Materialize
         M.updateTextFields();
         
-        // Mostrar toast de sucesso - Garantindo que a notificação seja exibida
-        const toast = document.createElement('toast-notification');
-        toast.setAttribute('message', 'Campos limpos com sucesso!');
-        toast.setAttribute('classes', 'blue rounded');
-        document.body.appendChild(toast);
+        // Mostrar toast de sucesso usando o método estático
+        if (typeof ToastNotification !== 'undefined' && ToastNotification.showToast) {
+          ToastNotification.showToast('Campos limpos com sucesso!', 'blue rounded');
+        } else {
+          showToast('Campos limpos com sucesso!', 'blue rounded');
+        }
       }
 
       // Inicializar componentes Materialize
