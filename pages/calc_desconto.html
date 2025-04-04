@@ -1690,9 +1690,14 @@
               <span class="resultado-economia">Economia: R$ ${economia}</span>
               <span class="resultado-final"><span class="label">Final:</span> R$ ${resultadoFormatado}</span>
             </div>
-            <button class="btn-copiar" title="Copiar resultado">
-              <i class="material-icons">content_copy</i>
-            </button>
+            <div class="historico-acoes">
+              <button class="btn-copiar" title="Copiar resultado">
+                <i class="material-icons">content_copy</i>
+              </button>
+              <button class="btn-excluir" title="Excluir do histórico">
+                <i class="material-icons">delete</i>
+              </button>
+            </div>
           </div>
         `;
 
@@ -1702,6 +1707,14 @@
           btnCopiar.addEventListener('click', function () {
             // Copiar apenas o valor numérico sem o símbolo R$
             copiarParaAreaDeTransferencia(resultadoFormatado);
+          });
+        }
+
+        // Adicionar evento para o botão de excluir
+        const btnExcluir = novoItem.querySelector('.btn-excluir');
+        if (btnExcluir) {
+          btnExcluir.addEventListener('click', function () {
+            excluirItemHistorico(novoItem);
           });
         }
 
@@ -1780,6 +1793,14 @@
               });
             }
 
+            // Readicionar evento para o botão de excluir
+            const btnExcluir = novoItem.querySelector('.btn-excluir');
+            if (btnExcluir) {
+              btnExcluir.addEventListener('click', function () {
+                excluirItemHistorico(novoItem);
+              });
+            }
+
             historicoList.appendChild(novoItem);
           });
 
@@ -1802,6 +1823,36 @@
           // Mostrar o container de histórico
           document.getElementById('historico-container').classList.add('show');
         }
+      }
+
+      // Função para excluir um item específico do histórico
+      function excluirItemHistorico(item) {
+        if (!item) return;
+
+        // Remover o item do DOM
+        const historicoList = document.getElementById('historico-list');
+        historicoList.removeChild(item);
+
+        // Atualizar o localStorage
+        salvarHistorico();
+
+        // Verificar se o histórico ficou vazio
+        if (historicoList.children.length === 0) {
+          // Mostrar o componente de histórico vazio
+          const emptyHistory = document.createElement('empty-history');
+          emptyHistory.setAttribute(
+            'message',
+            'Nenhum registro encontrado no histórico.'
+          );
+          emptyHistory.setAttribute(
+            'sub-message',
+            'Os registros salvos aparecerão aqui.'
+          );
+          historicoList.appendChild(emptyHistory);
+        }
+
+        // Mostrar mensagem de sucesso
+        showToast('Item removido do histórico!', 'green rounded');
       }
 
       // Função para limpar o histórico
