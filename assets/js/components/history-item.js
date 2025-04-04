@@ -106,1541 +106,237 @@ class HistoryItem extends HTMLElement {
     }
     // Estilo e HTML do componente
     this.shadowRoot.innerHTML = `
-
-
-
       <!-- Importação dos ícones do Material Design para o Shadow DOM -->
-
-
-
       <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-
-
-
-
-
-
       <style>
-
-
-
-
-
-
-
         .resultado-item {
-
-
-
-
-
-
-
           position: relative;
-
-
-
-
-
-
-
           display: flex;
-
-
-
-
-
-
-
           align-items: center;
-
-
-
-
-
-
-
           justify-content: space-between;
-
-
-
-
-
-
-
           padding: 10px 12px;
-
-
-
-
-
-
-
           background: linear-gradient(
-
-
-
-
-
-
-
             145deg,
-
-
-
-
-
-
-
             rgba(255, 255, 255, 0.85),
-
-
-
-
-
-
-
             rgba(250, 250, 250, 0.85)
-
-
-
-
-
-
-
           );
-
-
-
-
-
-
-
           border-radius: 12px;
-
-
-
-
-
-
-
           transition: all 0.3s ease;
-
-
-
-
-
-
-
           border-left: 4px solid ${operadorCor};
-
-
-
-
-
-
-
           box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-
-
-
-
-
-
-
           margin-bottom: 8px;
-
-
-
-
-
-
-
           transform-origin: center;
-
-
-
-
-
-
-
           font-family: 'Roboto', sans-serif;
-
-
-
-
-
-
-
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         .resultado-item:hover {
-
-
-
-
-
-
-
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
-
-
-
-
-
-
-
-          transform: translateY(-1px) scale(1.005);
-
-
-
-
-
-
-
         }
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
 
         .historico-conteudo {
-
-
-
-
-
-
-
           display: flex;
-
-
-
-
-
-
-
           align-items: center;
-
-
-
-
-
-
-
           gap: 8px;
-
-
-
-
-
-
-
           flex: 1;
-
-
-
-
-
-
-
+          min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
 
         .historico-expressao {
-
-
-
-
-
-
-
           display: flex;
-
-
-
-
-
-
-
           align-items: center;
-
-
-
-
-
-
-
           gap: 8px;
-
-
-
-
-
-
-
           font-size: 1rem;
-
-
-
-
-
-
-
           color: #333;
-
-
-
-
-
-
-
           font-weight: 500;
-
-
-
-
-
-
-
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 100%;
         }
 
-
-
-
-
-
-
-        
-
-
-
-
-
-
+        .historico-expressao::before {
+          content: '';
+          display: none;
+        }
 
         .resultado-valor {
-
-
-
-
-
-
-
           font-weight: 600;
-
-
-
-
-
-
-
           display: inline-block;
-
-
-
-
-
-
-
           position: relative;
-
-
-
-
-
-
-
           padding: 2px 8px;
-
-
-
-
-
-
-
           border-radius: 4px;
-
-
-
-
-
-
-
           transition: all 0.3s ease;
-
-
-
-
-
-
-
         }
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
 
         .resultado-positivo {
-
-
-
-
-
-
-
           color: #4caf50;
-
-
-
-
-
-
-
           background-color: rgba(76, 175, 80, 0.1);
-
-
-
-
-
-
-
         }
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-        .resultado-negativo {
-
-
-
-
-
-
-
-          color: #f44336;
-
-
-
-
-
-
-
-          background-color: rgba(244, 67, 54, 0.1);
-
-
-
-
-
-
-
-        }
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
 
         .resultado-zero {
-
-
-
-
-
-
-
           color: #757575;
-
-
-
-
-
-
-
           background-color: rgba(117, 117, 117, 0.1);
-
-
-
-
-
-
-
         }
 
-
-
-
-
-
-
-        
-
-
-
-
-
-
+        .resultado-negativo {
+          color: #f44336;
+          background-color: rgba(244, 67, 54, 0.1);
+        }
 
         .resultado-valor:hover {
-
-
-
-
-
-
-
           transform: scale(1.05);
-
-
-
-
-
-
-
         }
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
 
         .resultado-positivo:hover {
-
-
-
-
-
-
-
           background-color: rgba(76, 175, 80, 0.2);
-
-
-
-
-
-
-
         }
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
 
         .resultado-zero:hover {
-
-
-
-
-
-
-
           background-color: rgba(117, 117, 117, 0.2);
-
-
-
-
-
-
-
         }
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
 
         .resultado-negativo:hover {
-
-
-
-
-
-
-
           background-color: rgba(244, 67, 54, 0.2);
-
-
-
-
-
-
-
         }
 
+        .acoes-container {
+          display: flex;
+          gap: 8px;
+        }
 
-
-
-
-
-
-        
-
-
-
-
-
-
+        .btn-copiar, .btn-excluir {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          background-color: rgba(255, 255, 255, 0.9);
+          border: none;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
 
         .btn-copiar {
-
-
-
-
-
-
-
-          width: 30px;
-
-
-
-
-
-
-
-          height: 30px;
-
-
-
-
-
-
-
-          min-width: 30px;
-
-
-
-
-
-
-
-          border-radius: 50%;
-
-
-
-
-
-
-
-          display: flex;
-
-
-
-
-
-
-
-          align-items: center;
-
-
-
-
-
-
-
-          justify-content: center;
-
-
-
-
-
-
-
           color: #2196f3;
-
-
-
-
-
-
-
-          background-color: rgba(33, 150, 243, 0.1);
-
-
-
-
-
-
-
-          border: none;
-
-
-
-
-
-
-
-          cursor: pointer;
-
-
-
-
-
-
-
-          transition: all 0.2s ease;
-
-
-
-
-
-
-
-          margin-left: 5px;
-
-
-
-
-
-
-
         }
 
-
-
-
-
-
-
+        .btn-excluir {
+          color: #f44336;
+        }
         
-
-
-
-
-
-
+        .btn-excluir .material-icons {
+          font-size: 20px !important; /* Aumentado de 18px para 20px */
+        }
+        
+        .btn-copiar:hover, .btn-excluir:hover {
+          transform: scale(1.1);
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        }
 
         .btn-copiar:hover {
-
-
-
-
-
-
-
-          background-color: rgba(33, 150, 243, 0.2);
-
-
-
-
-
-
-
-          transform: scale(1.1);
-
-
-
-
-
-
-
+          background-color: rgba(33, 150, 243, 0.1);
         }
 
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-        .btn-copiar:focus {
-
-
-
-
-
-
-
-          outline: none;
-
-
-
-
-
-
-
-          box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.3);
-
-
-
-
-
-
-
+        .btn-excluir:hover {
+          background-color: rgba(244, 67, 54, 0.1);
         }
 
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-        .btn-copiar i {
-
-
-
-
-
-
-
-          font-size: 16px;
-
-
-
-
-
-
-
-          color: #2196f3;
-
-
-
-
-
-
-
+        .btn-copiar:active, .btn-excluir:active {
+          transform: scale(0.95);
         }
-
-
-
-
-
-
-
-        
-
-
 
         /* Estilos para os ícones do Material Design */
-
-
-
         .material-icons {
-
-
-
           font-family: 'Material Icons';
-
-
-
           font-weight: normal;
-
-
-
           font-style: normal;
-
-
-
           font-size: 18px;
-
-
-
           line-height: 1;
-
-
-
           letter-spacing: normal;
-
-
-
           text-transform: none;
-
-
-
           display: inline-block;
-
-
-
           white-space: nowrap;
-
-
-
           word-wrap: normal;
-
-
-
           direction: ltr;
-
-
-
           -webkit-font-smoothing: antialiased;
-
-
-
           text-rendering: optimizeLegibility;
-
-
-
           -moz-osx-font-smoothing: grayscale;
-
-
-
           font-feature-settings: 'liga';
-
-
-
         }
-
-
-
-
-
-
 
         .symbol-container {
-
-
-
-
-
-
-
           display: inline-flex;
-
-
-
-
-
-
-
           align-items: center;
-
-
-
-
-
-
-
           justify-content: center;
-
-
-
-
-
-
-
           width: 26px;
-
-
-
-
-
-
-
           height: 26px;
-
-
-
-
-
-
-
           border-radius: 6px;
-
-
-
-
-
-
-
           margin-right: 8px;
-
-
-
-
-
-
-
           position: relative;
-
-
-
-
-
-
-
           box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-
-
-
-
-
-
-
           text-align: center;
-
-
-
-
-
-
-
           transition: box-shadow 0.2s ease;
-
-
-
-
-
-
-
         }
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-        .resultado-item:hover .symbol-container {
-
-
-
-
-
-
-
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-
-
-
-
-
-
-
-        }
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
 
         .operador-soma {
-
-
-
-
-
-
-
           background: linear-gradient(to bottom, #4caf50, #8bc34a);
-
-
-
-
-
-
-
         }
-
-
-
-
-
-
-
         .operador-subtracao {
-
-
-
-
-
-
-
           background: linear-gradient(to bottom, #f44336, #ff5252);
-
-
-
-
-
-
-
         }
-
-
-
-
-
-
-
         .operador-multiplicacao {
-
-
-
-
-
-
-
           background: linear-gradient(to bottom, #ff9800, #ffb74d);
-
-
-
-
-
-
-
         }
-
-
-
-
-
-
-
         .operador-divisao {
-
-
-
-
-
-
-
           background: linear-gradient(to bottom, #9c27b0, #ba68c8);
-
-
-
-
-
-
-
         }
-
-
-
-
-
-
-
         .operador-porcentagem {
-
-
-
-
-
-
-
           background: linear-gradient(to bottom, #00bcd4, #4dd0e1);
-
-
-
-
-
-
-
         }
-
-
-
-
-
-
-
         .operador-conversao {
-
-
-
-
-
-
-
           background: linear-gradient(to bottom, #3f51b5, #7986cb);
-
-
-
-
-
-
-
         }
-
-
-
-
-
-
-
         .operador-juros-simples {
-
-
-
-
-
-
-
           background: linear-gradient(to bottom, #009688, #4db6ac);
-
-
-
-
-
-
-
         }
-
-
-
-
-
-
-
         .operador-juros-compostos {
-
-
-
-
-
-
-
           background: linear-gradient(to bottom, #673ab7, #9575cd);
-
-
-
-
-
-
-
         }
-
-
-
-
-
-
-
         .operador-desconto {
-
-
-
-
-
-
-
           background: linear-gradient(to bottom, #e91e63, #f48fb1);
-
-
-
-
-
-
-
         }
-
-
-
-
-
-
-
         
-
-
-
-
-
-
-
         /* Animação de entrada */
-
-
-
-
-
-
-
         @keyframes fadeIn {
-
-
-
-
-
-
-
           from { opacity: 0; transform: translateY(10px); }
-
-
-
-
-
-
-
           to { opacity: 1; transform: translateY(0); }
-
-
-
-
-
-
-
         }
-
-
-
-
-
-
-
         
-
-
-
-
-
-
-
         :host {
-
-
-
-
-
-
-
           display: block;
-
-
-
-
-
-
-
           animation: fadeIn 0.3s ease-out;
-
-
-
-
-
-
-
         }
-
-
-
-
-
-
-
       </style>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       <div class="resultado-item">
-
-
-
-
-
-
-
         <div class="historico-conteudo">
-
-
-
-
-
-
-
           ${iconContent}
-
-
-
-
-
-
-
           <span class="historico-expressao">${this.operation} =</span>
-
-
-
-
-
-
-
           <span class="resultado-valor ${this.resultClass}">${this.result}</span>
-
-
-
-
-
-
-
         </div>
-
-
-
-
-
-
-
-        <button class="btn-copiar" title="Copiar resultado">
-
-
-
-
-
-
-
-          <i class="material-icons">content_copy</i>
-
-
-
-
-
-
-
-        </button>
-
-
-
-
-
-
-
+        <div class="acoes-container">
+          <button class="btn-copiar" title="Copiar resultado">
+            <i class="material-icons">content_copy</i>
+          </button>
+          <button class="btn-excluir" title="Excluir do histórico">
+            <i class="material-icons">delete_outline</i>
+          </button>
+        </div>
       </div>
-
-
-
-
-
-
-
     `;
   }
   // Adiciona event listeners
@@ -1648,6 +344,11 @@ class HistoryItem extends HTMLElement {
     const btnCopiar = this.shadowRoot.querySelector('.btn-copiar');
     if (btnCopiar) {
       btnCopiar.addEventListener('click', this.copiarResultado.bind(this));
+    }
+
+    const btnExcluir = this.shadowRoot.querySelector('.btn-excluir');
+    if (btnExcluir) {
+      btnExcluir.addEventListener('click', this.excluirItem.bind(this));
     }
   }
   // Função para copiar o resultado para a área de transferência
@@ -1678,6 +379,21 @@ class HistoryItem extends HTMLElement {
           })
         );
       });
+  }
+
+  // Função para excluir o item do histórico
+  excluirItem() {
+    // Dispara um evento personalizado para notificar que o item deve ser excluído
+    this.dispatchEvent(
+      new CustomEvent('delete-item', {
+        bubbles: true,
+        composed: true,
+        detail: {
+          operation: this.operation,
+          result: this.result,
+        },
+      })
+    );
   }
 }
 // Registra o componente

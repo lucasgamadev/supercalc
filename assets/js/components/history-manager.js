@@ -60,6 +60,11 @@ class HistoryManager {
       this.showToast(e.detail.message, 'red rounded');
     });
 
+    // Adiciona evento para ouvir quando o item for excluído
+    historyItem.addEventListener('delete-item', (e) => {
+      this.deleteHistoryItem(e.detail.operation, e.detail.result);
+    });
+
     // Armazena no localStorage
     this.saveHistoryItem({
       operation,
@@ -174,6 +179,11 @@ class HistoryManager {
           historyItem.addEventListener('copy-error', (e) => {
             this.showToast(e.detail.message, 'red rounded');
           });
+
+          // Adiciona evento para ouvir quando o item for excluído
+          historyItem.addEventListener('delete-item', (e) => {
+            this.deleteHistoryItem(e.detail.operation, e.detail.result);
+          });
         } catch (e) {
           console.error('Erro ao carregar item do histórico:', e);
         }
@@ -233,6 +243,55 @@ class HistoryManager {
 
     this.historyContainer.classList.add('show');
     this.showToast('Histórico limpo com sucesso!', 'green rounded');
+  }
+
+  /**
+   * Exclui um item específico do histórico
+   * @param {string} operation - A operação do item a ser excluído
+   * @param {string} result - O resultado do item a ser excluído
+   */
+  deleteHistoryItem(operation, result) {
+    // Obtém o histórico atual
+    const items = this.getSavedHistory() || [];
+    if (items.length === 0) return;
+
+    // Encontra o item a ser excluído
+    const updatedItems = items.filter((itemString) => {
+      try {
+        const item = JSON.parse(itemString);
+        // Verifica se é o item que queremos excluir
+        return !(item.operation === operation && item.result === result);
+      } catch (e) {
+        console.error('Erro ao processar item do histórico:', e);
+        return true; // Mantém itens com erro
+      }
+    });
+
+    // Atualiza o localStorage
+    if (updatedItems.length === 0) {
+      localStorage.removeItem(this.storageKey);
+    } else {
+      localStorage.setItem(this.storageKey, JSON.stringify(updatedItems));
+    }
+
+    // Remove o elemento do DOM
+    const historyItems = this.historyList.querySelectorAll('history-item');
+    historyItems.forEach((item) => {
+      if (
+        item.getAttribute('operation') === operation &&
+        item.getAttribute('result') === result
+      ) {
+        item.remove();
+      }
+    });
+
+    // Verifica se o histórico ficou vazio
+    if (this.historyList.children.length === 0) {
+      this.showEmptyHistory();
+    }
+
+    // Mostra mensagem de sucesso
+    this.showToast('Item removido do histórico!', 'green rounded');
   }
 
   /**
