@@ -8,6 +8,13 @@ class HistoryItem extends HTMLElement {
     this.result = '';
     this.resultClass = 'resultado-positivo';
     this.operatorType = 'default';
+    
+    // Importa o componente de botu00e3o de au00e7u00e3o se ainda nu00e3o estiver registrado
+    if (!customElements.get('action-button')) {
+      const script = document.createElement('script');
+      script.src = '/assets/js/components/action-button.js';
+      document.head.appendChild(script);
+    }
   }
   // Ciclo de vida: quando o componente é adicionado ao DOM
   connectedCallback() {
@@ -329,27 +336,22 @@ class HistoryItem extends HTMLElement {
           <span class="resultado-valor ${this.resultClass}">${this.result}</span>
         </div>
         <div class="acoes-container">
-          <button class="btn-copiar" title="Copiar resultado">
-            <i class="material-icons">content_copy</i>
-          </button>
-          <button class="btn-excluir" title="Excluir do histórico">
-            <i class="material-icons">delete_outline</i>
-          </button>
+          <action-button type="copy" icon="content_copy" title="Copiar resultado"></action-button>
+          <action-button type="delete" icon="delete_outline" title="Excluir do histórico"></action-button>
         </div>
       </div>
     `;
   }
   // Adiciona event listeners
   addEventListeners() {
-    const btnCopiar = this.shadowRoot.querySelector('.btn-copiar');
-    if (btnCopiar) {
-      btnCopiar.addEventListener('click', this.copiarResultado.bind(this));
-    }
-
-    const btnExcluir = this.shadowRoot.querySelector('.btn-excluir');
-    if (btnExcluir) {
-      btnExcluir.addEventListener('click', this.excluirItem.bind(this));
-    }
+    const actionButtons = this.shadowRoot.querySelectorAll('action-button');
+    actionButtons.forEach(button => {
+      if (button.getAttribute('type') === 'copy') {
+        button.addEventListener('copy-request', this.copiarResultado.bind(this));
+      } else if (button.getAttribute('type') === 'delete') {
+        button.addEventListener('delete-request', this.excluirItem.bind(this));
+      }
+    });
   }
   // Função para copiar o resultado para a área de transferência
   copiarResultado() {
