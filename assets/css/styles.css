@@ -53,7 +53,7 @@ body {
 }
 
 .card-title::after {
-  content: "";
+  content: '';
   position: absolute;
   bottom: 0;
   left: 50%;
@@ -81,6 +81,32 @@ body {
 .calculator-card:hover .calculator-icon {
   transform: scale(1.15) rotate(5deg);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Animau00e7u00e3o para o texto 'Acessar' e u00edcone */
+.calculator-card .inline-flex {
+  transition: all 0.3s ease;
+}
+
+.calculator-card .inline-flex span:first-child {
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.calculator-card:hover .inline-flex span:first-child {
+  color: #1976d2;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 4px rgba(90, 180, 255, 0.6);
+}
+
+.calculator-card .inline-flex .material-icons {
+  transition: all 0.3s ease;
+}
+
+.calculator-card:hover .inline-flex .material-icons {
+  color: #1976d2;
+  transform: translateX(2px);
+  filter: drop-shadow(0 2px 4px rgba(90, 180, 255, 0.6));
 }
 
 .coming-soon {
@@ -148,13 +174,13 @@ body {
 }
 
 /* Ocultar botões de spinner em campos numéricos */
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-input[type="number"] {
+input[type='number'] {
   appearance: textfield;
   -moz-appearance: textfield;
 }
