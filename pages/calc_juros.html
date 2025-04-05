@@ -14,7 +14,37 @@
     <link rel="stylesheet" href="/assets/css/styles.css">
     <!-- Componente de fundo -->
     <script src="/assets/js/components/background.js"></script>
+    <!-- Componentes de Histórico -->
+    <script src="/assets/js/components/history-item.js"></script>
+    <script src="/assets/js/components/history-manager.js"></script>
     <script>
+      // Inicializa o gerenciador de histórico após o carregamento do DOM
+      document.addEventListener('DOMContentLoaded', function () {
+        // Certifique-se de que os elementos existem antes de inicializar
+        setTimeout(() => {
+          const historyManager = new HistoryManager(
+            'calculo-juros-historico', // Chave específica para calculadora de juros
+            'historico-list', // ID da lista de histórico
+            'historico-container' // ID do container do histórico
+          );
+
+          // Torna o historyManager acessível globalmente
+          window.historyManager = historyManager;
+
+          // Carrega o histórico após a inicialização
+          historyManager.loadHistory();
+        }, 100); // Pequeno atraso para garantir que o DOM está pronto
+      });
+
+      // Listeners para eventos de cópia
+      document.addEventListener('copy-success', function (e) {
+        showToast(e.detail.message, 'green rounded');
+      });
+
+      document.addEventListener('copy-error', function (e) {
+        showToast(e.detail.message, 'red rounded');
+      });
+      
       tailwind.config = {
         theme: {
           extend: {
@@ -1072,7 +1102,7 @@
               ></ul>
               <div class="btn-container" style="margin-top: auto; text-align: center; position: absolute; bottom: 10px; left: 0; right: 0; display: flex; justify-content: center;">
                 <clear-history-button
-                  storage-key="historico-juros"
+                  storage-key="calculo-juros-historico"
                   history-list-id="historico-list"
                   container-id="historico-container"
                   success-message="Histórico limpo com sucesso!"
@@ -1118,9 +1148,7 @@
         const valorJurosSpan = document.getElementById("valor-juros");
         const montanteSpan = document.getElementById("montante");
 
-        // Carregar histórico do localStorage
-        let historico = JSON.parse(localStorage.getItem("historicoJuros")) || [];
-        atualizarHistorico();
+        // O histórico é gerenciado pelo HistoryManager
 
         // Função para formatar valores monetários
         function formatarMoeda(valor) {
@@ -1157,74 +1185,9 @@
           return "alta";
         }
 
-        // Função para atualizar o histórico na interface
-        function atualizarHistorico() {
-          historicoList.innerHTML = "";
-          
-          if (historico.length === 0) {
-            historicoList.innerHTML = '';
-            const emptyHistory = document.createElement('empty-history');
-            emptyHistory.setAttribute('message', 'Nenhum cálculo no histórico');
-            emptyHistory.setAttribute('sub-message', 'Os cálculos realizados aparecerão aqui');
-            historicoList.appendChild(emptyHistory);
-            return;
-          }
+        // A função de atualizar histórico agora é gerenciada pelo HistoryManager
 
-          // Mostrar os cálculos mais recentes primeiro
-          historico.slice().reverse().forEach((item, index) => {
-            const li = document.createElement("li");
-            li.className = "collection-item historico-item";
-            li.setAttribute("role", "listitem");
-            
-            // Classificar a taxa de juros
-            const classeTaxa = classificarTaxaJuros(item.taxa);
-            
-            li.innerHTML = `
-              <div class="historico-tipo">
-                <span>Tipo de Juros:</span>
-                <span class="tipo-juros">${item.tipoJuros}</span>
-              </div>
-              <div class="historico-valor">
-                <span>Valor Principal: <span class="valor-principal">R$ ${formatarMoeda(item.principal)}</span></span>
-                <span class="taxa-juros ${classeTaxa}">${item.taxa}% ao período</span>
-              </div>
-              <div class="historico-juros">
-                <span>Valor dos Juros: <span class="valor-juros">R$ ${formatarMoeda(item.juros)}</span></span>
-                <span>Período: ${item.periodo} ${item.periodo > 1 ? 'períodos' : 'período'}</span>
-              </div>
-              <div class="historico-montante">
-                <span>Montante Final: R$ ${formatarMoeda(item.montante)}</span>
-              </div>
-            `;
-            
-            historicoList.appendChild(li);
-          });
-        }
-
-        // Função para adicionar um cálculo ao histórico
-        function adicionarAoHistorico(principal, taxa, periodo, tipoJuros, juros, montante) {
-          const calculo = {
-            principal,
-            taxa,
-            periodo,
-            tipoJuros,
-            juros,
-            montante,
-            data: new Date().toISOString(),
-          };
-
-          // Limitar o histórico a 10 itens
-          historico.push(calculo);
-          if (historico.length > 10) {
-            historico.shift(); // Remove o item mais antigo
-          }
-
-          // Salvar no localStorage
-          localStorage.setItem("historicoJuros", JSON.stringify(historico));
-
-          // Atualizar a interface
-          atualizarHistorico();
-        }
+        // A função para adicionar ao histórico foi substituída pelo HistoryManager
 
         // Função para limpar os campos de entrada
         function limparCampos() {
@@ -1308,15 +1271,21 @@
             }, 1000);
           });
           
-          // Adicionar ao histórico
-          adicionarAoHistorico(
-            principal,
-            taxa,
-            periodo,
-            tipoJuros === "simples" ? "Simples" : "Compostos",
-            resultado.juros,
-            resultado.montante
-          );
+          // Adicionar ao histórico usando o HistoryManager
+          if (window.historyManager) {
+            const itemData = {
+              valorPrincipal: principal,
+              taxa: taxa,
+              periodo: periodo,
+              tipoJuros: tipoJuros === "simples" ? "Simples" : "Compostos",
+              juros: resultado.juros,
+              montante: resultado.montante,
+              timestamp: new Date().toISOString(),
+              id: Date.now().toString()
+            };
+            
+            window.historyManager.addHistoryItem(itemData);
+          }
           
           // Mostrar toast de sucesso
           showToast("Cálculo realizado com sucesso!", "rounded green");
@@ -1328,7 +1297,7 @@
           showToast("Campos limpos", "rounded blue");
         });
 
-        // O evento de clique no botão limpar histórico agora é gerenciado pelo componente web
+        // O evento de clique no botão limpar histórico é gerenciado pelo componente HistoryManager
 
         // Formatar entrada de valor monetário
         principalInput.addEventListener("input", function (e) {
@@ -1341,6 +1310,8 @@
 
         // Inicializar a interface
         limparCampos();
+
+        // O botão limpar histórico agora é um componente web que gerencia seu próprio estado
       });
     </script>
   </body>
