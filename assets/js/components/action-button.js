@@ -11,6 +11,37 @@ class ActionButton extends HTMLElement {
   connectedCallback() {
     this.render();
     this.addEventListeners();
+    // Forcar atualizau00e7u00e3o do estilo
+    this.updateStyles();
+  }
+
+  // Mu00e9todo para foru00e7ar atualizau00e7u00e3o dos estilos
+  updateStyles() {
+    // Adicionar estilo global para os u00edcones
+    if (!document.getElementById('action-button-global-style')) {
+      const style = document.createElement('style');
+      style.id = 'action-button-global-style';
+      style.textContent = `
+        action-button i.material-icons,
+        .btn-copiar i.material-icons,
+        .btn-excluir i.material-icons {
+          font-size: 18px !important;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+    
+    // Foru00e7ar redimensionamento em todos os botu00f5es existentes
+    setTimeout(() => {
+      document.querySelectorAll('action-button').forEach(btn => {
+        if (btn.shadowRoot) {
+          const icon = btn.shadowRoot.querySelector('.material-icons');
+          if (icon) {
+            icon.style.fontSize = '18px';
+          }
+        }
+      });
+    }, 0);
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -92,7 +123,7 @@ class ActionButton extends HTMLElement {
           font-family: 'Material Icons';
           font-weight: normal;
           font-style: normal;
-          font-size: 20px;
+          font-size: 18px !important;
           line-height: 1;
           letter-spacing: normal;
           text-transform: none;
