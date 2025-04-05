@@ -1,3 +1,4 @@
+// Componente de botão de ação (apagar e copiar) do histórico de cálculos
 class ActionButton extends HTMLElement {
   constructor() {
     super();
@@ -11,13 +12,13 @@ class ActionButton extends HTMLElement {
   connectedCallback() {
     this.render();
     this.addEventListeners();
-    // Forcar atualizau00e7u00e3o do estilo
+    // Forçar atualização do estilo
     this.updateStyles();
   }
 
-  // Mu00e9todo para foru00e7ar atualizau00e7u00e3o dos estilos
+  // Método para forçar atualização dos estilos
   updateStyles() {
-    // Adicionar estilo global para os u00edcones
+    // Adicionar estilo global para os ícones
     if (!document.getElementById('action-button-global-style')) {
       const style = document.createElement('style');
       style.id = 'action-button-global-style';
@@ -30,10 +31,10 @@ class ActionButton extends HTMLElement {
       `;
       document.head.appendChild(style);
     }
-    
-    // Foru00e7ar redimensionamento em todos os botu00f5es existentes
+
+    // Forçar redimensionamento em todos os botões existentes
     setTimeout(() => {
-      document.querySelectorAll('action-button').forEach(btn => {
+      document.querySelectorAll('action-button').forEach((btn) => {
         if (btn.shadowRoot) {
           const icon = btn.shadowRoot.querySelector('.material-icons');
           if (icon) {
