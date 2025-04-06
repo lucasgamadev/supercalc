@@ -12,11 +12,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/assets/css/styles.css">
-    <!-- Componente de fundo -->
+    <!-- Componentes personalizados -->
     <script src="/assets/js/components/background.js"></script>
+    <script src="/assets/js/components/action-button.js"></script>
     <!-- Componentes de Histórico -->
     <script src="/assets/js/components/history-item.js"></script>
     <script src="/assets/js/components/history-manager.js"></script>
+
     <script>
       // Inicializa o gerenciador de histórico após o carregamento do DOM
       document.addEventListener('DOMContentLoaded', function () {
@@ -40,46 +42,10 @@
       document.addEventListener('copy-success', function (e) {
         showToast(e.detail.message, 'green rounded');
       });
-
-      document.addEventListener('copy-error', function (e) {
-        showToast(e.detail.message, 'red rounded');
-      });
       
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              primary: {
-                50: '#e3f2fd',
-                100: '#bbdefb',
-                200: '#90caf9',
-                300: '#64b5f6',
-                400: '#42a5f5',
-                500: '#2196f3',
-                600: '#1e88e5',
-                700: '#1976d2',
-                800: '#1565c0',
-                900: '#0d47a1',
-              },
-              secondary: {
-                50: '#e0f7fa',
-                100: '#b2ebf2',
-                200: '#80deea',
-                300: '#4dd0e1',
-                400: '#26c6da',
-                500: '#00bcd4',
-                600: '#00acc1',
-                700: '#0097a7',
-                800: '#00838f',
-                900: '#006064',
-              },
-            },
-            fontFamily: {
-              'roboto': ['Roboto', 'sans-serif'],
-            },
-          },
-        },
-      }
+      document.addEventListener('copy-error', function (e) {
+        showToast(e.detail.message, 'orange rounded');
+      });
     </script>
     <!-- Importando Materialize CSS e Ícones -->
     <link
@@ -1078,7 +1044,7 @@
           </div>
         </div>
         <div class="col s12 m6">
-          <div id="historico-container" class="card fade-in">
+          <div id="historico-container" class="card fade-in show">
             <div class="card-content" style="position: relative; padding-bottom: 60px !important;">
               <span class="card-title" role="heading" aria-level="1"><i class="fas fa-history mr-2"></i>Histórico de Cálculos</span>
               <!-- Função para validar e destacar campos -->
