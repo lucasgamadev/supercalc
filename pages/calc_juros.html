@@ -1287,13 +1287,11 @@
           
           // Formatando o HTML do item
           novoItem.innerHTML = `
-            <div class="historico-preco">
-              <span class="valor-original">
-                <i class="material-icons">payments</i> <span class="label">Capital:</span> R$ ${principalFormatado}
-              </span>
-              <span class="taxa-juros ${faixaClasse}">
-                <i class="material-icons">percent</i> ${taxa.toFixed(2)}%
-              </span>
+            <div class="historico-preco" style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+              <i class="material-icons" style="color: #1976d2; font-size: 20px;">account_balance_wallet</i>
+              <span style="font-weight: 500;">Capital: R$ ${principalFormatado}</span>
+              <i class="material-icons" style="color: #4caf50; font-size: 18px; margin-left: 8px;">percent</i>
+              <span style="font-weight: 500;">${taxa.toFixed(2)}%</span>
             </div>
             <hr style="border: none; border-top: 1px dashed #e0e0e0; margin: 8px 0;">
             <div class="historico-resultado">
