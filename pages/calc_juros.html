@@ -1246,23 +1246,200 @@
           });
           
           // Adicionar ao histórico usando o HistoryManager
-          if (window.historyManager) {
-            // Construir uma string de operação para o histórico
-            const operationText = `Capital: R$ ${formatarMoeda(principal)} | Taxa: ${taxa.toFixed(2)}% | Período: ${periodo} | Tipo: ${tipoJuros === "simples" ? "Simples" : "Compostos"}`;
-            
-            // O resultado final é o montante
-            const resultText = formatarMoeda(resultado.montante);
-            
-            // Tipo de operação (para estilização)
-            const operationType = "juros";
-            
-            // Adicionar ao histórico com os parâmetros corretos
-            window.historyManager.addHistoryItem(operationText, resultText, operationType);
-          }
+          adicionarAoHistorico(principal, taxa, periodo, tipoJuros, resultado);
           
           // Mostrar toast de sucesso
           showToast("Cálculo realizado com sucesso!", "rounded green");
         });
+
+        // Função para adicionar ao histórico com layout personalizado
+        function adicionarAoHistorico(principal, taxa, periodo, tipoJuros, resultado) {
+          // Formatar valores para exibição
+          const principalFormatado = formatarMoeda(principal);
+          const jurosFormatado = formatarMoeda(resultado.juros);
+          const montanteFormatado = formatarMoeda(resultado.montante);
+          
+          // Determinar classe para estilização com base na taxa
+          const classeTaxa = classificarTaxaJuros(taxa);
+          let faixaClasse = 'baixa';
+          if (classeTaxa === 'media') {
+            faixaClasse = 'media';
+          } else if (classeTaxa === 'alta') {
+            faixaClasse = 'alta';
+          }
+          
+          // Determinar cor da borda com base no tipo de juros
+          const corBorda = tipoJuros === "simples" ? "#009688" : "#673ab7";
+          
+          // Obtém a lista de histórico
+          const historicoList = document.getElementById('historico-list');
+          
+          // Remover mensagem de histórico vazio se existir
+          const emptyHistory = historicoList.querySelector('empty-history');
+          if (emptyHistory) {
+            historicoList.removeChild(emptyHistory);
+          }
+          
+          // Criar novo item de histórico
+          const novoItem = document.createElement('li');
+          novoItem.className = `collection-item historico-item`;
+          novoItem.style.borderLeft = `3px solid ${corBorda}`;
+          
+          // Formatando o HTML do item
+          novoItem.innerHTML = `
+            <div class="historico-preco">
+              <span class="valor-original">
+                <i class="material-icons">account_balance</i> <span class="label">Capital:</span> R$ ${principalFormatado}
+              </span>
+              <span class="taxa-juros ${faixaClasse}">
+                <i class="material-icons">trending_up</i> ${taxa.toFixed(2)}%
+              </span>
+            </div>
+            <div class="historico-info">
+              <span class="periodo-info">
+                <i class="material-icons">date_range</i> <span class="label">Período:</span> ${periodo}
+              </span>
+              <span class="tipo-juros ${tipoJuros}">
+                <i class="material-icons">${tipoJuros === "simples" ? "linear_scale" : "show_chart"}</i> ${tipoJuros === "simples" ? "Simples" : "Compostos"}
+              </span>
+            </div>
+            <div class="historico-resultado">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="resultado-juros"><span class="label">Juros:</span> R$ ${jurosFormatado}</span>
+                <span class="resultado-montante"><span class="label">Montante:</span> R$ ${montanteFormatado}</span>
+              </div>
+              <div class="historico-acoes" style="display: flex; gap: 8px;">
+                <action-button type="copy" icon="content_copy" title="Copiar resultado"></action-button>
+                <action-button type="delete" icon="delete_outline" title="Excluir do histórico"></action-button>
+              </div>
+            </div>
+          `;
+          
+          // Adicionar evento para o botão de copiar
+          const btnCopiar = novoItem.querySelector('[type="copy"]');
+          if (btnCopiar) {
+            btnCopiar.addEventListener('copy-request', function () {
+              copiarParaAreaDeTransferencia(montanteFormatado);
+            });
+          }
+          
+          // Adicionar evento para o botão de excluir
+          const btnExcluir = novoItem.querySelector('[type="delete"]');
+          if (btnExcluir) {
+            btnExcluir.addEventListener('delete-request', function () {
+              excluirItemHistorico(novoItem);
+            });
+          }
+          
+          // Adicionar ao início da lista
+          historicoList.insertBefore(novoItem, historicoList.firstChild);
+          
+          // Limitar o histórico a 30 itens
+          if (historicoList.children.length > 30) {
+            historicoList.removeChild(historicoList.lastChild);
+          }
+          
+          // Salvar no localStorage
+          salvarHistorico();
+          
+          // Mostrar o container de histórico
+          document.getElementById('historico-container').classList.add('show');
+        }
+        
+        // Função para salvar o histórico no localStorage
+        function salvarHistorico() {
+          const historicoList = document.getElementById('historico-list');
+          const itens = Array.from(historicoList.children)
+            .filter((item) => !item.matches('empty-history'))
+            .map((item) => item.outerHTML);
+          
+          localStorage.setItem('calculo-juros-historico', JSON.stringify(itens));
+        }
+        
+        // Função para carregar o histórico do localStorage
+        function carregarHistorico() {
+          const historicoSalvo = localStorage.getItem('calculo-juros-historico');
+          const historicoList = document.getElementById('historico-list');
+          
+          if (historicoSalvo && JSON.parse(historicoSalvo).length > 0) {
+            const itens = JSON.parse(historicoSalvo);
+            
+            // Limpar a lista atual
+            while (historicoList.firstChild) {
+              historicoList.removeChild(historicoList.firstChild);
+            }
+            
+            // Adicionar os itens salvos
+            itens.forEach((itemHTML) => {
+              const tempDiv = document.createElement('div');
+              tempDiv.innerHTML = itemHTML;
+              const item = tempDiv.firstChild;
+              
+              // Recriar os eventos para os botões
+              const btnCopiar = item.querySelector('[type="copy"]');
+              if (btnCopiar) {
+                btnCopiar.addEventListener('copy-request', function () {
+                  const montante = item.querySelector('.resultado-montante');
+                  if (montante) {
+                    const valor = montante.textContent.split('R$ ')[1];
+                    copiarParaAreaDeTransferencia(valor);
+                  }
+                });
+              }
+              
+              const btnExcluir = item.querySelector('[type="delete"]');
+              if (btnExcluir) {
+                btnExcluir.addEventListener('delete-request', function () {
+                  excluirItemHistorico(item);
+                });
+              }
+              
+              historicoList.appendChild(item);
+            });
+            
+            // Mostrar o container do histórico
+            document.getElementById('historico-container').classList.add('show');
+          } else {
+            // Mostrar mensagem de histórico vazio
+            const emptyHistory = document.createElement('empty-history');
+            emptyHistory.setAttribute('message', 'Nenhum registro encontrado no histórico.');
+            emptyHistory.setAttribute('sub-message', 'Os registros salvos aparecerão aqui.');
+            historicoList.appendChild(emptyHistory);
+          }
+        }
+        
+        // Função para excluir um item do histórico
+        function excluirItemHistorico(item) {
+          const historicoList = document.getElementById('historico-list');
+          historicoList.removeChild(item);
+          
+          // Se não houver mais itens, mostrar mensagem de histórico vazio
+          if (historicoList.children.length === 0) {
+            const emptyHistory = document.createElement('empty-history');
+            emptyHistory.setAttribute('message', 'Nenhum registro encontrado no histórico.');
+            emptyHistory.setAttribute('sub-message', 'Os registros salvos aparecerão aqui.');
+            historicoList.appendChild(emptyHistory);
+          }
+          
+          // Salvar o histórico atualizado
+          salvarHistorico();
+          
+          // Mostrar toast de confirmação
+          showToast('Item removido do histórico!', 'rounded red');
+        }
+        
+        // Função para copiar para a área de transferência
+        function copiarParaAreaDeTransferencia(texto) {
+          navigator.clipboard
+            .writeText(texto)
+            .then(() => {
+              showToast('Resultado copiado para a área de transferência!', 'green rounded');
+            })
+            .catch((err) => {
+              console.error('Erro ao copiar: ', err);
+              showToast('Não foi possível copiar o resultado.', 'orange rounded');
+            });
+        }
 
         // Evento de clique no botão limpar
         limparBtn.addEventListener("clear", function () {
