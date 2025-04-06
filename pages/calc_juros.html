@@ -1187,7 +1187,7 @@
         }
 
         // Evento de clique no botão calcular
-        calcularBtn.addEventListener("calculate", function () {
+        calcularBtn.addEventListener("click", function () {
           // Validar campos
           let principal = principalInput.value.replace(",", ".");
           principal = parseFloat(principal);
@@ -1247,18 +1247,17 @@
           
           // Adicionar ao histórico usando o HistoryManager
           if (window.historyManager) {
-            const itemData = {
-              valorPrincipal: principal,
-              taxa: taxa,
-              periodo: periodo,
-              tipoJuros: tipoJuros === "simples" ? "Simples" : "Compostos",
-              juros: resultado.juros,
-              montante: resultado.montante,
-              timestamp: new Date().toISOString(),
-              id: Date.now().toString()
-            };
+            // Construir uma string de operação para o histórico
+            const operationText = `Capital: R$ ${formatarMoeda(principal)} | Taxa: ${taxa.toFixed(2)}% | Período: ${periodo} | Tipo: ${tipoJuros === "simples" ? "Simples" : "Compostos"}`;
             
-            window.historyManager.addHistoryItem(itemData);
+            // O resultado final é o montante
+            const resultText = formatarMoeda(resultado.montante);
+            
+            // Tipo de operação (para estilização)
+            const operationType = "juros";
+            
+            // Adicionar ao histórico com os parâmetros corretos
+            window.historyManager.addHistoryItem(operationText, resultText, operationType);
           }
           
           // Mostrar toast de sucesso
