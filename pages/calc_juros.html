@@ -1289,28 +1289,27 @@
           novoItem.innerHTML = `
             <div class="historico-preco">
               <span class="valor-original">
-                <i class="material-icons">account_balance</i> <span class="label">Capital:</span> R$ ${principalFormatado}
+                <i class="material-icons">payments</i> <span class="label">Capital:</span> R$ ${principalFormatado}
               </span>
               <span class="taxa-juros ${faixaClasse}">
-                <i class="material-icons">trending_up</i> ${taxa.toFixed(2)}%
+                <i class="material-icons">percent</i> ${taxa.toFixed(2)}%
               </span>
             </div>
-            <div class="historico-info">
-              <span class="periodo-info">
-                <i class="material-icons">date_range</i> <span class="label">Período:</span> ${periodo}
-              </span>
-              <span class="tipo-juros ${tipoJuros}">
-                <i class="material-icons">${tipoJuros === "simples" ? "linear_scale" : "show_chart"}</i> ${tipoJuros === "simples" ? "Simples" : "Compostos"}
-              </span>
-            </div>
+            <hr style="border: none; border-top: 1px dashed #e0e0e0; margin: 8px 0;">
             <div class="historico-resultado">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="resultado-juros"><span class="label">Juros:</span> R$ ${jurosFormatado}</span>
-                <span class="resultado-montante"><span class="label">Montante:</span> R$ ${montanteFormatado}</span>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span class="tipo-periodo" style="display: flex; align-items: center; color: #616161;">
+                  <i class="material-icons" style="font-size: 16px; margin-right: 4px;">${tipoJuros === "simples" ? "timeline" : "show_chart"}</i>
+                  ${tipoJuros === "simples" ? "Simples" : "Compostos"} | ${periodo} períodos
+                </span>
+                <span class="resultado-juros" style="color: #4caf50;">Juros: R$ ${jurosFormatado}</span>
               </div>
-              <div class="historico-acoes" style="display: flex; gap: 8px;">
-                <action-button type="copy" icon="content_copy" title="Copiar resultado"></action-button>
-                <action-button type="delete" icon="delete_outline" title="Excluir do histórico"></action-button>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="resultado-final" style="font-weight: 600; font-size: 16px;">Final: <span style="color: #1976d2;">R$ ${montanteFormatado}</span></span>
+                <div class="historico-acoes" style="display: flex; gap: 8px;">
+                  <action-button type="copy" icon="content_copy" title="Copiar resultado"></action-button>
+                  <action-button type="delete" icon="delete_outline" title="Excluir do histórico"></action-button>
+                </div>
               </div>
             </div>
           `;
