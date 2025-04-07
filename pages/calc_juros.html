@@ -1048,18 +1048,7 @@
             <div class="card-content" style="position: relative; padding-bottom: 60px !important;">
               <span class="card-title" role="heading" aria-level="1"><i class="fas fa-history mr-2"></i>Histórico de Cálculos</span>
               <!-- Função para validar e destacar campos -->
-              <script>
-                function validarCampo(input, condicao, mensagem) {
-                  if (!condicao) {
-                    input.classList.add("invalid");
-                    showToast(mensagem, "rounded red");
-                    input.focus();
-                    return false;
-                  }
-                  input.classList.remove("invalid");
-                  return true;
-                }
-              </script>
+              <!-- A função validarCampo foi movida para o escopo principal do JavaScript -->
               <div class="historico-wrapper">
                 <ul
                   id="historico-list"
@@ -1136,6 +1125,18 @@
         function showToast(mensagem, classes = "rounded") {
           const toastHTML = `<span>${mensagem}</span>`;
           M.toast({ html: toastHTML, classes: classes, displayLength: 3000 });
+        }
+        
+        // Função para validar campos de entrada
+        function validarCampo(input, condicao, mensagem) {
+          if (!condicao) {
+            input.classList.add("invalid");
+            showToast(mensagem, "rounded red");
+            input.focus();
+            return false;
+          }
+          input.classList.remove("invalid");
+          return true;
         }
 
         // Função para calcular juros simples
@@ -1449,10 +1450,70 @@
         // Formatar entrada de valor monetário
         principalInput.addEventListener("input", function (e) {
           let valor = e.target.value.replace(/\D/g, "");
-          if (valor === "") return;
+          if (valor === "") {
+            this.classList.remove("invalid");
+            return;
+          }
           
           valor = (parseFloat(valor) / 100).toFixed(2);
           e.target.value = valor.replace(".", ",");
+          
+          // Validação em tempo real
+          const valorNum = parseFloat(valor);
+          if (isNaN(valorNum) || valorNum <= 0) {
+            this.classList.add("invalid");
+            showToast("O valor principal deve ser maior que zero", "rounded orange");
+          } else {
+            this.classList.remove("invalid");
+          }
+        });
+        
+        // Validação em tempo real para taxa de juros
+        taxaInput.addEventListener("input", function (e) {
+          const valorStr = this.value.trim();
+          if (valorStr === "") {
+            this.classList.remove("invalid");
+            return;
+          }
+          
+          // Normaliza o valor (substitui vírgula por ponto para cálculos)
+          const valorNormalizado = valorStr.replace(",", ".");
+          const valor = parseFloat(valorNormalizado);
+          
+          if (isNaN(valor)) {
+            this.classList.add("invalid");
+            return;
+          }
+          
+          if (valor <= 0) {
+            this.classList.add("invalid");
+            showToast("A taxa de juros deve ser maior que 0%", "rounded orange");
+          } else {
+            this.classList.remove("invalid");
+          }
+        });
+        
+        // Validação em tempo real para período
+        periodoInput.addEventListener("input", function (e) {
+          const valorStr = this.value.trim();
+          if (valorStr === "") {
+            this.classList.remove("invalid");
+            return;
+          }
+          
+          const valor = parseInt(valorStr);
+          
+          if (isNaN(valor)) {
+            this.classList.add("invalid");
+            return;
+          }
+          
+          if (valor <= 0) {
+            this.classList.add("invalid");
+            showToast("O período deve ser maior que zero", "rounded orange");
+          } else {
+            this.classList.remove("invalid");
+          }
         });
 
         // Inicializar a interface
