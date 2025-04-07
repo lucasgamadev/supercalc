@@ -1114,6 +1114,7 @@
     <!-- Importando componentes web personalizados -->
     <script src="/assets/js/components/clear-history-button.js"></script>
     <script src="/assets/js/components/empty-history.js"></script>
+    <script src="/assets/js/components/toast-notification.js"></script>
 
     <!-- Script da Calculadora -->
     <script>
@@ -1150,8 +1151,15 @@
 
         // Função para mostrar toast de notificação
         function showToast(mensagem, classes = "rounded") {
-          const toastHTML = `<span>${mensagem}</span>`;
-          M.toast({ html: toastHTML, classes: classes, displayLength: 3000 });
+          // Verifica se o componente ToastNotification está disponível
+          if (typeof ToastNotification !== 'undefined' && ToastNotification.showToast) {
+            // Usa o método estático do componente ToastNotification
+            ToastNotification.showToast(mensagem, classes);
+          } else {
+            // Fallback para Materialize se ToastNotification não estiver disponível
+            const toastHTML = `<span>${mensagem}</span>`;
+            M.toast({ html: toastHTML, classes: classes, displayLength: 3000 });
+          }
         }
         
         // Função para validar campos de entrada
