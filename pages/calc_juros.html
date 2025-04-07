@@ -1476,8 +1476,20 @@
         limparBtn.addEventListener("clear", function () {
           // Verificar se os campos já estão vazios
           if (principalInput.value === "" && taxaInput.value === "" && periodoInput.value === "") {
-            // Se todos os campos já estiverem vazios, mostrar mensagem
+            // Se todos os campos já estiverem vazios, mostrar mensagem e animar os campos
             ToastNotification.showToast('Os campos já estão limpos!', 'orange rounded');
+            
+            // Adicionar animação visual aos campos vazios
+            principalInput.classList.add("invalid");
+            taxaInput.classList.add("invalid");
+            periodoInput.classList.add("invalid");
+            
+            // Remover a classe após a animação
+            setTimeout(() => {
+              principalInput.classList.remove("invalid");
+              taxaInput.classList.remove("invalid");
+              periodoInput.classList.remove("invalid");
+            }, 800);
           } else {
             // Se pelo menos um campo tiver valor, limpar e mostrar mensagem de sucesso
             limparCampos();
