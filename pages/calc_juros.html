@@ -15,6 +15,7 @@
     <!-- Componentes personalizados -->
     <script src="/assets/js/components/background.js"></script>
     <script src="/assets/js/components/action-button.js"></script>
+    <script src="/assets/js/components/toast-notification.js"></script>
     <!-- Componentes de Histórico -->
     <script src="/assets/js/components/history-item.js"></script>
     <script src="/assets/js/components/history-manager.js"></script>
@@ -375,18 +376,7 @@
         }
       }
       
-      /* Estilos adicionais para os toasts */
-      .toast {
-        font-size: 14px !important;
-        padding: 10px 15px !important;
-        width: auto !important;
-        min-width: 200px !important;
-        max-width: 80vw !important;
-        text-align: center !important;
-        border-radius: 24px !important;
-        margin: 0 !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-      }
+      /* Estilos de toast removidos - usando componente toast-notification */
       
       /* Estilos para os toasts - centralização */
       #toast-container {
@@ -1150,15 +1140,23 @@
         }
 
         // Função para mostrar toast de notificação
-        function showToast(mensagem, classes = "rounded") {
-          // Verifica se o componente ToastNotification está disponível
+        if (!customElements.get('toast-notification')) {
+          const scriptToast = document.createElement('script');
+          scriptToast.src = '/assets/js/components/toast-notification.js';
+          document.head.appendChild(scriptToast);
+        }
+
+        // Função para mostrar toast usando o componente toast-notification
+        function showToast(message, classes = 'rounded') {
+          // Cria uma instância do componente toast-notification
+          const toast = document.createElement('toast-notification');
+          toast.setAttribute('message', message);
+          toast.setAttribute('classes', classes);
+          document.body.appendChild(toast);
+          
+          // Como alternativa, também podemos usar o método estático se disponível
           if (typeof ToastNotification !== 'undefined' && ToastNotification.showToast) {
-            // Usa o método estático do componente ToastNotification
-            ToastNotification.showToast(mensagem, classes);
-          } else {
-            // Fallback para Materialize se ToastNotification não estiver disponível
-            const toastHTML = `<span>${mensagem}</span>`;
-            M.toast({ html: toastHTML, classes: classes, displayLength: 3000 });
+            ToastNotification.showToast(message, classes);
           }
         }
         
