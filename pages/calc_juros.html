@@ -962,14 +962,14 @@
               <div class="row">
                 <div class="input-field col s12 outlined">
                   <input
-                    id="principal"
+                    id="valor"
                     type="text"
                     inputmode="decimal"
-                    pattern="[0-9]+([\.\,][0-9]+)?"
-                    aria-label="Valor Principal em Reais"
+                    pattern="[0-9]+([\.\.][0-9]+)?"
+                    aria-label="Valor em Reais"
                     required
                   />
-                  <label for="principal">Valor Principal (R$)</label>
+                  <label for="valor">Valor (R$)</label>
                 </div>
                 <div class="input-field col s12">
                   <input
@@ -1027,7 +1027,7 @@
               </div>
               <div id="resultado-container" role="region" aria-label="Resultados">
                 <div class="resultado-item">
-                  <span>Valor Principal:</span>
+                  <span>Valor:</span>
                   <span class="valor-principal-badge"><i class="material-icons" style="font-size: 14px; margin-right: 4px;">attach_money</i>R$ <span id="valor-principal">0,00</span></span>
                 </div>
                 <div class="resultado-item">
@@ -1113,7 +1113,7 @@
         M.AutoInit();
 
         // Elementos do DOM
-        const principalInput = document.getElementById("principal");
+        const principalInput = document.getElementById("valor");
         const taxaInput = document.getElementById("taxa");
         const periodoInput = document.getElementById("periodo");
         const tipoJurosRadios = document.getElementsByName("tipo-juros");
@@ -1229,7 +1229,7 @@
           const periodo = parseInt(periodoInput.value);
           
           // Verificar se os valores são válidos
-          if (!validarCampo(principalInput, !isNaN(principal) && principal > 0, "Informe um valor principal válido")) {
+          if (!validarCampo(principalInput, !isNaN(principal) && principal > 0, "Informe um valor válido")) {
             return;
           }
           
