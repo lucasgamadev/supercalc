@@ -1476,8 +1476,15 @@
 
         // Evento de clique no botão limpar
         limparBtn.addEventListener("clear", function () {
-          limparCampos();
-          showToast("Campos limpos", "rounded blue");
+          // Verificar se os campos já estão vazios
+          if (principalInput.value === "" && taxaInput.value === "" && periodoInput.value === "") {
+            // Se todos os campos já estiverem vazios, mostrar mensagem
+            ToastNotification.showToast('Os campos já estão limpos!', 'orange rounded');
+          } else {
+            // Se pelo menos um campo tiver valor, limpar e mostrar mensagem de sucesso
+            limparCampos();
+            ToastNotification.showToast('Campos limpos com sucesso!', 'green rounded');
+          }
         });
 
         // O evento de clique no botão limpar histórico é gerenciado pelo componente HistoryManager
