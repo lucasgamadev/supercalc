@@ -371,8 +371,35 @@
       @media (max-width: 480px) {
         .toast {
           max-width: 90vw !important;
-          margin: 0 20px !important;
+          margin: 0 !important;
         }
+      }
+      
+      /* Estilos adicionais para os toasts */
+      .toast {
+        font-size: 14px !important;
+        padding: 10px 15px !important;
+        width: auto !important;
+        min-width: 200px !important;
+        max-width: 80vw !important;
+        text-align: center !important;
+        border-radius: 24px !important;
+        margin: 0 !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+      }
+      
+      /* Estilos para os toasts - centralização */
+      #toast-container {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        width: auto !important;
+        max-width: none !important;
+        height: auto !important;
       }
 
       /* Adicionar estilos para feedback visual */
