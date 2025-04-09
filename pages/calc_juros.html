@@ -611,6 +611,38 @@
         font-size: 16px;
       }
       
+      /* Estilo moderno para o valor principal */
+      .valor-principal-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #2196f3, #00bcd4);
+        color: white;
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-weight: 600;
+        box-shadow: 0 2px 5px rgba(33, 150, 243, 0.3);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .valor-principal-badge:hover {
+        box-shadow: 0 4px 10px rgba(33, 150, 243, 0.4);
+      }
+      
+      .valor-principal-badge::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: rgba(255, 255, 255, 0.1);
+        transform: rotate(45deg);
+        animation: shimmer 2s infinite;
+      }
+      
       /* Estilo moderno para a taxa de juros */
       .juros-badge {
         display: inline-flex;
@@ -1028,7 +1060,7 @@
               <div id="resultado-container" role="region" aria-label="Resultados">
                 <div class="resultado-item">
                   <span>Valor:</span>
-                  <span class="valor-principal-badge"><i class="material-icons" style="font-size: 14px; margin-right: 4px;">attach_money</i>R$ <span id="valor-principal">0,00</span></span>
+                  <span class="valor-principal-badge"><i class="material-icons" style="font-size: 14px; margin-right: 4px;">attach_money</i>R$ <span id="valor-principal" style="color: white; font-weight: 600;">0,00</span></span>
                 </div>
                 <div class="resultado-item">
                   <span>Tipo de Juros:</span>
