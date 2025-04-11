@@ -126,6 +126,21 @@
         flex-direction: column;
       }
 
+      /* Estilos para o container do histórico e scrollbar */
+      .historico-wrapper {
+        position: relative;
+        height: 380px; /* Altura fixa para garantir o scroll */
+        margin-top: 10px;
+        margin-bottom: 10px; /* Mantendo igual ao espaçamento superior */
+        border-radius: 8px;
+        background: rgba(217, 217, 217, 0.05);
+        display: block; /* Alterado de flex para block */
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+        overflow: hidden; /* Contém overflow apenas neste nível */
+        padding: 10px 0 10px 10px; /* Espaço à esquerda, em cima e embaixo, mas não à direita */
+        max-width: 100%; /* Garantir que não ultrapasse a largura máxima disponível */
+      }
+      
       #historico-list {
         flex: 1;
         margin: 0;
