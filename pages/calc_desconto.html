@@ -1473,8 +1473,8 @@
 
               <!-- Nova div para envolver o histórico e sua barra de rolagem -->
               <div class="historico-wrapper">
-                <ul id="historico-list" class="collection">
-                  <!-- O componente empty-history será adicionado via JavaScript quando necessário -->
+                <ul id="historico-list" class="collection" style="overflow: auto;">
+                  <empty-history message="Nenhum cálculo no histórico" sub-message="Os cálculos realizados aparecerão aqui"></empty-history>
                 </ul>
               </div>
 
