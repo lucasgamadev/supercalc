@@ -1083,10 +1083,10 @@
                     type="number"
                     step="1"
                     min="1"
-                    aria-label="Período em meses ou anos"
+                    aria-label="Período em meses"
                     required
                   />
-                  <label for="periodo">Período (meses/anos)</label>
+                  <label for="periodo">Período (meses)</label>
                 </div>
                 <div class="input-field col s12">
                   <p>
@@ -1131,6 +1131,10 @@
                 <div class="resultado-item">
                   <span>Taxa de Juros:</span>
                   <span class="juros-badge"><i class="material-icons" style="font-size: 14px; margin-right: 4px;">trending_up</i><span id="taxa-aplicada">0</span>%</span>
+                </div>
+                <div class="resultado-item">
+                  <span>Período:</span>
+                  <span class="tipo-juros-badge"><i class="material-icons" style="font-size: 14px; margin-right: 4px;">calendar_month</i><span id="periodo-formatado">0 meses</span></span>
                 </div>
                 <div class="resultado-item">
                   <span>Valor dos Juros:</span>
@@ -1232,6 +1236,28 @@
             maximumFractionDigits: 2,
           });
         }
+        
+        // Função para formatar período em anos e meses
+        function formatarPeriodo(meses) {
+          // Se for menos de 12 meses, exibe apenas os meses
+          if (meses < 12) {
+            return `${meses} ${meses === 1 ? 'mês' : 'meses'}`;
+          }
+          
+          // Calcula anos e meses
+          const anos = Math.floor(meses / 12);
+          const mesesRestantes = meses % 12;
+          
+          // Formata o texto
+          let texto = `${anos} ${anos === 1 ? 'ano' : 'anos'}`;
+          
+          // Adiciona meses se houver
+          if (mesesRestantes > 0) {
+            texto += ` e ${mesesRestantes} ${mesesRestantes === 1 ? 'mês' : 'meses'}`;
+          }
+          
+          return texto;
+        }
 
         // Função para mostrar toast de notificação
         if (!customElements.get('toast-notification')) {
@@ -1304,6 +1330,7 @@
           taxaAplicadaSpan.textContent = "0";
           valorJurosSpan.textContent = "0,00";
           montanteSpan.textContent = "0,00";
+          document.getElementById("periodo-formatado").textContent = "0 meses";
           
           // Remover classes de destaque
           document.querySelectorAll(".resultado-atualizado").forEach(el => {
@@ -1359,6 +1386,9 @@
           taxaAplicadaSpan.textContent = taxa.toFixed(2);
           valorJurosSpan.textContent = formatarMoeda(resultado.juros);
           montanteSpan.textContent = formatarMoeda(resultado.montante);
+          
+          // Atualizar o período formatado
+          document.getElementById("periodo-formatado").textContent = formatarPeriodo(periodo);
           
           // Classificar a taxa de juros e aplicar a classe correspondente
           const classeTaxa = classificarTaxaJuros(taxa);
@@ -1426,7 +1456,7 @@
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                 <span class="tipo-periodo" style="display: flex; align-items: center; color: #616161;">
                   <i class="material-icons" style="font-size: 16px; margin-right: 4px;">${tipoJuros === "simples" ? "timeline" : "show_chart"}</i>
-                  ${tipoJuros === "simples" ? "Simples" : "Compostos"} | ${periodo} períodos
+                  ${tipoJuros === "simples" ? "Simples" : "Compostos"} | ${formatarPeriodo(periodo)}
                 </span>
                 <span class="resultado-juros" style="color: #4caf50;">Juros: R$ ${jurosFormatado}</span>
               </div>
