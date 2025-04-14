@@ -129,7 +129,7 @@
       /* Estilos para o container do histórico e scrollbar */
       .historico-wrapper {
         position: relative;
-        height: 350px; /* Altura reduzida para aproximar do botão */
+        height: 655px;
         margin-top: 10px;
         margin-bottom: 5px; /* Reduzido para aproximar do botão */
         border-radius: 8px;
@@ -991,6 +991,15 @@
           transform: translateY(0);
         }
       }
+
+      /* Ajuste para o componente de histórico vazio - como em calc_padrao.html */
+      empty-history {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
     </style>
   </head>
   <body class="supercalc-background">
@@ -1074,10 +1083,10 @@
                     type="number"
                     step="1"
                     min="1"
-                    aria-label="Período em meses ou anos"
+                    aria-label="Período em meses"
                     required
                   />
-                  <label for="periodo">Período (meses/anos)</label>
+                  <label for="periodo">Período (meses)</label>
                 </div>
                 <div class="input-field col s12">
                   <p>
@@ -1124,6 +1133,10 @@
                   <span class="juros-badge"><i class="material-icons" style="font-size: 14px; margin-right: 4px;">trending_up</i><span id="taxa-aplicada">0</span>%</span>
                 </div>
                 <div class="resultado-item">
+                  <span>Período:</span>
+                  <span class="tipo-juros-badge"><i class="material-icons" style="font-size: 14px; margin-right: 4px;">calendar_month</i><span id="periodo-formatado">0 meses</span></span>
+                </div>
+                <div class="resultado-item">
                   <span>Valor dos Juros:</span>
                   <span class="juros-badge valor-juros-badge"><i class="material-icons" style="font-size: 14px; margin-right: 4px;">trending_up</i>R$ <span id="valor-juros">0,00</span></span>
                 </div>
@@ -1147,7 +1160,7 @@
         </div>
         <div class="col s12 m6">
           <div id="historico-container" class="card fade-in show">
-            <div class="card-content" style="position: relative; padding-bottom: 60px !important;">
+            <div class="card-content" style="position: relative; padding-bottom: 50px !important;">
               <span class="card-title" role="heading" aria-level="1"><i class="fas fa-history mr-2"></i>Histórico de Cálculos</span>
               <!-- Função para validar e destacar campos -->
               <!-- A função validarCampo foi movida para o escopo principal do JavaScript -->
@@ -1165,7 +1178,7 @@
                   ></empty-history>
                 </ul>
               </div>
-              <div class="btn-container" style="margin-top: auto; text-align: center; position: absolute; bottom: 5px; left: 0; right: 0; display: flex; justify-content: center;">
+              <div class="btn-container" style="margin-top: auto; text-align: center; position: absolute; bottom: 10px; left: 0; right: 0; display: flex; justify-content: center;">
                 <clear-history-button
                   storage-key="calculo-juros-historico"
                   history-list-id="historico-list"
@@ -1222,6 +1235,28 @@
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
           });
+        }
+        
+        // Função para formatar período em anos e meses
+        function formatarPeriodo(meses) {
+          // Se for menos de 12 meses, exibe apenas os meses
+          if (meses < 12) {
+            return `${meses} ${meses === 1 ? 'mês' : 'meses'}`;
+          }
+          
+          // Calcula anos e meses
+          const anos = Math.floor(meses / 12);
+          const mesesRestantes = meses % 12;
+          
+          // Formata o texto
+          let texto = `${anos} ${anos === 1 ? 'ano' : 'anos'}`;
+          
+          // Adiciona meses se houver
+          if (mesesRestantes > 0) {
+            texto += ` e ${mesesRestantes} ${mesesRestantes === 1 ? 'mês' : 'meses'}`;
+          }
+          
+          return texto;
         }
 
         // Função para mostrar toast de notificação
@@ -1295,6 +1330,7 @@
           taxaAplicadaSpan.textContent = "0";
           valorJurosSpan.textContent = "0,00";
           montanteSpan.textContent = "0,00";
+          document.getElementById("periodo-formatado").textContent = "0 meses";
           
           // Remover classes de destaque
           document.querySelectorAll(".resultado-atualizado").forEach(el => {
@@ -1350,6 +1386,9 @@
           taxaAplicadaSpan.textContent = taxa.toFixed(2);
           valorJurosSpan.textContent = formatarMoeda(resultado.juros);
           montanteSpan.textContent = formatarMoeda(resultado.montante);
+          
+          // Atualizar o período formatado
+          document.getElementById("periodo-formatado").textContent = formatarPeriodo(periodo);
           
           // Classificar a taxa de juros e aplicar a classe correspondente
           const classeTaxa = classificarTaxaJuros(taxa);
@@ -1417,7 +1456,7 @@
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                 <span class="tipo-periodo" style="display: flex; align-items: center; color: #616161;">
                   <i class="material-icons" style="font-size: 16px; margin-right: 4px;">${tipoJuros === "simples" ? "timeline" : "show_chart"}</i>
-                  ${tipoJuros === "simples" ? "Simples" : "Compostos"} | ${periodo} períodos
+                  ${tipoJuros === "simples" ? "Simples" : "Compostos"} | ${formatarPeriodo(periodo)}
                 </span>
                 <span class="resultado-juros" style="color: #4caf50;">Juros: R$ ${jurosFormatado}</span>
               </div>
@@ -1661,20 +1700,3 @@
     </script>
   </body>
 </html>
-
-<!doctype html>
-<html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Calculadora de juros simples e compostos para investimentos e empréstimos"
-    />
-    <title>Calculadora de Juros</title>
-    <!-- TailwindCSS via CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/assets/css/styles.css">
-    <!-- Componentes personalizados -->
-    <script src
