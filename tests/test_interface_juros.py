@@ -761,84 +761,89 @@ class TestInterfaceCalculadoraJuros(unittest.TestCase):
         # Restaurar para um tamanho padrão após os testes
         self.driver.set_window_size(1366, 768)
     
-    def test_elementos_visuais(self):
+    def test_botoes_interface(self):
         """
-        Testa a presença e estilo dos elementos visuais na interface.
+        Testa a funcionalidade, acessibilidade e estilo visual dos botões da interface.
+        Verifica se os botões 'Calcular' e 'Limpar' estão presentes, funcionais e acessíveis.
         """
-        # Verificar a presença de elementos visuais importantes
-        elementos_visuais = [
-            # Elementos de entrada
-            "valor", "taxa", "periodo", 
-            # Botões
-            "calcular", "limpar",
-            # Elementos de resultado
-            "valor-principal", "tipo-juros", "taxa-aplicada", "valor-juros", "montante"
-        ]
-        
-        for elemento_id in elementos_visuais:
-            try:
-                elemento = self.driver.find_element(By.ID, elemento_id)
-                self.assertTrue(elemento.is_displayed(), f"Elemento {elemento_id} não está visível")
-                
-                # Verificar se o elemento tem estilo CSS aplicado
-                estilo = self.driver.execute_script("return window.getComputedStyle(arguments[0]);", elemento)
-                
-                # Verificar se pelo menos algumas propriedades básicas de estilo estão definidas
-                self.assertNotEqual(estilo.get_property("font-family"), "")
-                self.assertNotEqual(estilo.get_property("color"), "")
-                
-            except Exception as e:
-                print(f"Nota: Problema com o elemento visual {elemento_id}: {str(e)}")
-        
-        # Verificar se há elementos de feedback visual para campos inválidos
-        # Preencher um campo com valor inválido
-        valor_input = self.driver.find_element(By.ID, "valor")
-        valor_input.send_keys("abc")
-        
-        # Clicar no botão calcular para acionar a validação
+        # Verificar se os botões estão presentes na interface
         calcular_btn = self.driver.find_element(By.ID, "calcular")
+        limpar_btn = self.driver.find_element(By.ID, "limpar")
+        
+        # Verificar se os botões estão visíveis e habilitados
+        self.assertTrue(calcular_btn.is_displayed(), "Botão Calcular não está visível")
+        self.assertTrue(calcular_btn.is_enabled(), "Botão Calcular não está habilitado")
+        self.assertTrue(limpar_btn.is_displayed(), "Botão Limpar não está visível")
+        self.assertTrue(limpar_btn.is_enabled(), "Botão Limpar não está habilitado")
+        
+        # Verificar o estilo visual dos botões (classes CSS)
+        self.assertTrue("btn" in calcular_btn.get_attribute("class"), "Botão Calcular não tem a classe 'btn'")
+        self.assertTrue("btn" in limpar_btn.get_attribute("class"), "Botão Limpar não tem a classe 'btn'")
+        
+        # Testar acessibilidade via teclado (foco)
+        calcular_btn.send_keys("")
+        self.assertEqual(calcular_btn, self.driver.switch_to.active_element, "Botão Calcular não recebeu foco corretamente")
+        
+        limpar_btn.send_keys("")
+        self.assertEqual(limpar_btn, self.driver.switch_to.active_element, "Botão Limpar não recebeu foco corretamente")
+        
+        # Testar funcionalidade do botão Calcular
+        # Preencher os campos do formulário
+        self.driver.find_element(By.ID, "valor").send_keys("1000")
+        self.driver.find_element(By.ID, "taxa").send_keys("10")
+        self.driver.find_element(By.ID, "periodo").send_keys("12")
+        
+        # Clicar no botão calcular usando teclado (Enter)
+        calcular_btn.send_keys("\n")
+        
+        # Verificar se o cálculo foi realizado (verificando se o resultado não está vazio)
+        self.wait.until(EC.text_to_be_present_in_element((By.ID, "montante"), ""))
+        montante = self.driver.find_element(By.ID, "montante").text
+        self.assertNotEqual(montante, "0,00", "O cálculo não foi realizado após pressionar Enter no botão Calcular")
+        
+        # Testar funcionalidade do botão Limpar
+        # Clicar no botão limpar usando teclado (Enter)
+        limpar_btn.send_keys("\n")
+        
+        # Verificar se os campos foram limpos
+        valor = self.driver.find_element(By.ID, "valor").get_attribute("value")
+        taxa = self.driver.find_element(By.ID, "taxa").get_attribute("value")
+        periodo = self.driver.find_element(By.ID, "periodo").get_attribute("value")
+        
+        # Verificar se os campos estão vazios ou com valores padrão
+        self.assertTrue(valor == "" or valor == "0,00" or valor == "0", "Campo valor não foi limpo corretamente")
+        self.assertTrue(taxa == "" or taxa == "0,00" or taxa == "0", "Campo taxa não foi limpo corretamente")
+        self.assertTrue(periodo == "" or periodo == "0", "Campo período não foi limpo corretamente")
+        
+        # Verificar se os resultados foram resetados
+        valor_principal = self.driver.find_element(By.ID, "valor-principal").text
+        valor_juros = self.driver.find_element(By.ID, "valor-juros").text
+        montante = self.driver.find_element(By.ID, "montante").text
+        
+        self.assertEqual(valor_principal, "0,00", "O valor principal não foi resetado após limpar")
+        self.assertEqual(valor_juros, "0,00", "O valor de juros não foi resetado após limpar")
+        self.assertEqual(montante, "0,00", "O montante não foi resetado após limpar")
+        
+        # Testar comportamento dos botões com clique via JavaScript (alternativa)
+        # Preencher os campos novamente
+        self.driver.find_element(By.ID, "valor").send_keys("1000")
+        self.driver.find_element(By.ID, "taxa").send_keys("10")
+        self.driver.find_element(By.ID, "periodo").send_keys("12")
+        
+        # Clicar no botão calcular via JavaScript
         self.driver.execute_script("arguments[0].click();", calcular_btn)
         
-        # Verificar se há feedback visual para o campo inválido
-        try:
-            # Verificar se o campo tem uma classe de estilo para indicar erro
-            self.assertTrue("invalid" in valor_input.get_attribute("class") or 
-                           valor_input.value_of_css_property("border-color").lower() in ["red", "#ff0000"])
-        except Exception as e:
-            print(f"Nota: A interface pode não fornecer feedback visual adequado para campos inválidos: {str(e)}")
-            # Não falhar o teste, apenas registrar o comportamento
-
-
-def executar_testes_interface():
-    """
-    Executa os testes de interface e exibe um relatório detalhado.
-    """
-    print("\n===== TESTES AUTOMATIZADOS DA INTERFACE DA CALCULADORA DE JUROS =====\n")
-    print("AVISO: Estes testes requerem um navegador web e podem abrir janelas do navegador.")
-    print("Se os testes falharem, verifique se o Chrome ou Firefox está instalado.")
-    print("\nIniciando testes...\n")
-    
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestInterfaceCalculadoraJuros)
-    resultado = unittest.TextTestRunner(verbosity=2).run(suite)
-    
-    print("\n===== RESUMO DOS TESTES DE INTERFACE =====")
-    print(f"Total de testes: {resultado.testsRun}")
-    print(f"Testes com sucesso: {resultado.testsRun - len(resultado.failures) - len(resultado.errors)}")
-    print(f"Falhas: {len(resultado.failures)}")
-    print(f"Erros: {len(resultado.errors)}")
-    
-    if resultado.failures or resultado.errors:
-        print("\n===== DETALHES DAS FALHAS =====")
-        for test, error in resultado.failures:
-            print(f"\nTeste: {test}")
-            print(f"Erro: {error}")
+        # Verificar se o cálculo foi realizado
+        self.wait.until(EC.text_to_be_present_in_element((By.ID, "montante"), ""))
+        montante = self.driver.find_element(By.ID, "montante").text
+        self.assertNotEqual(montante, "0,00", "O cálculo não foi realizado após clicar via JavaScript no botão Calcular")
         
-        print("\n===== DETALHES DOS ERROS =====")
-        for test, error in resultado.errors:
-            print(f"\nTeste: {test}")
-            print(f"Erro: {error}")
-    
-    return len(resultado.failures) == 0 and len(resultado.errors) == 0
+        # Clicar no botão limpar via JavaScript
+        self.driver.execute_script("arguments[0].click();", limpar_btn)
+        
+        # Verificar se os campos foram limpos
+        valor = self.driver.find_element(By.ID, "valor").get_attribute("value")
+        self.assertTrue(valor == "" or valor == "0,00" or valor == "0", "Campo valor não foi limpo corretamente após clique via JavaScript")
 
 
 if __name__ == "__main__":
