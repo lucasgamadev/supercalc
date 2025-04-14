@@ -991,6 +991,15 @@
           transform: translateY(0);
         }
       }
+
+      /* Ajuste para o componente de histórico vazio - como em calc_padrao.html */
+      empty-history {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
     </style>
   </head>
   <body class="supercalc-background">
@@ -1661,20 +1670,3 @@
     </script>
   </body>
 </html>
-
-<!doctype html>
-<html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Calculadora de juros simples e compostos para investimentos e empréstimos"
-    />
-    <title>Calculadora de Juros</title>
-    <!-- TailwindCSS via CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/assets/css/styles.css">
-    <!-- Componentes personalizados -->
-    <script src
