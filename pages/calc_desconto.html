@@ -798,6 +798,58 @@
         }
       }
 
+      /* Estilos para o histórico vazio */
+      .empty-history {
+        text-align: center;
+        padding: 0 !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+
+      .empty-history .empty-message {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #9e9e9e;
+        width: 100%;
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      .empty-history .empty-message i {
+        font-size: 48px;
+        margin-bottom: 10px;
+        color: #e0e0e0;
+      }
+
+      .empty-history .empty-message p {
+        margin: 5px 0;
+        font-size: 16px;
+      }
+
+      .empty-history .empty-message .sub-message {
+        font-size: 14px;
+        color: #bdbdbd;
+      }
+
+      /* Ajuste para o componente de histórico vazio - como em calc_padrao.html */
+      empty-history {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
       /* Estilos para o container do histórico e scrollbar - revisão completa */
       .historico-wrapper {
         position: relative;
@@ -926,6 +978,15 @@
       .empty-history .empty-message .sub-message {
         font-size: 14px;
         color: #bdbdbd;
+      }
+
+      /* Ajuste para o componente de histórico vazio - como em calc_padrao.html */
+      empty-history {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
       }
 
       /* Estilos para os itens do histórico - revisão completa */
