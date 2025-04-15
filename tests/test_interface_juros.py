@@ -832,12 +832,22 @@ class TestInterfaceCalculadoraJuros(unittest.TestCase):
         # Fim do teste de botões da interface
 
 
+def executar_testes_interface_juros():
+    """
+    Executa todos os testes da interface da calculadora de juros.
+    Retorna True se todos os testes passarem, False caso contrário.
+    """
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestInterfaceCalculadoraJuros)
+    resultado = unittest.TextTestRunner(verbosity=2).run(suite)
+    return resultado.wasSuccessful()
+
+
 if __name__ == "__main__":
     # Criar diretório de testes se não existir
     os.makedirs(os.path.dirname(os.path.abspath(__file__)), exist_ok=True)
     
     # Executar testes
-    sucesso = executar_testes_interface()
+    sucesso = executar_testes_interface_juros()
     
     # Retornar código de saída apropriado
     sys.exit(0 if sucesso else 1)
