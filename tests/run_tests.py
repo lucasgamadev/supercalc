@@ -2,12 +2,15 @@
 # -*- coding: utf-8 -*-
 
 """
-Script para executar todos os testes automatizados da calculadora de juros do SuperCalc.
+Script para executar todos os testes automatizados do SuperCalc.
 
 Este script executa todos os tipos de testes disponíveis:
-- Testes unitários de cálculos
+- Testes unitários da calculadora de juros
 - Testes de interface
 - Testes de histórico
+- Testes da calculadora de desconto
+- Testes da calculadora de unidades
+- Testes da calculadora padrão
 
 E gera um relatório completo dos resultados.
 """
@@ -29,12 +32,13 @@ def verificar_dependencias():
         'selenium': 'pip install selenium',
         'json': 'Módulo padrão do Python',
         'tempfile': 'Módulo padrão do Python',
-        'shutil': 'Módulo padrão do Python'
+        'shutil': 'Módulo padrão do Python',
+        'math': 'Módulo padrão do Python'
     }
     
     faltando = []
     for modulo, comando in dependencias.items():
-        if modulo not in ['unittest', 'json', 'tempfile', 'shutil']:  # Módulos da biblioteca padrão
+        if modulo not in ['unittest', 'json', 'tempfile', 'shutil', 'math']:  # Módulos da biblioteca padrão
             spec = importlib.util.find_spec(modulo)
             if spec is None:
                 faltando.append((modulo, comando))
@@ -66,7 +70,7 @@ def executar_todos_testes():
         testes_unitarios_disponiveis = True
     except ImportError:
         testes_unitarios_disponiveis = False
-        print("AVISO: Módulo de testes unitários não encontrado.")
+        print("AVISO: Módulo de testes unitários de juros não encontrado.")
     
     try:
         from test_interface_juros import TestInterfaceCalculadoraJuros, executar_testes_interface
@@ -81,9 +85,31 @@ def executar_todos_testes():
     except ImportError:
         testes_historico_disponiveis = False
         print("AVISO: Módulo de testes de histórico não encontrado.")
+        
+    try:
+        from test_calculadora_desconto import TestCalculadoraDesconto, executar_testes_desconto
+        testes_desconto_disponiveis = True
+    except ImportError:
+        testes_desconto_disponiveis = False
+        print("AVISO: Módulo de testes de calculadora de desconto não encontrado.")
+        
+    try:
+        from test_calculadora_unidades import TestCalculadoraUnidades, executar_testes_unidades
+        testes_unidades_disponiveis = True
+    except ImportError:
+        testes_unidades_disponiveis = False
+        print("AVISO: Módulo de testes de calculadora de unidades não encontrado.")
+        
+    try:
+        from test_calculadora_padrao import TestCalculadoraPadrao, executar_testes_padrao
+        testes_padrao_disponiveis = True
+    except ImportError:
+        testes_padrao_disponiveis = False
+        print("AVISO: Módulo de testes de calculadora padrão não encontrado.")
     
     # Verificar se pelo menos um tipo de teste está disponível
-    if not testes_unitarios_disponiveis and not testes_interface_disponiveis and not testes_historico_disponiveis:
+    if not (testes_unitarios_disponiveis or testes_interface_disponiveis or testes_historico_disponiveis or 
+            testes_desconto_disponiveis or testes_unidades_disponiveis or testes_padrao_disponiveis):
         print("ERRO: Nenhum módulo de teste foi encontrado.")
         return False
     
@@ -116,6 +142,39 @@ def executar_todos_testes():
         print("EXECUTANDO TESTES DE HISTÓRICO")
         print("=" * 80)
         resultado_historico = executar_testes_historico()
+        
+        # Pequena pausa entre os testes para garantir que os recursos sejam liberados
+        time.sleep(1)
+    
+    # Executar testes de calculadora de desconto
+    resultado_desconto = True
+    if testes_desconto_disponiveis:
+        print("\n" + "=" * 80)
+        print("EXECUTANDO TESTES DA CALCULADORA DE DESCONTO")
+        print("=" * 80)
+        resultado_desconto = executar_testes_desconto()
+        
+        # Pequena pausa entre os testes para garantir que os recursos sejam liberados
+        time.sleep(1)
+    
+    # Executar testes de calculadora de unidades
+    resultado_unidades = True
+    if testes_unidades_disponiveis:
+        print("\n" + "=" * 80)
+        print("EXECUTANDO TESTES DA CALCULADORA DE UNIDADES")
+        print("=" * 80)
+        resultado_unidades = executar_testes_unidades()
+        
+        # Pequena pausa entre os testes para garantir que os recursos sejam liberados
+        time.sleep(1)
+    
+    # Executar testes de calculadora padrão
+    resultado_padrao = True
+    if testes_padrao_disponiveis:
+        print("\n" + "=" * 80)
+        print("EXECUTANDO TESTES DA CALCULADORA PADRÃO")
+        print("=" * 80)
+        resultado_padrao = executar_testes_padrao()
     
     # Gerar relatório consolidado
     print("\n" + "=" * 80)
@@ -123,15 +182,25 @@ def executar_todos_testes():
     print("=" * 80)
     
     if testes_unitarios_disponiveis:
-        print(f"Testes Unitários: {'SUCESSO' if resultado_unitarios else 'FALHA'}")
+        print(f"Testes Unitários de Juros: {'SUCESSO' if resultado_unitarios else 'FALHA'}")
     
     if testes_interface_disponiveis:
         print(f"Testes de Interface: {'SUCESSO' if resultado_interface else 'FALHA'}")
     
     if testes_historico_disponiveis:
         print(f"Testes de Histórico: {'SUCESSO' if resultado_historico else 'FALHA'}")
+        
+    if testes_desconto_disponiveis:
+        print(f"Testes da Calculadora de Desconto: {'SUCESSO' if resultado_desconto else 'FALHA'}")
+        
+    if testes_unidades_disponiveis:
+        print(f"Testes da Calculadora de Unidades: {'SUCESSO' if resultado_unidades else 'FALHA'}")
+        
+    if testes_padrao_disponiveis:
+        print(f"Testes da Calculadora Padrão: {'SUCESSO' if resultado_padrao else 'FALHA'}")
     
-    resultado_final = resultado_unitarios and resultado_interface and resultado_historico
+    resultado_final = (resultado_unitarios and resultado_interface and resultado_historico and 
+                      resultado_desconto and resultado_unidades and resultado_padrao)
     print("\nResultado Final: " + ("SUCESSO" if resultado_final else "FALHA"))
     
     return resultado_final
@@ -141,7 +210,7 @@ def main():
     """
     Função principal do script.
     """
-    print("\n===== TESTES AUTOMATIZADOS DA CALCULADORA DE JUROS DO SUPERCALC =====")
+    print("\n===== TESTES AUTOMATIZADOS DO SUPERCALC =====")
     
     # Verificar dependências
     if not verificar_dependencias():
