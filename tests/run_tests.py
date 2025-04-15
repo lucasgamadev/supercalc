@@ -65,142 +65,54 @@ def executar_todos_testes():
     sys.path.insert(0, diretorio_atual)
     
     # Importar os módulos de teste
-    try:
-        from test_calculadora_juros import TestCalculadoraJuros, executar_testes
-        testes_unitarios_disponiveis = True
-    except ImportError:
-        testes_unitarios_disponiveis = False
-        print("AVISO: Módulo de testes unitários de juros não encontrado.")
+    modulos_teste = {
+        'Calculadora de Juros': ('test_calculadora_juros', 'TestCalculadoraJuros', 'executar_testes_juros'),
+        'Interface de Juros': ('test_interface_juros', 'TestInterfaceCalculadoraJuros', 'executar_testes_interface_juros'),
+        'Histórico de Juros': ('test_historico_juros', 'TestHistoricoCalculadoraJuros', 'executar_testes_historico_juros'),
+        'Calculadora de Desconto': ('test_calculadora_desconto', 'TestCalculadoraDesconto', 'executar_testes_desconto'),
+        'Calculadora de Unidades': ('test_calculadora_unidades', 'TestCalculadoraUnidades', 'executar_testes_unidades'),
+        'Calculadora Padrão': ('test_calculadora_padrao', 'TestCalculadoraPadrao', 'executar_testes_padrao'),
+        'Interface da Calculadora Padrão': ('test_interface_padrao', 'TestInterfaceCalculadoraPadrao', 'executar_testes_interface_padrao')
+    }
     
-    try:
-        from test_interface_juros import TestInterfaceCalculadoraJuros, executar_testes_interface
-        testes_interface_disponiveis = True
-    except ImportError:
-        testes_interface_disponiveis = False
-        print("AVISO: Módulo de testes de interface não encontrado.")
-    
-    try:
-        from test_historico_juros import TestHistoricoCalculadoraJuros, executar_testes_historico
-        testes_historico_disponiveis = True
-    except ImportError:
-        testes_historico_disponiveis = False
-        print("AVISO: Módulo de testes de histórico não encontrado.")
-        
-    try:
-        from test_calculadora_desconto import TestCalculadoraDesconto, executar_testes_desconto
-        testes_desconto_disponiveis = True
-    except ImportError:
-        testes_desconto_disponiveis = False
-        print("AVISO: Módulo de testes de calculadora de desconto não encontrado.")
-        
-    try:
-        from test_calculadora_unidades import TestCalculadoraUnidades, executar_testes_unidades
-        testes_unidades_disponiveis = True
-    except ImportError:
-        testes_unidades_disponiveis = False
-        print("AVISO: Módulo de testes de calculadora de unidades não encontrado.")
-        
-    try:
-        from test_calculadora_padrao import TestCalculadoraPadrao, executar_testes_padrao
-        testes_padrao_disponiveis = True
-    except ImportError:
-        testes_padrao_disponiveis = False
-        print("AVISO: Módulo de testes de calculadora padrão não encontrado.")
+    # Verificar quais módulos estão disponíveis
+    modulos_disponiveis = {}
+    for nome, (modulo, classe, funcao) in modulos_teste.items():
+        try:
+            importado = __import__(modulo, fromlist=[classe, funcao])
+            modulos_disponiveis[nome] = (getattr(importado, classe), getattr(importado, funcao))
+            print(f"Módulo de testes '{nome}' carregado com sucesso.")
+        except ImportError:
+            print(f"AVISO: Módulo de testes '{nome}' não encontrado.")
+        except AttributeError as e:
+            print(f"ERRO: Problema ao carregar '{nome}': {e}")
     
     # Verificar se pelo menos um tipo de teste está disponível
-    if not (testes_unitarios_disponiveis or testes_interface_disponiveis or testes_historico_disponiveis or 
-            testes_desconto_disponiveis or testes_unidades_disponiveis or testes_padrao_disponiveis):
+    if not modulos_disponiveis:
         print("ERRO: Nenhum módulo de teste foi encontrado.")
         return False
     
-    # Executar testes unitários
-    resultado_unitarios = True
-    if testes_unitarios_disponiveis:
+    # Executar todos os testes disponíveis
+    resultados = {}
+    
+    for nome, (classe, funcao) in modulos_disponiveis.items():
         print("\n" + "=" * 80)
-        print("EXECUTANDO TESTES UNITÁRIOS")
+        print(f"EXECUTANDO TESTES: {nome.upper()}")
         print("=" * 80)
-        resultado_unitarios = executar_testes()
+        resultados[nome] = funcao()
         
         # Pequena pausa entre os testes para garantir que os recursos sejam liberados
         time.sleep(1)
-    
-    # Executar testes de interface
-    resultado_interface = True
-    if testes_interface_disponiveis:
-        print("\n" + "=" * 80)
-        print("EXECUTANDO TESTES DE INTERFACE")
-        print("=" * 80)
-        resultado_interface = executar_testes_interface()
-        
-        # Pequena pausa entre os testes para garantir que os recursos sejam liberados
-        time.sleep(1)
-    
-    # Executar testes de histórico
-    resultado_historico = True
-    if testes_historico_disponiveis:
-        print("\n" + "=" * 80)
-        print("EXECUTANDO TESTES DE HISTÓRICO")
-        print("=" * 80)
-        resultado_historico = executar_testes_historico()
-        
-        # Pequena pausa entre os testes para garantir que os recursos sejam liberados
-        time.sleep(1)
-    
-    # Executar testes de calculadora de desconto
-    resultado_desconto = True
-    if testes_desconto_disponiveis:
-        print("\n" + "=" * 80)
-        print("EXECUTANDO TESTES DA CALCULADORA DE DESCONTO")
-        print("=" * 80)
-        resultado_desconto = executar_testes_desconto()
-        
-        # Pequena pausa entre os testes para garantir que os recursos sejam liberados
-        time.sleep(1)
-    
-    # Executar testes de calculadora de unidades
-    resultado_unidades = True
-    if testes_unidades_disponiveis:
-        print("\n" + "=" * 80)
-        print("EXECUTANDO TESTES DA CALCULADORA DE UNIDADES")
-        print("=" * 80)
-        resultado_unidades = executar_testes_unidades()
-        
-        # Pequena pausa entre os testes para garantir que os recursos sejam liberados
-        time.sleep(1)
-    
-    # Executar testes de calculadora padrão
-    resultado_padrao = True
-    if testes_padrao_disponiveis:
-        print("\n" + "=" * 80)
-        print("EXECUTANDO TESTES DA CALCULADORA PADRÃO")
-        print("=" * 80)
-        resultado_padrao = executar_testes_padrao()
     
     # Gerar relatório consolidado
     print("\n" + "=" * 80)
     print("RELATÓRIO CONSOLIDADO DOS TESTES")
     print("=" * 80)
     
-    if testes_unitarios_disponiveis:
-        print(f"Testes Unitários de Juros: {'SUCESSO' if resultado_unitarios else 'FALHA'}")
+    for nome, resultado in resultados.items():
+        print(f"Testes {nome}: {'SUCESSO' if resultado else 'FALHA'}")
     
-    if testes_interface_disponiveis:
-        print(f"Testes de Interface: {'SUCESSO' if resultado_interface else 'FALHA'}")
-    
-    if testes_historico_disponiveis:
-        print(f"Testes de Histórico: {'SUCESSO' if resultado_historico else 'FALHA'}")
-        
-    if testes_desconto_disponiveis:
-        print(f"Testes da Calculadora de Desconto: {'SUCESSO' if resultado_desconto else 'FALHA'}")
-        
-    if testes_unidades_disponiveis:
-        print(f"Testes da Calculadora de Unidades: {'SUCESSO' if resultado_unidades else 'FALHA'}")
-        
-    if testes_padrao_disponiveis:
-        print(f"Testes da Calculadora Padrão: {'SUCESSO' if resultado_padrao else 'FALHA'}")
-    
-    resultado_final = (resultado_unitarios and resultado_interface and resultado_historico and 
-                      resultado_desconto and resultado_unidades and resultado_padrao)
+    resultado_final = all(resultados.values())
     print("\nResultado Final: " + ("SUCESSO" if resultado_final else "FALHA"))
     
     return resultado_final
