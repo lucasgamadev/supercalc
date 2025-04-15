@@ -7,7 +7,7 @@ import os
 TESTES = [
     ("Calculadora Padrão", "test_interface_padrao.py"),
     ("Calculadora de Juros", "test_interface_juros.py"),
-    #("Calculadora de Desconto", "test_interface_desconto.py"),
+    ("Calculadora de Desconto", "test_interface_desconto.py"),
     #("Calculadora de Unidades", "test_interface_unidades.py"),
 ]
 
