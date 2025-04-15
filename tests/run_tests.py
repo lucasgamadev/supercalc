@@ -4,14 +4,19 @@
 """
 Script para executar todos os testes automatizados da calculadora de juros do SuperCalc.
 
-Este script executa tanto os testes unitários quanto os testes de interface,
-gerando um relatório completo dos resultados.
+Este script executa todos os tipos de testes disponíveis:
+- Testes unitários de cálculos
+- Testes de interface
+- Testes de histórico
+
+E gera um relatório completo dos resultados.
 """
 
 import os
 import sys
 import unittest
 import importlib.util
+import time
 
 
 def verificar_dependencias():
@@ -22,11 +27,14 @@ def verificar_dependencias():
     dependencias = {
         'unittest': 'Módulo padrão do Python',
         'selenium': 'pip install selenium',
+        'json': 'Módulo padrão do Python',
+        'tempfile': 'Módulo padrão do Python',
+        'shutil': 'Módulo padrão do Python'
     }
     
     faltando = []
     for modulo, comando in dependencias.items():
-        if modulo != 'unittest':  # unittest é parte da biblioteca padrão
+        if modulo not in ['unittest', 'json', 'tempfile', 'shutil']:  # Módulos da biblioteca padrão
             spec = importlib.util.find_spec(modulo)
             if spec is None:
                 faltando.append((modulo, comando))
@@ -67,8 +75,15 @@ def executar_todos_testes():
         testes_interface_disponiveis = False
         print("AVISO: Módulo de testes de interface não encontrado.")
     
+    try:
+        from test_historico_juros import TestHistoricoCalculadoraJuros, executar_testes_historico
+        testes_historico_disponiveis = True
+    except ImportError:
+        testes_historico_disponiveis = False
+        print("AVISO: Módulo de testes de histórico não encontrado.")
+    
     # Verificar se pelo menos um tipo de teste está disponível
-    if not testes_unitarios_disponiveis and not testes_interface_disponiveis:
+    if not testes_unitarios_disponiveis and not testes_interface_disponiveis and not testes_historico_disponiveis:
         print("ERRO: Nenhum módulo de teste foi encontrado.")
         return False
     
@@ -79,6 +94,9 @@ def executar_todos_testes():
         print("EXECUTANDO TESTES UNITÁRIOS")
         print("=" * 80)
         resultado_unitarios = executar_testes()
+        
+        # Pequena pausa entre os testes para garantir que os recursos sejam liberados
+        time.sleep(1)
     
     # Executar testes de interface
     resultado_interface = True
@@ -87,6 +105,17 @@ def executar_todos_testes():
         print("EXECUTANDO TESTES DE INTERFACE")
         print("=" * 80)
         resultado_interface = executar_testes_interface()
+        
+        # Pequena pausa entre os testes para garantir que os recursos sejam liberados
+        time.sleep(1)
+    
+    # Executar testes de histórico
+    resultado_historico = True
+    if testes_historico_disponiveis:
+        print("\n" + "=" * 80)
+        print("EXECUTANDO TESTES DE HISTÓRICO")
+        print("=" * 80)
+        resultado_historico = executar_testes_historico()
     
     # Gerar relatório consolidado
     print("\n" + "=" * 80)
@@ -99,7 +128,10 @@ def executar_todos_testes():
     if testes_interface_disponiveis:
         print(f"Testes de Interface: {'SUCESSO' if resultado_interface else 'FALHA'}")
     
-    resultado_final = resultado_unitarios and resultado_interface
+    if testes_historico_disponiveis:
+        print(f"Testes de Histórico: {'SUCESSO' if resultado_historico else 'FALHA'}")
+    
+    resultado_final = resultado_unitarios and resultado_interface and resultado_historico
     print("\nResultado Final: " + ("SUCESSO" if resultado_final else "FALHA"))
     
     return resultado_final
