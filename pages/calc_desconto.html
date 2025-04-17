@@ -1395,14 +1395,14 @@
                 <div class="input-field col s12 outlined">
                   <!-- Added 'outlined' class here -->
                   <input
-                    id="valor"
+                    id="valor-original"
                     type="text"
                     inputmode="decimal"
                     pattern="[0-9]+([\.\,][0-9]+)?"
                     aria-label="Valor em Reais"
                     required
                   />
-                  <label for="valor">Valor (R$)</label>
+                  <label for="valor-original">Valor (R$)</label>
                 </div>
                 <div class="input-field col s12">
                   <input
@@ -1621,7 +1621,7 @@
 
       // Melhorar a validação em tempo real
       function validarCampos() {
-        const valorInput = document.getElementById('valor');
+        const valorInput = document.getElementById('valor-original');
         const descontoInput = document.getElementById('desconto');
         const valorStr = valorInput.value.trim();
         const desconto = descontoInput.value.trim();
@@ -1975,7 +1975,7 @@
       }
 
       function calcularDesconto() {
-        const valorInput = document.getElementById('valor');
+        const valorInput = document.getElementById('valor-original');
         const descontoInput = document.getElementById('desconto');
 
         if (!validarCampos()) return;
@@ -2034,7 +2034,7 @@
       }
 
       function limparCampos() {
-        const valorInput = document.getElementById('valor');
+        const valorInput = document.getElementById('valor-original');
         const descontoInput = document.getElementById('desconto');
         const precoOriginal = document.getElementById('preco-original');
         const descontoAplicado = document.getElementById('desconto-aplicado');
@@ -2107,7 +2107,7 @@
       document.addEventListener('DOMContentLoaded', function () {
         M.updateTextFields();
         // Definir foco inicial no campo de valor
-        document.getElementById('valor').focus();
+        document.getElementById('valor-original').focus();
 
         // A inicialização do gerenciador de histórico já foi feita no início do arquivo
       });
@@ -2124,7 +2124,7 @@
 
       // Adicionar validação de input para permitir números e separadores decimais
       document
-        .getElementById('valor')
+        .getElementById('valor-original')
         .addEventListener('keypress', function (e) {
           // Permite apenas números e vírgula
           if (!/[\d,.]/.test(e.key)) {
@@ -2139,7 +2139,7 @@
         
       // Validação em tempo real para o campo valor
       document
-        .getElementById('valor')
+        .getElementById('valor-original')
         .addEventListener('input', function (e) {
           const valor = this.value.trim();
           if (valor === '') {
@@ -2184,7 +2184,7 @@
           this.value = valor;
         });
 
-      document.getElementById('valor').addEventListener('input', function (e) {
+      document.getElementById('valor-original').addEventListener('input', function (e) {
         let valor = e.target.value.replace(/\D/g, '');
         if (valor === '') return;
 
