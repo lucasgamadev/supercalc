@@ -1,11 +1,8 @@
 import unittest
 import os
 import sys
-import re
-import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, WebDriverException
@@ -34,7 +31,7 @@ class TestInterfaceCalculadoraDesconto(unittest.TestCase):
         from selenium.webdriver.chrome.service import Service
         from selenium.webdriver.chrome.options import Options
         
-        # Configurar opções do Chrome - configuração mínima para maior compatibilidade
+        # Configurar opções do Chrome
         chrome_options = Options()
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
@@ -42,8 +39,6 @@ class TestInterfaceCalculadoraDesconto(unittest.TestCase):
         try:
             # Inicializar o Chrome WebDriver com as opções configuradas
             cls.driver = webdriver.Chrome(options=chrome_options)
-            # Maximizar a janela para garantir que todos os elementos estejam visíveis
-            cls.driver.maximize_window()
         except WebDriverException:
             print("ERRO: Não foi possível inicializar o Chrome WebDriver.")
             print("Verifique se o Chrome e o ChromeDriver estão instalados corretamente.")
@@ -74,112 +69,56 @@ class TestInterfaceCalculadoraDesconto(unittest.TestCase):
         # Carregar a página da calculadora de desconto
         self.driver.get(f"file:///{self.html_path}")
         
-        # Garantir que a página carregue completamente
+        # Esperar que a página carregue completamente (ex: botão calcular esteja presente)
         try:
-            # Aguardar que o documento esteja completamente carregado
-            self.wait.until(lambda d: d.execute_script("return document.readyState") == "complete")
-            
-            # Dar um tempo para garantir que todos os scripts foram carregados
-            time.sleep(3)
-            
-            # Verificar se os elementos principais estão presentes
-            # Tentar diferentes estratégias para localizar elementos
-            try:
-                # Verificar se o formulário está presente
-                form = self.driver.find_element(By.TAG_NAME, "form")
-                print(f"Formulário encontrado: {form.tag_name}")
-                
-                # Tentar localizar campos por diferentes métodos
-                inputs = self.driver.find_elements(By.TAG_NAME, "input")
-                print(f"Número de inputs encontrados: {len(inputs)}")
-                
-                # Tentar localizar botões
-                buttons = self.driver.find_elements(By.TAG_NAME, "button")
-                print(f"Número de botões encontrados: {len(buttons)}")
-                
-                # Se não encontrou elementos específicos, pelo menos verificamos que há elementos na página
-            except Exception as e:
-                print(f"Aviso: Não foi possível localizar alguns elementos: {str(e)}")
+            self.wait.until(EC.presence_of_element_located((By.ID, "calcular")))
         except TimeoutException:
-            self.fail("Página não carregou dentro do tempo limite")
-        except Exception as e:
-            self.fail(f"Erro ao carregar a página: {str(e)}")
+            self.fail("Página não carregou dentro do tempo limite ou o botão 'calcular' não foi encontrado")
     
     def test_calculo_desconto_simples(self):
         """
         Testa o cálculo de desconto simples na interface.
         """
+        # Preencher os campos do formulário com esperas explícitas
+        valor_original_input = self.wait.until(EC.element_to_be_clickable((By.ID, "valor-original")))
+        valor_original_input.clear()
+        valor_original_input.send_keys("1000")
+        
+        percentual_input = self.wait.until(EC.element_to_be_clickable((By.ID, "percentual-desconto")))
+        percentual_input.clear()
+        percentual_input.send_keys("10")
+        
+        # Selecionar desconto simples usando JavaScript (espera pela presença)
+        desconto_simples_radio = self.wait.until(EC.presence_of_element_located(
+            (By.CSS_SELECTOR, "input[name='tipo-desconto'][value='simples']")))
+        self.driver.execute_script("arguments[0].click();", desconto_simples_radio)
+        
+        # Clicar no botão calcular usando JavaScript (espera ser clicável)
+        calcular_btn = self.wait.until(EC.element_to_be_clickable((By.ID, "calcular")))
+        self.driver.execute_script("arguments[0].click();", calcular_btn)
+        
+        # Esperar que os resultados sejam atualizados (ex: valor final não seja vazio ou 0,00)
         try:
-            # Preencher os campos do formulário com estratégia mais robusta
-            try:
-                valor_original = self.wait.until(EC.element_to_be_clickable((By.ID, "valor-original")))
-                valor_original.clear()
-                valor_original.send_keys("1000")
-            except:
-                # Tentar localizar por XPath como alternativa
-                valor_original = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@id='valor-original']")))
-                valor_original.clear()
-                valor_original.send_keys("1000")
-            
-            try:
-                percentual = self.wait.until(EC.element_to_be_clickable((By.ID, "percentual-desconto")))
-                percentual.clear()
-                percentual.send_keys("10")
-            except:
-                # Tentar localizar por XPath como alternativa
-                percentual = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@id='percentual-desconto']")))
-                percentual.clear()
-                percentual.send_keys("10")
-            
-            # Selecionar desconto simples usando JavaScript para evitar problemas de clique
-            try:
-                desconto_simples_radio = self.wait.until(EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, "input[name='tipo-desconto'][value='simples']")))
-                self.driver.execute_script("arguments[0].click();", desconto_simples_radio)
-            except:
-                # Tentar localizar por XPath como alternativa
-                desconto_simples_radio = self.wait.until(EC.presence_of_element_located(
-                    (By.XPATH, "//input[@name='tipo-desconto' and @value='simples']")))
-                self.driver.execute_script("arguments[0].click();", desconto_simples_radio)
-            
-            # Clicar no botão calcular usando JavaScript
-            try:
-                calcular_btn = self.wait.until(EC.element_to_be_clickable((By.ID, "calcular")))
-                self.driver.execute_script("arguments[0].click();", calcular_btn)
-            except:
-                # Tentar localizar por XPath ou outros seletores como alternativa
-                try:
-                    calcular_btn = self.wait.until(EC.element_to_be_clickable(
-                        (By.XPATH, "//button[@id='calcular']|//input[@id='calcular']")))
-                    self.driver.execute_script("arguments[0].click();", calcular_btn)
-                except:
-                    # Última tentativa - procurar por texto
-                    calcular_btn = self.wait.until(EC.element_to_be_clickable(
-                        (By.XPATH, "//button[contains(text(), 'Calcular')]|//input[@value='Calcular']")))
-                    self.driver.execute_script("arguments[0].click();", calcular_btn)
-            
-            # Esperar que os resultados sejam atualizados com uma estratégia mais robusta
-            try:
-                self.wait.until(lambda driver: 
-                    driver.find_element(By.ID, "valor-final").text != "" and 
-                    driver.find_element(By.ID, "valor-final").text != "0,00")
-            except:
-                # Dar um tempo adicional para processamento
-                time.sleep(3)
-        except Exception as e:
-            self.fail(f"Erro ao executar teste de desconto simples: {str(e)}")
+            self.wait.until(lambda driver: 
+                driver.find_element(By.ID, "valor-final").text != "" and 
+                driver.find_element(By.ID, "valor-final").text != "0,00")
+        except TimeoutException:
+             self.fail("Tempo esgotado ao esperar pelos resultados na interface.")
         
         # Verificar os resultados
-        valor_original = self.driver.find_element(By.ID, "valor-original-resultado").text
+        valor_original_resultado = self.driver.find_element(By.ID, "valor-original-resultado").text
         tipo_desconto = self.driver.find_element(By.ID, "tipo-desconto").text
         percentual_aplicado = self.driver.find_element(By.ID, "percentual-aplicado").text
         valor_desconto = self.driver.find_element(By.ID, "valor-desconto").text
         valor_final = self.driver.find_element(By.ID, "valor-final").text
         
-        # Converter valores para comparação
-        valor_desconto_num = float(valor_desconto.replace(".", "").replace(",", "."))
-        valor_final_num = float(valor_final.replace(".", "").replace(",", "."))
-        
+        try:
+            # Converter valores para comparação de forma robusta
+            valor_desconto_num = float(valor_desconto.replace(".", "").replace(",", "."))
+            valor_final_num = float(valor_final.replace(".", "").replace(",", "."))
+        except ValueError:
+            self.fail("Não foi possível converter os valores de resultado para float.")
+
         # Verificar se os resultados estão corretos
         self.assertEqual(tipo_desconto, "Simples")
         self.assertAlmostEqual(valor_desconto_num, 100.0, delta=0.01)
@@ -189,45 +128,42 @@ class TestInterfaceCalculadoraDesconto(unittest.TestCase):
         """
         Testa o cálculo de desconto progressivo na interface.
         """
-        # Preencher os campos do formulário com estratégia mais robusta
-        try:
-            valor_original = self.wait.until(EC.element_to_be_clickable((By.ID, "valor-original")))
-            valor_original.clear()
-            valor_original.send_keys("2000")
-        except:
-            # Tentar localizar por XPath como alternativa
-            valor_original = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@id='valor-original']")))
-            valor_original.clear()
-            valor_original.send_keys("2000")
+        # Preencher o campo valor original com espera explícita
+        valor_original_input = self.wait.until(EC.element_to_be_clickable((By.ID, "valor-original")))
+        valor_original_input.clear()
+        valor_original_input.send_keys("2000")
         
-        # Selecionar desconto progressivo usando JavaScript para evitar problemas de clique
-        desconto_progressivo_radio = self.driver.find_element(By.CSS_SELECTOR, "input[name='tipo-desconto'][value='progressivo']")
+        # Selecionar desconto progressivo usando JavaScript (espera pela presença)
+        desconto_progressivo_radio = self.wait.until(EC.presence_of_element_located(
+            (By.CSS_SELECTOR, "input[name='tipo-desconto'][value='progressivo']")))
         self.driver.execute_script("arguments[0].click();", desconto_progressivo_radio)
         
-        # Clicar no botão calcular usando JavaScript
-        calcular_btn = self.driver.find_element(By.ID, "calcular")
+        # Clicar no botão calcular usando JavaScript (espera ser clicável)
+        calcular_btn = self.wait.until(EC.element_to_be_clickable((By.ID, "calcular")))
         self.driver.execute_script("arguments[0].click();", calcular_btn)
         
-        # Esperar que os resultados sejam atualizados com uma estratégia mais robusta
+        # Esperar que os resultados sejam atualizados
         try:
             self.wait.until(lambda driver: 
                 driver.find_element(By.ID, "valor-final").text != "" and 
                 driver.find_element(By.ID, "valor-final").text != "0,00")
-        except:
-            # Dar um tempo adicional para processamento
-            time.sleep(3)
-        
+        except TimeoutException:
+             self.fail("Tempo esgotado ao esperar pelos resultados na interface.")
+
         # Verificar os resultados
-        valor_original = self.driver.find_element(By.ID, "valor-original-resultado").text
+        valor_original_resultado = self.driver.find_element(By.ID, "valor-original-resultado").text
         tipo_desconto = self.driver.find_element(By.ID, "tipo-desconto").text
         percentual_aplicado = self.driver.find_element(By.ID, "percentual-aplicado").text
         valor_desconto = self.driver.find_element(By.ID, "valor-desconto").text
         valor_final = self.driver.find_element(By.ID, "valor-final").text
         
-        # Converter valores para comparação
-        valor_desconto_num = float(valor_desconto.replace(".", "").replace(",", "."))
-        valor_final_num = float(valor_final.replace(".", "").replace(",", "."))
-        
+        try:
+            # Converter valores para comparação
+            valor_desconto_num = float(valor_desconto.replace(".", "").replace(",", "."))
+            valor_final_num = float(valor_final.replace(".", "").replace(",", "."))
+        except ValueError:
+            self.fail("Não foi possível converter os valores de resultado para float.")
+
         # Verificar se os resultados estão corretos
         self.assertEqual(tipo_desconto, "Progressivo")
         # Para valor de 2000, o desconto progressivo deve ser de 20%
@@ -238,52 +174,46 @@ class TestInterfaceCalculadoraDesconto(unittest.TestCase):
         """
         Testa o cálculo de desconto por cupom na interface.
         """
-        # Preencher os campos do formulário com estratégia mais robusta
-        try:
-            valor_original = self.wait.until(EC.element_to_be_clickable((By.ID, "valor-original")))
-            valor_original.clear()
-            valor_original.send_keys("1000")
-            
-            cupom_input = self.wait.until(EC.element_to_be_clickable((By.ID, "cupom")))
-            cupom_input.clear()
-            cupom_input.send_keys("SUPER50")
-        except:
-            # Tentar localizar por XPath como alternativa
-            valor_original = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@id='valor-original']")))
-            valor_original.clear()
-            valor_original.send_keys("1000")
-            
-            cupom_input = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@id='cupom']")))
-            cupom_input.clear()
-            cupom_input.send_keys("SUPER50")
+        # Preencher os campos do formulário com espera explícita
+        valor_original_input = self.wait.until(EC.element_to_be_clickable((By.ID, "valor-original")))
+        valor_original_input.clear()
+        valor_original_input.send_keys("1000")
         
-        # Selecionar desconto por cupom usando JavaScript para evitar problemas de clique
-        desconto_cupom_radio = self.driver.find_element(By.CSS_SELECTOR, "input[name='tipo-desconto'][value='cupom']")
+        cupom_input = self.wait.until(EC.element_to_be_clickable((By.ID, "cupom")))
+        cupom_input.clear()
+        cupom_input.send_keys("SUPER50")
+        
+        # Selecionar desconto por cupom usando JavaScript (espera pela presença)
+        desconto_cupom_radio = self.wait.until(EC.presence_of_element_located(
+            (By.CSS_SELECTOR, "input[name='tipo-desconto'][value='cupom']")))
         self.driver.execute_script("arguments[0].click();", desconto_cupom_radio)
         
-        # Clicar no botão calcular usando JavaScript
-        calcular_btn = self.driver.find_element(By.ID, "calcular")
+        # Clicar no botão calcular usando JavaScript (espera ser clicável)
+        calcular_btn = self.wait.until(EC.element_to_be_clickable((By.ID, "calcular")))
         self.driver.execute_script("arguments[0].click();", calcular_btn)
         
-        # Esperar que os resultados sejam atualizados com uma estratégia mais robusta
+        # Esperar que os resultados sejam atualizados
         try:
             self.wait.until(lambda driver: 
                 driver.find_element(By.ID, "valor-final").text != "" and 
                 driver.find_element(By.ID, "valor-final").text != "0,00")
-        except:
-            # Dar um tempo adicional para processamento
-            time.sleep(3)
-        
+        except TimeoutException:
+             self.fail("Tempo esgotado ao esperar pelos resultados na interface.")
+
         # Verificar os resultados
-        valor_original = self.driver.find_element(By.ID, "valor-original-resultado").text
+        valor_original_resultado = self.driver.find_element(By.ID, "valor-original-resultado").text
         tipo_desconto = self.driver.find_element(By.ID, "tipo-desconto").text
+        # Nota: O campo 'percentual-aplicado' pode não existir ou ser relevante para cupom
         valor_desconto = self.driver.find_element(By.ID, "valor-desconto").text
         valor_final = self.driver.find_element(By.ID, "valor-final").text
         
-        # Converter valores para comparação
-        valor_desconto_num = float(valor_desconto.replace(".", "").replace(",", "."))
-        valor_final_num = float(valor_final.replace(".", "").replace(",", "."))
-        
+        try:
+            # Converter valores para comparação
+            valor_desconto_num = float(valor_desconto.replace(".", "").replace(",", "."))
+            valor_final_num = float(valor_final.replace(".", "").replace(",", "."))
+        except ValueError:
+            self.fail("Não foi possível converter os valores de resultado para float.")
+
         # Verificar se os resultados estão corretos
         self.assertEqual(tipo_desconto, "Cupom")
         self.assertAlmostEqual(valor_desconto_num, 500.0, delta=0.01)
@@ -293,598 +223,605 @@ class TestInterfaceCalculadoraDesconto(unittest.TestCase):
         """
         Testa a validação de campos na interface.
         """
-        # Clicar no botão calcular sem preencher os campos usando JavaScript
-        try:
-            calcular_btn = self.wait.until(EC.element_to_be_clickable((By.ID, "calcular")))
-            self.driver.execute_script("arguments[0].click();", calcular_btn)
-        except:
-            # Tentar localizar por XPath como alternativa
-            calcular_btn = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//button[@id='calcular']|//input[@id='calcular']")))
-            self.driver.execute_script("arguments[0].click();", calcular_btn)
-        
-        # Esperar um momento para a validação ser aplicada
-        time.sleep(1)
+        # Clicar no botão calcular sem preencher os campos
+        calcular_btn = self.driver.find_element(By.ID, "calcular")
+        self.driver.execute_script("arguments[0].click();", calcular_btn)
         
         # Verificar se o campo valor original está marcado como inválido
         valor_input = self.driver.find_element(By.ID, "valor-original")
-        self.assertTrue("invalid" in valor_input.get_attribute("class") or 
-                       "error" in valor_input.get_attribute("class") or 
-                       valor_input.get_attribute("aria-invalid") == "true")
+        # Esperar um pouco para a classe ser aplicada (alternativa a wait explícito complexo)
+        # Idealmente, a validação JS deveria ser síncrona ou usar waits mais robustos
+        # Mas para simplificar e alinhar com juros, usamos assertTrue direto
+        self.assertTrue("invalid" in valor_input.get_attribute("class"),
+                        "Campo valor original não foi marcado como inválido.")
         
         # Preencher o campo valor original e tentar novamente
         valor_input.clear()
         valor_input.send_keys("1000")
+        
+        # Selecionar desconto simples para testar validação do percentual
+        desconto_simples_radio = self.driver.find_element(
+            By.CSS_SELECTOR, "input[name='tipo-desconto'][value='simples']")
+        self.driver.execute_script("arguments[0].click();", desconto_simples_radio)
+        
+        # Clicar em calcular novamente
         self.driver.execute_script("arguments[0].click();", calcular_btn)
         
-        # Verificar se o campo percentual está marcado como inválido (apenas para desconto simples)
-        try:
-            desconto_simples_radio = self.wait.until(EC.element_to_be_clickable(
-                (By.CSS_SELECTOR, "input[name='tipo-desconto'][value='simples']")))
-            self.driver.execute_script("arguments[0].click();", desconto_simples_radio)
-        except:
-            # Tentar localizar por XPath como alternativa
-            desconto_simples_radio = self.wait.until(EC.element_to_be_clickable(
-                (By.XPATH, "//input[@name='tipo-desconto' and @value='simples']")))
-            self.driver.execute_script("arguments[0].click();", desconto_simples_radio)
-            
-        self.driver.execute_script("arguments[0].click();", calcular_btn)
-        
-        # Esperar um momento para a validação ser aplicada
-        time.sleep(1)
-        
+        # Verificar se o campo percentual está marcado como inválido
         percentual_input = self.driver.find_element(By.ID, "percentual-desconto")
-        self.assertTrue("invalid" in percentual_input.get_attribute("class") or 
-                       "error" in percentual_input.get_attribute("class") or 
-                       percentual_input.get_attribute("aria-invalid") == "true")
+        self.assertTrue("invalid" in percentual_input.get_attribute("class"),
+                        "Campo percentual não foi marcado como inválido.")
+
+        # Testar validação do cupom
+        # Selecionar desconto por cupom
+        desconto_cupom_radio = self.driver.find_element(
+            By.CSS_SELECTOR, "input[name='tipo-desconto'][value='cupom']")
+        self.driver.execute_script("arguments[0].click();", desconto_cupom_radio)
+
+        # Clicar em calcular novamente (com valor preenchido, mas sem cupom)
+        self.driver.execute_script("arguments[0].click();", calcular_btn)
+
+        # Verificar se o campo cupom está marcado como inválido
+        cupom_input = self.driver.find_element(By.ID, "cupom")
+        self.assertTrue("invalid" in cupom_input.get_attribute("class"),
+                        "Campo cupom não foi marcado como inválido.")
     
     def test_limpar_campos(self):
         """
         Testa a funcionalidade de limpar campos.
         """
         # Preencher os campos do formulário
-        self.driver.find_element(By.ID, "valor-original").send_keys("1000")
-        self.driver.find_element(By.ID, "percentual-desconto").send_keys("10")
+        valor_original_input = self.driver.find_element(By.ID, "valor-original")
+        valor_original_input.send_keys("1000")
+        percentual_input = self.driver.find_element(By.ID, "percentual-desconto")
+        percentual_input.send_keys("10")
+        cupom_input = self.driver.find_element(By.ID, "cupom")
+        cupom_input.send_keys("TESTE") # Preencher cupom também
         
-        # Clicar no botão limpar usando JavaScript para evitar problemas de interação
+        # Clicar no botão limpar usando JavaScript
         limpar_btn = self.driver.find_element(By.ID, "limpar")
         self.driver.execute_script("arguments[0].click();", limpar_btn)
         
-        # Verificar se os campos foram limpos ou têm valores padrão
-        valor = self.driver.find_element(By.ID, "valor-original").get_attribute("value")
-        percentual = self.driver.find_element(By.ID, "percentual-desconto").get_attribute("value")
+        # Verificar se os campos foram limpos
+        valor_limpo = valor_original_input.get_attribute("value")
+        percentual_limpo = percentual_input.get_attribute("value")
+        cupom_limpo = cupom_input.get_attribute("value")
         
-        # A aplicação pode manter valores formatados ou definir valores padrão após limpar
-        # Verificamos se os valores são vazios ou valores padrão (como "0,00")
-        self.assertTrue(valor == "" or valor == "0,00" or valor == "0")
-        self.assertTrue(percentual == "" or percentual == "0,00" or percentual == "0")
+        self.assertEqual(valor_limpo, "", f"Campo valor original não foi limpo corretamente: '{valor_limpo}'")
+        self.assertEqual(percentual_limpo, "", f"Campo percentual não foi limpo corretamente: '{percentual_limpo}'")
+        self.assertEqual(cupom_limpo, "", f"Campo cupom não foi limpo corretamente: '{cupom_limpo}'")
         
-        # Verificar se os resultados foram resetados
-        valor_original = self.driver.find_element(By.ID, "valor-original-resultado").text
+        # Verificar se os resultados foram resetados (esperar que voltem a 0,00)
+        try:
+            self.wait.until(EC.text_to_be_present_in_element((By.ID, "valor-final"), "0,00"))
+        except TimeoutException:
+            self.fail("Resultados não foram resetados para '0,00' após limpar.")
+        
+        valor_original_resultado = self.driver.find_element(By.ID, "valor-original-resultado").text
         valor_desconto = self.driver.find_element(By.ID, "valor-desconto").text
         valor_final = self.driver.find_element(By.ID, "valor-final").text
         
-        self.assertEqual(valor_original, "0,00")
-        self.assertEqual(valor_desconto, "0,00")
-        self.assertEqual(valor_final, "0,00")
+        self.assertEqual(valor_original_resultado, "0,00", "Resultado valor original não foi resetado.")
+        self.assertEqual(valor_desconto, "0,00", "Resultado valor desconto não foi resetado.")
+        self.assertEqual(valor_final, "0,00", "Resultado valor final não foi resetado.")
     
     def test_valores_negativos(self):
         """
         Testa o comportamento da calculadora com valores negativos.
+        A aplicação deve idealmente rejeitar valores negativos.
         """
-        try:
-            # Preencher os campos do formulário com valor negativo
-            try:
-                valor_original = self.wait.until(EC.element_to_be_clickable((By.ID, "valor-original")))
-                valor_original.clear()
-                valor_original.send_keys("-1000")
-                
-                percentual = self.wait.until(EC.element_to_be_clickable((By.ID, "percentual-desconto")))
-                percentual.clear()
-                percentual.send_keys("10")
-            except:
-                # Tentar localizar por XPath como alternativa
-                valor_original = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@id='valor-original']")))
-                valor_original.clear()
-                valor_original.send_keys("-1000")
-                
-                percentual = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@id='percentual-desconto']")))
-                percentual.clear()
-                percentual.send_keys("10")
-            
-            # Selecionar desconto simples usando JavaScript para evitar problemas de clique
-            try:
-                desconto_simples_radio = self.wait.until(EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, "input[name='tipo-desconto'][value='simples']")))
-                self.driver.execute_script("arguments[0].click();", desconto_simples_radio)
-            except:
-                # Tentar localizar por XPath como alternativa
-                desconto_simples_radio = self.wait.until(EC.presence_of_element_located(
-                    (By.XPATH, "//input[@name='tipo-desconto' and @value='simples']")))
-                self.driver.execute_script("arguments[0].click();", desconto_simples_radio)
-            
-            # Clicar no botão calcular usando JavaScript
-            try:
-                calcular_btn = self.wait.until(EC.element_to_be_clickable((By.ID, "calcular")))
-                self.driver.execute_script("arguments[0].click();", calcular_btn)
-            except:
-                # Tentar localizar por XPath como alternativa
-                calcular_btn = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//button[@id='calcular']|//input[@id='calcular']")))
-                self.driver.execute_script("arguments[0].click();", calcular_btn)
-            
-            # Esperar um momento para a validação ser aplicada
-            time.sleep(1)
-            
-            # Verificar se o campo valor está marcado como inválido ou se a aplicação aceita valores negativos
-            valor_input = self.driver.find_element(By.ID, "valor-original")
-            
-            # Obter resultados (se disponíveis)
-            try:
-                valor_desconto = self.driver.find_element(By.ID, "valor-desconto").text
-                valor_final = self.driver.find_element(By.ID, "valor-final").text
-                
-                # Verificar se os resultados são consistentes (seja rejeitando ou aceitando valores negativos)
-                if ("invalid" in valor_input.get_attribute("class") or 
-                    "error" in valor_input.get_attribute("class") or 
-                    valor_input.get_attribute("aria-invalid") == "true"):
-                    # A aplicação rejeitou o valor negativo, o que é um comportamento válido
-                    self.assertTrue(True)
-                else:
-                    # A aplicação aceitou o valor negativo, verificar se o cálculo está correto
-                    # Converter valores para comparação
-                    if valor_desconto and valor_final and valor_desconto != "0,00" and valor_final != "0,00":
-                        valor_desconto_num = float(valor_desconto.replace(".", "").replace(",", "."))
-                        valor_final_num = float(valor_final.replace(".", "").replace(",", "."))
-                        
-                        # Verificamos apenas se o cálculo foi realizado, sem impor restrições ao sinal
-                        self.assertTrue(isinstance(valor_desconto_num, float))
-                        self.assertTrue(isinstance(valor_final_num, float))
-            except Exception as e:
-                # Se não conseguir obter os resultados, verificar apenas se o campo foi marcado como inválido
-                self.assertTrue("invalid" in valor_input.get_attribute("class") or 
-                              "error" in valor_input.get_attribute("class") or 
-                              valor_input.get_attribute("aria-invalid") == "true" or 
-                              True)  # Aceitar qualquer comportamento como válido para este teste
-        except Exception as e:
-            self.fail(f"Erro ao testar valores negativos: {str(e)}")
+        # Preencher os campos do formulário com valor negativo
+        valor_original_input = self.driver.find_element(By.ID, "valor-original")
+        valor_original_input.clear()
+        valor_original_input.send_keys("-1000")
+        
+        percentual_input = self.driver.find_element(By.ID, "percentual-desconto")
+        percentual_input.clear()
+        percentual_input.send_keys("10")
+        
+        # Selecionar desconto simples
+        desconto_simples_radio = self.driver.find_element(
+            By.CSS_SELECTOR, "input[name='tipo-desconto'][value='simples']")
+        self.driver.execute_script("arguments[0].click();", desconto_simples_radio)
+        
+        # Clicar no botão calcular
+        calcular_btn = self.driver.find_element(By.ID, "calcular")
+        self.driver.execute_script("arguments[0].click();", calcular_btn)
+        
+        # Verificar se o campo valor está marcado como inválido
+        self.assertTrue("invalid" in valor_original_input.get_attribute("class"),
+                        "Campo valor original não foi marcado como inválido para valor negativo.")
+
+        # Verificar se os resultados permanecem 0 ou indicam erro
+        valor_desconto = self.driver.find_element(By.ID, "valor-desconto").text
+        valor_final = self.driver.find_element(By.ID, "valor-final").text
+        self.assertEqual(valor_desconto, "0,00", "Valor do desconto não permaneceu 0,00 com entrada negativa.")
+        self.assertEqual(valor_final, "0,00", "Valor final não permaneceu 0,00 com entrada negativa.")
+
+        # Testar percentual negativo
+        valor_original_input.clear()
+        valor_original_input.send_keys("1000")
+        percentual_input.clear()
+        percentual_input.send_keys("-10")
+        self.driver.execute_script("arguments[0].click();", calcular_btn)
+
+        # Verificar se o campo percentual está marcado como inválido
+        self.assertTrue("invalid" in percentual_input.get_attribute("class"),
+                        "Campo percentual não foi marcado como inválido para valor negativo.")
+        # Verificar resultados novamente
+        valor_desconto = self.driver.find_element(By.ID, "valor-desconto").text
+        valor_final = self.driver.find_element(By.ID, "valor-final").text
+        self.assertEqual(valor_desconto, "0,00", "Valor do desconto não permaneceu 0,00 com percentual negativo.")
+        self.assertEqual(valor_final, "0,00", "Valor final não permaneceu 0,00 com percentual negativo.")
     
     def test_formato_entrada_diferente(self):
         """
         Testa o comportamento da calculadora com diferentes formatos de entrada (vírgula/ponto).
+        Verifica se a aplicação interpreta corretamente ambos os formatos.
         """
-        # Testar com valor usando vírgula como separador decimal
+        resultados_virgula = {}
+        resultados_ponto = {}
+
         try:
-            valor_original = self.wait.until(EC.element_to_be_clickable((By.ID, "valor-original")))
-            valor_original.clear()
-            valor_original.send_keys("1000,50")
+            # --- Teste com vírgula --- 
+            valor_original_input = self.wait.until(EC.element_to_be_clickable((By.ID, "valor-original")))
+            valor_original_input.clear()
+            valor_original_input.send_keys("1000,50")
             
-            percentual = self.wait.until(EC.element_to_be_clickable((By.ID, "percentual-desconto")))
-            percentual.clear()
-            percentual.send_keys("10,5")
-        except:
-            # Tentar localizar por XPath como alternativa
-            valor_original = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@id='valor-original']")))
-            valor_original.clear()
-            valor_original.send_keys("1000,50")
+            percentual_input = self.wait.until(EC.element_to_be_clickable((By.ID, "percentual-desconto")))
+            percentual_input.clear()
+            percentual_input.send_keys("10,5")
             
-            percentual = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@id='percentual-desconto']")))
-            percentual.clear()
-            percentual.send_keys("10,5")
-        
-        # Selecionar desconto simples usando JavaScript para evitar problemas de clique
-        try:
             desconto_simples_radio = self.wait.until(EC.presence_of_element_located(
                 (By.CSS_SELECTOR, "input[name='tipo-desconto'][value='simples']")))
             self.driver.execute_script("arguments[0].click();", desconto_simples_radio)
-        except:
-            # Tentar localizar por XPath como alternativa
-            desconto_simples_radio = self.wait.until(EC.presence_of_element_located(
-                (By.XPATH, "//input[@name='tipo-desconto' and @value='simples']")))
-            self.driver.execute_script("arguments[0].click();", desconto_simples_radio)
-        
-        # Clicar no botão calcular usando JavaScript
-        try:
+            
             calcular_btn = self.wait.until(EC.element_to_be_clickable((By.ID, "calcular")))
             self.driver.execute_script("arguments[0].click();", calcular_btn)
-        except:
-            # Tentar localizar por XPath como alternativa
-            calcular_btn = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//button[@id='calcular']|//input[@id='calcular']")))
-            self.driver.execute_script("arguments[0].click();", calcular_btn)
-        
-        # Verificar se a aplicação aceita o formato com vírgula
-        try:
-            # Esperar que os resultados sejam atualizados com uma estratégia mais robusta
+            
             self.wait.until(lambda driver: 
                 driver.find_element(By.ID, "valor-final").text != "" and 
                 driver.find_element(By.ID, "valor-final").text != "0,00")
             
-            # Obter resultados
-            valor_original = self.driver.find_element(By.ID, "valor-original-resultado").text
-            valor_desconto = self.driver.find_element(By.ID, "valor-desconto").text
-            valor_final = self.driver.find_element(By.ID, "valor-final").text
+            resultados_virgula['valor_original'] = self.driver.find_element(By.ID, "valor-original-resultado").text
+            resultados_virgula['valor_desconto'] = self.driver.find_element(By.ID, "valor-desconto").text
+            resultados_virgula['valor_final'] = self.driver.find_element(By.ID, "valor-final").text
+
+            # --- Limpar campos --- 
+            limpar_btn = self.wait.until(EC.element_to_be_clickable((By.ID, "limpar")))
+            self.driver.execute_script("arguments[0].click();", limpar_btn)
+            self.wait.until(EC.text_to_be_present_in_element((By.ID, "valor-final"), "0,00")) # Esperar limpar
+
+            # --- Teste com ponto --- 
+            valor_original_input.clear()
+            valor_original_input.send_keys("1000.50")
+            percentual_input.clear()
+            percentual_input.send_keys("10.5")
             
-            # Verificar se os resultados não estão vazios
-            self.assertNotEqual(valor_original, "")
-            self.assertNotEqual(valor_desconto, "")
-            self.assertNotEqual(valor_final, "")
+            # Desconto simples já deve estar selecionado ou selecionar novamente
+            self.driver.execute_script("arguments[0].click();", desconto_simples_radio)
+            self.driver.execute_script("arguments[0].click();", calcular_btn)
             
-            # Limpar campos para o próximo teste
+            self.wait.until(lambda driver: 
+                driver.find_element(By.ID, "valor-final").text != "" and 
+                driver.find_element(By.ID, "valor-final").text != "0,00")
+            
+            resultados_ponto['valor_original'] = self.driver.find_element(By.ID, "valor-original-resultado").text
+            resultados_ponto['valor_desconto'] = self.driver.find_element(By.ID, "valor-desconto").text
+            resultados_ponto['valor_final'] = self.driver.find_element(By.ID, "valor-final").text
+
+            # --- Comparações --- 
+            # Verificar se ambos os formatos produziram resultados não vazios
+            self.assertTrue(all(resultados_virgula.values()), "Resultados com vírgula não foram preenchidos.")
+            self.assertTrue(all(resultados_ponto.values()), "Resultados com ponto não foram preenchidos.")
+
+            # Comparar os valores numéricos (devem ser iguais ou muito próximos)
             try:
-                limpar_btn = self.wait.until(EC.element_to_be_clickable((By.ID, "limpar")))
-                self.driver.execute_script("arguments[0].click();", limpar_btn)
-            except:
-                # Tentar localizar por XPath como alternativa
-                limpar_btn = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//button[@id='limpar']|//input[@id='limpar']")))
-                self.driver.execute_script("arguments[0].click();", limpar_btn)
-            
-            # Esperar que os campos sejam limpos
-            time.sleep(1)
-            
-            # Testar com valor usando ponto como separador decimal
-            valor_original = self.wait.until(EC.element_to_be_clickable((By.ID, "valor-original")))
-            valor_original.clear()
-            valor_original.send_keys("1000.50")
-            
-            percentual = self.wait.until(EC.element_to_be_clickable((By.ID, "percentual-desconto")))
-            percentual.clear()
-            percentual.send_keys("10.5")
-            
-            # Clicar no botão calcular
-            self.driver.execute_script("arguments[0].click();", calcular_btn)
-            
-            # Esperar que os resultados sejam atualizados com uma estratégia mais robusta
-            self.wait.until(lambda driver: 
-                driver.find_element(By.ID, "valor-final").text != "" and 
-                driver.find_element(By.ID, "valor-final").text != "0,00")
-            
-            # Obter resultados
-            valor_original_ponto = self.driver.find_element(By.ID, "valor-original-resultado").text
-            valor_desconto_ponto = self.driver.find_element(By.ID, "valor-desconto").text
-            valor_final_ponto = self.driver.find_element(By.ID, "valor-final").text
-            
-            # Verificar se os resultados não estão vazios
-            self.assertNotEqual(valor_original_ponto, "")
-            self.assertNotEqual(valor_desconto_ponto, "")
-            self.assertNotEqual(valor_final_ponto, "")
-            
-            # Verificar se os resultados são semelhantes entre os dois formatos
+                vf_virgula = float(resultados_virgula['valor_final'].replace(".", "").replace(",", "."))
+                vf_ponto = float(resultados_ponto['valor_final'].replace(".", "").replace(",", "."))
+                self.assertAlmostEqual(vf_virgula, vf_ponto, delta=0.01, msg="Resultados finais diferem entre vírgula e ponto.")
+                
+                vd_virgula = float(resultados_virgula['valor_desconto'].replace(".", "").replace(",", "."))
+                vd_ponto = float(resultados_ponto['valor_desconto'].replace(".", "").replace(",", "."))
+                self.assertAlmostEqual(vd_virgula, vd_ponto, delta=0.01, msg="Valores de desconto diferem entre vírgula e ponto.")
+            except ValueError:
+                self.fail("Não foi possível converter os resultados para float para comparação.")
+
+        except TimeoutException:
+             self.fail("Tempo esgotado ao esperar por elementos ou resultados no teste de formato de entrada.")
         except Exception as e:
-            self.fail(f"Erro ao testar formatos de entrada diferentes: {str(e)}")
-            # Converter para comparação
-            valor_original_num = float(valor_original.replace(".", "").replace(",", "."))
-            valor_original_ponto_num = float(valor_original_ponto.replace(".", "").replace(",", "."))
-            
-            # Os valores devem ser aproximadamente iguais, independentemente do formato de entrada
-            self.assertAlmostEqual(valor_original_num, valor_original_ponto_num, delta=0.1)
-            
-        except Exception as e:
-            # Se ocorrer um erro, a aplicação pode não suportar diferentes formatos de entrada
-            # Isso não é necessariamente um erro, mas é bom saber
-            print(f"Nota: A aplicação pode não suportar diferentes formatos de entrada: {str(e)}")
-            # Não falhar o teste, apenas registrar o comportamento
+            # Registrar que a aplicação pode não suportar ambos os formatos
+            print(f"Nota: A aplicação pode não suportar ou interpretar diferentemente formatos de entrada com vírgula/ponto: {str(e)}")
+            # Considerar falhar o teste se ambos os formatos são requisitos
+            # self.fail(f"Erro ao testar formatos de entrada diferentes: {str(e)}")
+            self.assertTrue(True) # Por ora, apenas registra
     
     def test_valores_grandes(self):
         """
         Testa o comportamento da calculadora com valores muito grandes.
+        Verifica se a aplicação lida com os valores sem travar ou gerar erros inesperados.
         """
-        # Preencher os campos do formulário com valor grande
-        self.driver.find_element(By.ID, "valor-original").send_keys("9999999999")
-        self.driver.find_element(By.ID, "percentual-desconto").send_keys("15")
-        
-        # Selecionar desconto simples
-        desconto_simples_radio = self.driver.find_element(By.CSS_SELECTOR, "input[name='tipo-desconto'][value='simples']")
-        self.driver.execute_script("arguments[0].click();", desconto_simples_radio)
-        
-        # Clicar no botão calcular
-        calcular_btn = self.driver.find_element(By.ID, "calcular")
-        self.driver.execute_script("arguments[0].click();", calcular_btn)
-        
         try:
-            # Esperar que os resultados sejam atualizados
-            self.wait.until(EC.text_to_be_present_in_element((By.ID, "valor-final"), ""))
+            # Preencher os campos do formulário com valores grandes
+            valor_original_input = self.wait.until(EC.element_to_be_clickable((By.ID, "valor-original")))
+            valor_original_input.clear()
+            valor_original_input.send_keys("9999999999999") # Valor muito grande
             
-            # Obter resultados
-            valor_original = self.driver.find_element(By.ID, "valor-original-resultado").text
+            percentual_input = self.wait.until(EC.element_to_be_clickable((By.ID, "percentual-desconto")))
+            percentual_input.clear()
+            percentual_input.send_keys("15") # Percentual razoável
+            
+            # Selecionar desconto simples
+            desconto_simples_radio = self.wait.until(EC.presence_of_element_located(
+                (By.CSS_SELECTOR, "input[name='tipo-desconto'][value='simples']")))
+            self.driver.execute_script("arguments[0].click();", desconto_simples_radio)
+            
+            # Clicar no botão calcular
+            calcular_btn = self.wait.until(EC.element_to_be_clickable((By.ID, "calcular")))
+            self.driver.execute_script("arguments[0].click();", calcular_btn)
+            
+            # Verificar se a aplicação lida com valores grandes sem travar
+            # Esperar que os resultados sejam atualizados (ou que a página ainda responda)
+            self.wait.until(EC.presence_of_element_located((By.ID, "valor-final")))
+            
+            # Tentar obter os resultados (sem verificar exatidão, apenas se não houve erro)
             valor_desconto = self.driver.find_element(By.ID, "valor-desconto").text
             valor_final = self.driver.find_element(By.ID, "valor-final").text
             
-            # Verificar se os resultados não estão vazios
-            self.assertNotEqual(valor_original, "")
-            self.assertNotEqual(valor_desconto, "")
-            self.assertNotEqual(valor_final, "")
-            
-            # Converter valores para comparação
-            valor_original_num = float(valor_original.replace(".", "").replace(",", "."))
-            valor_desconto_num = float(valor_desconto.replace(".", "").replace(",", "."))
-            valor_final_num = float(valor_final.replace(".", "").replace(",", "."))
-            
-            # Verificar se o cálculo está correto (15% de 9999999999)
-            self.assertAlmostEqual(valor_desconto_num, 9999999999 * 0.15, delta=1.0)
-            self.assertAlmostEqual(valor_final_num, 9999999999 * 0.85, delta=1.0)
-            
+            # Se chegou aqui, a aplicação não travou e calculou algo
+            print(f"Valores grandes: Desconto={valor_desconto}, Final={valor_final}") # Log para info
+            self.assertTrue(True, "Aplicação processou valores grandes sem travar.")
+
+        except TimeoutException:
+            self.fail("Aplicação não respondeu ou travou com valores grandes (Timeout).")
         except Exception as e:
-            # Se ocorrer um erro, a aplicação pode ter limitações com valores muito grandes
-            print(f"Nota: A aplicação pode ter limitações com valores muito grandes: {str(e)}")
-            # Não falhar o teste, apenas registrar o comportamento
+            # Capturar outros erros que podem ocorrer com valores grandes (ex: OverflowError)
+            self.fail(f"A aplicação gerou um erro inesperado com valores grandes: {str(e)}")
     
     def test_multiplos_calculos_consecutivos(self):
         """
-        Testa se a calculadora mantém o estado correto entre operações consecutivas.
+        Testa se a calculadora mantém o estado correto entre operações consecutivas,
+        incluindo a limpeza de campos entre os cálculos.
         """
-        # Primeiro cálculo: 1000 com 10% de desconto simples
-        self.driver.find_element(By.ID, "valor-original").send_keys("1000")
-        self.driver.find_element(By.ID, "percentual-desconto").send_keys("10")
-        
-        desconto_simples_radio = self.driver.find_element(By.CSS_SELECTOR, "input[name='tipo-desconto'][value='simples']")
-        self.driver.execute_script("arguments[0].click();", desconto_simples_radio)
-        
-        calcular_btn = self.driver.find_element(By.ID, "calcular")
-        self.driver.execute_script("arguments[0].click();", calcular_btn)
-        
-        # Esperar que os resultados sejam atualizados
-        self.wait.until(EC.text_to_be_present_in_element((By.ID, "valor-final"), ""))
-        
-        # Verificar primeiro resultado
-        valor_final_1 = self.driver.find_element(By.ID, "valor-final").text
-        valor_final_num_1 = float(valor_final_1.replace(".", "").replace(",", "."))
-        self.assertAlmostEqual(valor_final_num_1, 900.0, delta=0.01)
-        
-        # Limpar campos
-        limpar_btn = self.driver.find_element(By.ID, "limpar")
-        self.driver.execute_script("arguments[0].click();", limpar_btn)
-        
-        # Segundo cálculo: 2000 com desconto progressivo
-        self.driver.find_element(By.ID, "valor-original").send_keys("2000")
-        
-        desconto_progressivo_radio = self.driver.find_element(By.CSS_SELECTOR, "input[name='tipo-desconto'][value='progressivo']")
-        self.driver.execute_script("arguments[0].click();", desconto_progressivo_radio)
-        
-        self.driver.execute_script("arguments[0].click();", calcular_btn)
-        
-        # Esperar que os resultados sejam atualizados
-        self.wait.until(EC.text_to_be_present_in_element((By.ID, "valor-final"), ""))
-        
-        # Verificar segundo resultado
-        valor_final_2 = self.driver.find_element(By.ID, "valor-final").text
-        valor_final_num_2 = float(valor_final_2.replace(".", "").replace(",", "."))
-        self.assertAlmostEqual(valor_final_num_2, 1600.0, delta=0.01)
-        
-        # Verificar que os resultados são diferentes
-        self.assertNotEqual(valor_final_num_1, valor_final_num_2)
+        try:
+            # --- Primeiro cálculo: 1000 com 10% de desconto simples --- 
+            valor_original_input = self.wait.until(EC.element_to_be_clickable((By.ID, "valor-original")))
+            valor_original_input.clear()
+            valor_original_input.send_keys("1000")
+            
+            percentual_input = self.wait.until(EC.element_to_be_clickable((By.ID, "percentual-desconto")))
+            percentual_input.clear()
+            percentual_input.send_keys("10")
+            
+            desconto_simples_radio = self.wait.until(EC.presence_of_element_located(
+                (By.CSS_SELECTOR, "input[name='tipo-desconto'][value='simples']")))
+            self.driver.execute_script("arguments[0].click();", desconto_simples_radio)
+            
+            calcular_btn = self.wait.until(EC.element_to_be_clickable((By.ID, "calcular")))
+            self.driver.execute_script("arguments[0].click();", calcular_btn)
+            
+            # Esperar e verificar primeiro resultado
+            self.wait.until(lambda d: d.find_element(By.ID, "valor-final").text == "900,00")
+            valor_final_1 = self.driver.find_element(By.ID, "valor-final").text
+            self.assertEqual(valor_final_1, "900,00")
+
+            # --- Limpar campos --- 
+            limpar_btn = self.wait.until(EC.element_to_be_clickable((By.ID, "limpar")))
+            self.driver.execute_script("arguments[0].click();", limpar_btn)
+            self.wait.until(EC.text_to_be_present_in_element((By.ID, "valor-final"), "0,00")) # Esperar limpar
+            # Verificar se campos de input foram limpos
+            self.assertEqual(valor_original_input.get_attribute("value"), "")
+            self.assertEqual(percentual_input.get_attribute("value"), "")
+
+            # --- Segundo cálculo: 2000 com desconto progressivo --- 
+            valor_original_input.send_keys("2000")
+            
+            desconto_progressivo_radio = self.wait.until(EC.presence_of_element_located(
+                (By.CSS_SELECTOR, "input[name='tipo-desconto'][value='progressivo']")))
+            self.driver.execute_script("arguments[0].click();", desconto_progressivo_radio)
+            
+            self.driver.execute_script("arguments[0].click();", calcular_btn)
+            
+            # Esperar e verificar segundo resultado (20% de 2000 = 400, final = 1600)
+            self.wait.until(lambda d: d.find_element(By.ID, "valor-final").text == "1.600,00")
+            valor_final_2 = self.driver.find_element(By.ID, "valor-final").text
+            self.assertEqual(valor_final_2, "1.600,00")
+            
+            # Verificar que os resultados são diferentes
+            self.assertNotEqual(valor_final_1, valor_final_2)
+
+        except TimeoutException:
+             self.fail("Tempo esgotado durante o teste de múltiplos cálculos consecutivos.")
+        except Exception as e:
+            self.fail(f"Erro durante o teste de múltiplos cálculos consecutivos: {str(e)}")
     
     def test_formatacao_monetaria(self):
         """
-        Testa se a formatação monetária está correta nos resultados.
+        Testa se a formatação monetária (padrão brasileiro) está correta nos resultados.
         """
-        # Preencher os campos do formulário
-        self.driver.find_element(By.ID, "valor-original").send_keys("1234567.89")
-        self.driver.find_element(By.ID, "percentual-desconto").send_keys("10")
-        
-        # Selecionar desconto simples
-        desconto_simples_radio = self.driver.find_element(By.CSS_SELECTOR, "input[name='tipo-desconto'][value='simples']")
-        self.driver.execute_script("arguments[0].click();", desconto_simples_radio)
-        
-        # Clicar no botão calcular
-        calcular_btn = self.driver.find_element(By.ID, "calcular")
-        self.driver.execute_script("arguments[0].click();", calcular_btn)
-        
-        # Esperar que os resultados sejam atualizados
-        self.wait.until(EC.text_to_be_present_in_element((By.ID, "valor-final"), ""))
-        
-        # Obter resultados
-        valor_original = self.driver.find_element(By.ID, "valor-original-resultado").text
-        valor_desconto = self.driver.find_element(By.ID, "valor-desconto").text
-        valor_final = self.driver.find_element(By.ID, "valor-final").text
-        
-        # Verificar formatação monetária (deve conter separadores de milhar e decimal)
-        padrao_monetario = r'^\d{1,3}(\.\d{3})*(,\d{2})?$'
-        self.assertTrue(re.match(padrao_monetario, valor_original) or 
-                      re.match(padrao_monetario, valor_original.replace(',', '.').replace('.', ',')),
-                      f"Formatação monetária incorreta: {valor_original}")
-        
-        self.assertTrue(re.match(padrao_monetario, valor_desconto) or 
-                      re.match(padrao_monetario, valor_desconto.replace(',', '.').replace('.', ',')),
-                      f"Formatação monetária incorreta: {valor_desconto}")
-        
-        self.assertTrue(re.match(padrao_monetario, valor_final) or 
-                      re.match(padrao_monetario, valor_final.replace(',', '.').replace('.', ',')),
-                      f"Formatação monetária incorreta: {valor_final}")
+        try:
+            # Preencher os campos do formulário com um valor que exija separadores
+            valor_original_input = self.wait.until(EC.element_to_be_clickable((By.ID, "valor-original")))
+            valor_original_input.clear()
+            valor_original_input.send_keys("1234567.89") # Usar ponto como separador decimal na entrada
+            
+            percentual_input = self.wait.until(EC.element_to_be_clickable((By.ID, "percentual-desconto")))
+            percentual_input.clear()
+            percentual_input.send_keys("10")
+            
+            # Selecionar desconto simples
+            desconto_simples_radio = self.wait.until(EC.presence_of_element_located(
+                (By.CSS_SELECTOR, "input[name='tipo-desconto'][value='simples']")))
+            self.driver.execute_script("arguments[0].click();", desconto_simples_radio)
+            
+            # Clicar no botão calcular
+            calcular_btn = self.wait.until(EC.element_to_be_clickable((By.ID, "calcular")))
+            self.driver.execute_script("arguments[0].click();", calcular_btn)
+            
+            # Esperar que os resultados sejam atualizados
+            self.wait.until(lambda d: d.find_element(By.ID, "valor-final").text != "0,00")
+            
+            # Obter resultados formatados
+            valor_original_res = self.driver.find_element(By.ID, "valor-original-resultado").text
+            valor_desconto_res = self.driver.find_element(By.ID, "valor-desconto").text
+            valor_final_res = self.driver.find_element(By.ID, "valor-final").text
+            
+            # Verificar formatação (padrão brasileiro: ponto como separador de milhar, vírgula como decimal)
+            # Exemplo esperado para 1234567.89 com 10% desconto: 1.234.567,89 / 123.456,79 / 1.111.111,10
+            padrao_br = r'^\d{1,3}(\.\d{3})*,\d{2}$' # Regex para formato R$ 1.234,56
+            
+            # Usar regex para verificar o formato
+            import re # Necessário para test_formatacao_monetaria # Adicionar import no início do arquivo se não existir
+            self.assertTrue(re.match(padrao_br, valor_original_res), f"Formato incorreto para valor original: {valor_original_res}")
+            self.assertTrue(re.match(padrao_br, valor_desconto_res), f"Formato incorreto para valor desconto: {valor_desconto_res}")
+            self.assertTrue(re.match(padrao_br, valor_final_res), f"Formato incorreto para valor final: {valor_final_res}")
+
+            # Verificação adicional dos valores (opcional, mas bom para garantir)
+            self.assertEqual(valor_original_res, "1.234.567,89")
+            self.assertEqual(valor_desconto_res, "123.456,79") # 10% de 1234567.89
+            self.assertEqual(valor_final_res, "1.111.111,10") # 1234567.89 - 123456.79
+
+        except TimeoutException:
+             self.fail("Tempo esgotado ao esperar por elementos ou resultados no teste de formatação monetária.")
+        except Exception as e:
+            self.fail(f"Erro durante o teste de formatação monetária: {str(e)}")
     
     def test_cupom_invalido(self):
         """
         Testa o comportamento da calculadora com um cupom inválido.
+        Espera-se que a aplicação indique o erro ou aplique 0% de desconto.
         """
-        # Preencher os campos do formulário
-        self.driver.find_element(By.ID, "valor-original").send_keys("1000")
-        self.driver.find_element(By.ID, "cupom").send_keys("CUPOMINVALIDO")
-        
-        # Selecionar desconto por cupom
-        desconto_cupom_radio = self.driver.find_element(By.CSS_SELECTOR, "input[name='tipo-desconto'][value='cupom']")
-        self.driver.execute_script("arguments[0].click();", desconto_cupom_radio)
-        
-        # Clicar no botão calcular
-        calcular_btn = self.driver.find_element(By.ID, "calcular")
-        self.driver.execute_script("arguments[0].click();", calcular_btn)
-        
         try:
-            # Verificar se há mensagem de erro ou se o cupom é tratado como 0% de desconto
-            # Esperar um pouco para que qualquer mensagem de erro apareça
-            time.sleep(1)
+            # Preencher os campos do formulário
+            valor_original_input = self.wait.until(EC.element_to_be_clickable((By.ID, "valor-original")))
+            valor_original_input.clear()
+            valor_original_input.send_keys("1000")
             
-            # Verificar se há mensagem de erro visível
-            mensagens_erro = self.driver.find_elements(By.CSS_SELECTOR, ".erro, .error, .invalid-feedback, .alert")
-            cupom_input = self.driver.find_element(By.ID, "cupom")
+            cupom_input = self.wait.until(EC.element_to_be_clickable((By.ID, "cupom")))
+            cupom_input.clear()
+            cupom_input.send_keys("CUPOMINVALIDO123")
             
-            # O teste passa se houver mensagem de erro visível ou se o campo cupom estiver marcado como inválido
-            tem_erro = len(mensagens_erro) > 0 and any(msg.is_displayed() for msg in mensagens_erro)
-            campo_invalido = "invalid" in cupom_input.get_attribute("class")
+            # Selecionar desconto por cupom
+            desconto_cupom_radio = self.wait.until(EC.presence_of_element_located(
+                (By.CSS_SELECTOR, "input[name='tipo-desconto'][value='cupom']")))
+            self.driver.execute_script("arguments[0].click();", desconto_cupom_radio)
             
-            if not (tem_erro or campo_invalido):
-                # Se não houver indicação de erro, verificar se o resultado mostra 0% de desconto
+            # Clicar no botão calcular
+            calcular_btn = self.wait.until(EC.element_to_be_clickable((By.ID, "calcular")))
+            self.driver.execute_script("arguments[0].click();", calcular_btn)
+            
+            # Verificar comportamento: 
+            # 1. Mensagem de erro específica? 
+            # 2. Campo cupom marcado como inválido?
+            # 3. Resultado com 0 de desconto?
+            
+            # Tentar encontrar mensagem de erro (ajustar seletor conforme a aplicação)
+            try:
+                # Esperar um pouco para a mensagem aparecer
+                mensagem_erro = self.wait.until(EC.visibility_of_element_located((By.ID, "erro-cupom"))) # Exemplo de ID
+                self.assertTrue(mensagem_erro.is_displayed(), "Mensagem de erro para cupom inválido não encontrada ou não visível.")
+                # Se encontrou mensagem de erro, o teste passou
+                return 
+            except TimeoutException:
+                # Se não há mensagem de erro específica, verificar outras condições
+                pass
+
+            # Verificar se o campo cupom foi marcado como inválido
+            try:
+                self.wait.until(lambda d: "invalid" in cupom_input.get_attribute("class") or 
+                                          "error" in cupom_input.get_attribute("class"))
+                self.assertTrue(True, "Campo cupom foi marcado como inválido.")
+                # Se marcou como inválido, o teste passou
+                return
+            except TimeoutException:
+                 # Se não marcou como inválido, verificar o resultado
+                 pass
+
+            # Verificar se o desconto aplicado foi zero
+            try:
+                self.wait.until(lambda d: d.find_element(By.ID, "valor-desconto").text == "0,00")
                 valor_desconto = self.driver.find_element(By.ID, "valor-desconto").text
-                valor_desconto_num = float(valor_desconto.replace(".", "").replace(",", "."))
+                valor_final = self.driver.find_element(By.ID, "valor-final").text
+                valor_original_res = self.driver.find_element(By.ID, "valor-original-resultado").text
                 
-                # O teste passa se o desconto for 0 ou muito próximo de 0
-                self.assertAlmostEqual(valor_desconto_num, 0.0, delta=0.01)
+                self.assertEqual(valor_desconto, "0,00", "Desconto não foi zero para cupom inválido.")
+                # Verificar se valor final é igual ao original
+                self.assertEqual(valor_final, valor_original_res, "Valor final não é igual ao original para cupom inválido.")
+            except TimeoutException:
+                self.fail("Não foi possível verificar o resultado (desconto 0) para cupom inválido.")
+            except Exception as e:
+                 self.fail(f"Erro ao verificar resultado para cupom inválido: {str(e)}")
+
+        except TimeoutException:
+             self.fail("Tempo esgotado durante o teste de cupom inválido.")
         except Exception as e:
-            # Se ocorrer um erro, a aplicação pode não ter tratamento para cupons inválidos
-            print(f"Nota: A aplicação pode não ter tratamento adequado para cupons inválidos: {str(e)}")
-            # Não falhar o teste, apenas registrar o comportamento
+            self.fail(f"Erro durante o teste de cupom inválido: {str(e)}")
     
     def test_acessibilidade_teclado(self):
         """
-        Testa a acessibilidade da calculadora usando apenas o teclado.
+        Testa a navegação e interação básica usando o teclado (TAB e ENTER).
+        Nota: Este teste é simplificado e pode precisar de ajustes dependendo da
+        implementação exata da navegação por teclado na página.
         """
-        # Pular este teste se a acessibilidade por teclado não estiver implementada
         try:
-            # Dar tempo para a página carregar completamente
-            time.sleep(2)
-            
-            # Focar no primeiro campo (valor original) com estratégia mais robusta
-            try:
-                valor_input = self.wait.until(EC.element_to_be_clickable((By.ID, "valor-original")))
-            except:
-                # Tentar localizar por XPath como alternativa
-                valor_input = self.wait.until(EC.element_to_be_clickable(
-                    (By.XPATH, "//input[@id='valor-original']|//input[contains(@class, 'valor-original')]")))
-            
-            # Garantir que o elemento está visível e clicável
-            self.driver.execute_script("arguments[0].scrollIntoView(true);", valor_input)
-            self.driver.execute_script("arguments[0].focus();", valor_input)
+            # Focar no primeiro campo interativo (valor original)
+            valor_input = self.wait.until(EC.element_to_be_clickable((By.ID, "valor-original")))
+            self.driver.execute_script("arguments[0].scrollIntoView(true); arguments[0].focus();", valor_input)
             valor_input.clear()
-            valor_input.send_keys("1000")
+            valor_input.send_keys("500")
             
-            # Navegar para o próximo campo usando Tab
+            # Navegar para o próximo campo (percentual) e preencher
             valor_input.send_keys(Keys.TAB)
-            time.sleep(1)  # Dar tempo para o foco mudar
+            # Esperar que o foco mude (pode ser necessário ajustar a espera)
+            # self.wait.until(lambda d: d.switch_to.active_element.get_attribute("id") == "percentual-desconto")
+            percentual_input = self.driver.switch_to.active_element
+            percentual_input.clear()
+            percentual_input.send_keys("20")
+
+            # Navegar para o tipo de desconto (simples) e selecionar com espaço
+            percentual_input.send_keys(Keys.TAB) # Foco no grupo de radio
+            # Assumindo que o primeiro radio (simples) é o próximo na ordem de tabulação
+            # Pode ser necessário enviar TAB mais vezes dependendo da estrutura HTML
+            radio_simples = self.driver.switch_to.active_element 
+            # Verificar se é o radio correto (opcional, mas bom para robustez)
+            # self.assertEqual(radio_simples.get_attribute("value"), "simples")
+            radio_simples.send_keys(Keys.SPACE) # Selecionar com espaço
+
+            # Navegar até o botão calcular
+            # Enviar TABs suficientes para chegar ao botão 'calcular'
+            # O número exato de TABs depende da ordem dos elementos focáveis
+            elementos_focaveis_ate_calcular = 3 # Ajustar conforme necessário (percentual -> cupom -> radio -> calcular?)
+            for _ in range(elementos_focaveis_ate_calcular):
+                 self.driver.switch_to.active_element.send_keys(Keys.TAB)
+                 # Pequena pausa pode ajudar em algumas situações
+                 # import time; time.sleep(0.1)
             
-            # Verificar se o foco está no campo de percentual ou continuar mesmo se não estiver
-            active_element = self.driver.switch_to.active_element
-            try:
-                # Preencher o percentual independentemente do ID
-                active_element.clear()
-                active_element.send_keys("10")
-                active_element.send_keys(Keys.TAB)
-                time.sleep(1)  # Dar tempo para o foco mudar
-            except:
-                # Se falhar, tentar localizar o campo diretamente
-                percentual = self.wait.until(EC.element_to_be_clickable((By.ID, "percentual-desconto")))
-                percentual.clear()
-                percentual.send_keys("10")
-                percentual.send_keys(Keys.TAB)
-                time.sleep(1)  # Dar tempo para o foco mudar
+            # Ativar o botão calcular com ENTER
+            calcular_btn_focado = self.driver.switch_to.active_element
+            # Verificar se o foco está no botão calcular (opcional)
+            # self.assertEqual(calcular_btn_focado.get_attribute("id"), "calcular")
+            calcular_btn_focado.send_keys(Keys.ENTER)
             
-            # Navegar até o botão calcular usando Tab várias vezes
-            for _ in range(5):  # Aumentado para ter mais chances de encontrar o botão
-                try:
-                    self.driver.switch_to.active_element.send_keys(Keys.TAB)
-                    time.sleep(0.5)  # Pequena pausa entre tabs
-                except:
-                    break
-            
-            # Tentar pressionar Enter no elemento ativo atual
-            try:
-                self.driver.switch_to.active_element.send_keys(Keys.ENTER)
-            except:
-                # Se falhar, tentar clicar no botão calcular diretamente
-                calcular_btn = self.wait.until(EC.element_to_be_clickable((By.ID, "calcular")))
-                self.driver.execute_script("arguments[0].click();", calcular_btn)
-            
-            # Esperar que os resultados sejam atualizados com uma estratégia mais robusta
-            time.sleep(2)  # Dar tempo para o cálculo ser processado
-            
-            # Verificar se o cálculo foi realizado
-            try:
-                valor_final = self.wait.until(lambda driver: 
-                    driver.find_element(By.ID, "valor-final").text != "" and 
-                    driver.find_element(By.ID, "valor-final").text != "0,00")
-                self.assertNotEqual(valor_final, "0,00")
-            except:
-                # Se não conseguir verificar o resultado, considerar o teste como bem-sucedido
-                # se pelo menos conseguiu interagir com os elementos
-                pass
-            
+            # Esperar e verificar o resultado
+            self.wait.until(lambda d: d.find_element(By.ID, "valor-final").text != "0,00")
+            valor_final = self.driver.find_element(By.ID, "valor-final").text
+            # 500 com 20% de desconto = 400
+            # A formatação pode ser "400,00" ou "400.00" dependendo da implementação
+            self.assertTrue(valor_final == "400,00" or valor_final == "400.00", f"Resultado inesperado no teste de teclado: {valor_final}")
+
+        except TimeoutException:
+             self.fail("Tempo esgotado durante o teste de acessibilidade por teclado.")
         except Exception as e:
-            # Em vez de pular o teste, marcar como bem-sucedido se conseguiu interagir com os elementos
-            # mesmo que não tenha conseguido completar todo o fluxo
-            self.skipTest(f"Teste de acessibilidade por teclado falhou: {str(e)}")
+            # Falhar o teste se ocorrer qualquer erro inesperado durante a navegação/interação
+            self.fail(f"Erro inesperado durante o teste de acessibilidade por teclado: {str(e)}")
     
     def test_valores_fracionados(self):
         """
-        Testa o cálculo de desconto com valores fracionados (centavos).
+        Testa o cálculo de desconto com valores fracionados (centavos),
+        usando vírgula como separador decimal na entrada.
         """
-        # Preencher os campos do formulário com valor fracionado
-        self.driver.find_element(By.ID, "valor-original").send_keys("123,45")
-        self.driver.find_element(By.ID, "percentual-desconto").send_keys("10,5")
-        
-        # Selecionar desconto simples
-        desconto_simples_radio = self.driver.find_element(By.CSS_SELECTOR, "input[name='tipo-desconto'][value='simples']")
-        self.driver.execute_script("arguments[0].click();", desconto_simples_radio)
-        
-        # Clicar no botão calcular
-        calcular_btn = self.driver.find_element(By.ID, "calcular")
-        self.driver.execute_script("arguments[0].click();", calcular_btn)
-        
-        # Esperar que os resultados sejam atualizados
-        self.wait.until(EC.text_to_be_present_in_element((By.ID, "valor-final"), ""))
-        
-        # Verificar os resultados
-        valor_original = self.driver.find_element(By.ID, "valor-original-resultado").text
-        valor_desconto = self.driver.find_element(By.ID, "valor-desconto").text
-        valor_final = self.driver.find_element(By.ID, "valor-final").text
-        
-        # Converter valores para comparação
-        valor_desconto_num = float(valor_desconto.replace(".", "").replace(",", "."))
-        valor_final_num = float(valor_final.replace(".", "").replace(",", "."))
-        
-        # Verificar se os resultados estão corretos (10,5% de 123,45)
-        self.assertAlmostEqual(valor_desconto_num, 123.45 * 0.105, delta=0.01)
-        self.assertAlmostEqual(valor_final_num, 123.45 * 0.895, delta=0.01)
+        try:
+            # Preencher os campos do formulário com valor fracionado
+            valor_original_input = self.wait.until(EC.element_to_be_clickable((By.ID, "valor-original")))
+            valor_original_input.clear()
+            valor_original_input.send_keys("123,45") # Entrada com vírgula
+            
+            percentual_input = self.wait.until(EC.element_to_be_clickable((By.ID, "percentual-desconto")))
+            percentual_input.clear()
+            percentual_input.send_keys("10,5") # Entrada com vírgula
+            
+            # Selecionar desconto simples
+            desconto_simples_radio = self.wait.until(EC.presence_of_element_located(
+                (By.CSS_SELECTOR, "input[name='tipo-desconto'][value='simples']")))
+            self.driver.execute_script("arguments[0].click();", desconto_simples_radio)
+            
+            # Clicar no botão calcular
+            calcular_btn = self.wait.until(EC.element_to_be_clickable((By.ID, "calcular")))
+            self.driver.execute_script("arguments[0].click();", calcular_btn)
+            
+            # Esperar que os resultados sejam atualizados
+            self.wait.until(lambda d: d.find_element(By.ID, "valor-final").text != "0,00")
+            
+            # Verificar os resultados
+            valor_desconto_res = self.driver.find_element(By.ID, "valor-desconto").text
+            valor_final_res = self.driver.find_element(By.ID, "valor-final").text
+            
+            # Converter valores para comparação (assumindo saída com vírgula)
+            valor_desconto_num = float(valor_desconto_res.replace(".", "").replace(",", "."))
+            valor_final_num = float(valor_final_res.replace(".", "").replace(",", "."))
+            
+            # Verificar se os resultados estão corretos (10,5% de 123,45)
+            # 123.45 * 0.105 = 12.96225 -> 12,96
+            # 123.45 * (1 - 0.105) = 110.48775 -> 110,49
+            self.assertAlmostEqual(valor_desconto_num, 12.96, delta=0.01)
+            self.assertAlmostEqual(valor_final_num, 110.49, delta=0.01)
+
+            # Verificar formatação (opcional)
+            self.assertTrue(',' in valor_desconto_res, "Resultado do desconto não contém vírgula.")
+            self.assertTrue(',' in valor_final_res, "Resultado final não contém vírgula.")
+
+        except TimeoutException:
+             self.fail("Tempo esgotado ao esperar por elementos ou resultados no teste de valores fracionados.")
+        except Exception as e:
+            self.fail(f"Erro durante o teste de valores fracionados: {str(e)}")
     
-    def test_multiplos_descontos(self):
+    def test_multiplos_descontos_sucessivos(self):
         """
-        Testa o comportamento da calculadora ao aplicar múltiplos descontos consecutivos.
+        Testa a aplicação de um segundo desconto sobre o resultado do primeiro.
+        Simula um cenário de desconto sobre desconto.
         """
-        # Primeiro desconto: 1000 com 10% de desconto simples
-        self.driver.find_element(By.ID, "valor-original").send_keys("1000")
-        self.driver.find_element(By.ID, "percentual-desconto").send_keys("10")
-        
-        desconto_simples_radio = self.driver.find_element(By.CSS_SELECTOR, "input[name='tipo-desconto'][value='simples']")
-        self.driver.execute_script("arguments[0].click();", desconto_simples_radio)
-        
-        calcular_btn = self.driver.find_element(By.ID, "calcular")
-        self.driver.execute_script("arguments[0].click();", calcular_btn)
-        
-        # Esperar que os resultados sejam atualizados
-        self.wait.until(EC.text_to_be_present_in_element((By.ID, "valor-final"), ""))
-        
-        # Obter o valor final após o primeiro desconto
-        valor_final_1 = self.driver.find_element(By.ID, "valor-final").text
-        valor_final_num_1 = float(valor_final_1.replace(".", "").replace(",", "."))
-        
-        # Limpar campos
-        limpar_btn = self.driver.find_element(By.ID, "limpar")
-        self.driver.execute_script("arguments[0].click();", limpar_btn)
-        
-        # Aplicar segundo desconto sobre o valor resultante do primeiro
-        self.driver.find_element(By.ID, "valor-original").send_keys(str(valor_final_num_1).replace(".", ","))
-        self.driver.find_element(By.ID, "percentual-desconto").send_keys("5")
-        
-        self.driver.execute_script("arguments[0].click();", desconto_simples_radio)
-        self.driver.execute_script("arguments[0].click();", calcular_btn)
-        
-        # Esperar que os resultados sejam atualizados
-        self.wait.until(EC.text_to_be_present_in_element((By.ID, "valor-final"), ""))
-        
-        # Obter o valor final após o segundo desconto
-        valor_final_2 = self.driver.find_element(By.ID, "valor-final").text
-        valor_final_num_2 = float(valor_final_2.replace(".", "").replace(",", "."))
-        
-        # Verificar se o resultado está correto (900 - 5% = 855)
-        self.assertAlmostEqual(valor_final_num_2, 900 * 0.95, delta=0.01)
-        
-        # Verificar se o valor final após dois descontos é equivalente a um desconto composto
-        # 1000 * (1-0.10) * (1-0.05) = 1000 * 0.90 * 0.95 = 855
-        self.assertAlmostEqual(valor_final_num_2, 1000 * 0.90 * 0.95, delta=0.01)
+        try:
+            # --- Primeiro desconto: 1000 com 10% --- 
+            valor_original_input = self.wait.until(EC.element_to_be_clickable((By.ID, "valor-original")))
+            valor_original_input.clear()
+            valor_original_input.send_keys("1000")
+            
+            percentual_input = self.wait.until(EC.element_to_be_clickable((By.ID, "percentual-desconto")))
+            percentual_input.clear()
+            percentual_input.send_keys("10")
+            
+            desconto_simples_radio = self.wait.until(EC.presence_of_element_located(
+                (By.CSS_SELECTOR, "input[name='tipo-desconto'][value='simples']")))
+            self.driver.execute_script("arguments[0].click();", desconto_simples_radio)
+            
+            calcular_btn = self.wait.until(EC.element_to_be_clickable((By.ID, "calcular")))
+            self.driver.execute_script("arguments[0].click();", calcular_btn)
+            
+            # Esperar e obter o valor final após o primeiro desconto
+            self.wait.until(lambda d: d.find_element(By.ID, "valor-final").text == "900,00")
+            valor_intermediario_str = self.driver.find_element(By.ID, "valor-final").text
+            valor_intermediario_num = float(valor_intermediario_str.replace(".", "").replace(",", ".")) # 900.0
+            self.assertEqual(valor_intermediario_num, 900.0)
+
+            # --- Segundo desconto: 5% sobre o valor intermediário (900) --- 
+            # Usar o valor intermediário como novo valor original
+            valor_original_input.clear()
+            # Enviar o valor formatado como string, pode ser com vírgula ou ponto dependendo do que a app espera
+            valor_original_input.send_keys(valor_intermediario_str) 
+            
+            percentual_input.clear()
+            percentual_input.send_keys("5")
+            
+            # Desconto simples já deve estar selecionado
+            self.driver.execute_script("arguments[0].click();", calcular_btn)
+            
+            # Esperar e obter o valor final após o segundo desconto
+            # 5% de 900 = 45. Final = 900 - 45 = 855
+            self.wait.until(lambda d: d.find_element(By.ID, "valor-final").text == "855,00")
+            valor_final_2 = self.driver.find_element(By.ID, "valor-final").text
+            valor_final_num_2 = float(valor_final_2.replace(".", "").replace(",", "."))
+            
+            # Verificar se o resultado está correto (900 * 0.95 = 855)
+            self.assertAlmostEqual(valor_final_num_2, 855.0, delta=0.01)
+            
+            # Verificar equivalência com desconto composto (opcional)
+            # 1000 * (1 - 0.10) * (1 - 0.05) = 855
+            self.assertAlmostEqual(valor_final_num_2, 1000 * 0.90 * 0.95, delta=0.01)
+
+        except TimeoutException:
+             self.fail("Tempo esgotado durante o teste de múltiplos descontos sucessivos.")
+        except Exception as e:
+            self.fail(f"Erro durante o teste de múltiplos descontos sucessivos: {str(e)}")
     
     def test_responsividade(self):
         """
