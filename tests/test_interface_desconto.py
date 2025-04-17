@@ -48,11 +48,8 @@ class TestInterfaceCalculadoraDesconto(unittest.TestCase):
         cls.driver.implicitly_wait(10)
         cls.wait = WebDriverWait(cls.driver, 10)
         
-        # Obter o caminho absoluto para a página HTML
-        cls.html_path = os.path.abspath(os.path.join(
-            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-            'pages', 'calc_desconto.html'
-        ))
+        # (Opcional) Guardar o caminho HTTP da página para referência
+        cls.http_url = "http://localhost:8080/pages/calc_desconto.html"
     
     @classmethod
     def tearDownClass(cls):
@@ -66,8 +63,8 @@ class TestInterfaceCalculadoraDesconto(unittest.TestCase):
         """
         Preparação antes de cada teste.
         """
-        # Carregar a página da calculadora de desconto
-        self.driver.get(f"file:///{self.html_path}")
+        # Carregar a página da calculadora de desconto via HTTP local
+        self.driver.get("http://localhost:8080/pages/calc_desconto.html")
         
         # Esperar que a página carregue completamente (ex: botão calcular esteja presente)
         try:
