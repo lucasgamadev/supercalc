@@ -1404,6 +1404,45 @@
                   />
                   <label for="valor-original">Valor (R$)</label>
                 </div>
+                <!-- Novos radios para tipo de desconto -->
+                <div class="input-field col s12">
+                  <span style="font-size: 0.95em; color: #555; margin-bottom: 6px; display: block;">Tipo de desconto:</span>
+                  <label style="margin-right: 12px;">
+                    <input name="tipo-desconto" id="tipo-desconto-simples" type="radio" value="simples" checked />
+                    <span>Simples</span>
+                  </label>
+                  <label style="margin-right: 12px;">
+                    <input name="tipo-desconto" id="tipo-desconto-progressivo" type="radio" value="progressivo" />
+                    <span>Progressivo</span>
+                  </label>
+                  <label>
+                    <input name="tipo-desconto" id="tipo-desconto-cupom" type="radio" value="cupom" />
+                    <span>Cupom</span>
+                  </label>
+                </div>
+                <!-- Campo para percentual de desconto (compatível com testes) -->
+                <div class="input-field col s12">
+                  <input
+                    id="percentual-desconto"
+                    type="number"
+                    step="0.1"
+                    min="0"
+                    max="100"
+                    aria-label="Percentual de Desconto (compatível com testes)"
+                  />
+                  <label for="percentual-desconto">Percentual de Desconto (%)</label>
+                </div>
+                <!-- Campo para cupom -->
+                <div class="input-field col s12">
+                  <input
+                    id="cupom"
+                    type="text"
+                    maxlength="20"
+                    aria-label="Código do Cupom"
+                  />
+                  <label for="cupom">Cupom</label>
+                </div>
+                <!-- Campo de desconto original permanece para compatibilidade -->
                 <div class="input-field col s12">
                   <input
                     id="desconto"
