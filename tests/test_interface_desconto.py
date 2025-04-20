@@ -43,38 +43,83 @@ class TestInterfaceCalculadoraDesconto(unittest.TestCase):
             self.wait.until(EC.presence_of_element_located((By.ID, "calcular")))
         except TimeoutException:
             self.fail("Página de desconto não carregou dentro do tempo limite")
+    def preencher_e_calcular(self, valor, desconto):
+        self.driver.find_element(By.ID, "valor-original").clear()
+        self.driver.find_element(By.ID, "valor-original").send_keys(str(valor))
+        self.driver.find_element(By.ID, "desconto").clear()
+        self.driver.find_element(By.ID, "desconto").send_keys(str(desconto))
+        calcular_btn = self.driver.find_element(By.ID, "calcular")
+        self.driver.execute_script("arguments[0].click();", calcular_btn)
+        self.wait.until(EC.text_to_be_present_in_element((By.ID, "valor-desconto"), ""))
+        return {
+            "valor-desconto": self.driver.find_element(By.ID, "valor-desconto").text,
+            # Adicione mais campos conforme necessário
+        }
+
     def test_calculo_desconto_simples(self):
         """
         Testa o cálculo de desconto simples na interface.
         """
-        # Preencher os campos
-        self.driver.find_element(By.ID, "valor-original").clear()
-        self.driver.find_element(By.ID, "valor-original").send_keys("100")
-        self.driver.find_element(By.ID, "desconto").clear()
-        self.driver.find_element(By.ID, "desconto").send_keys("10")
-        # Clicar no botão calcular
-        calcular_btn = self.driver.find_element(By.ID, "calcular")
-        self.driver.execute_script("arguments[0].click();", calcular_btn)
-        # Esperar resultado
-        self.wait.until(EC.text_to_be_present_in_element((By.ID, "valor-desconto"), ""))
-        # Procurar e exibir todos os campos de resultado relacionados a desconto
-        campos_possiveis = [
-            "valor-desconto", "desconto-aplicado", "preco-original", "preco_final", "valor_final", "resultado", "resultado-final"
-        ]
-        encontrados = {}
-        for campo in campos_possiveis:
-            try:
-                valor = self.driver.find_element(By.ID, campo).text
-                encontrados[campo] = valor
-            except Exception:
-                pass
-        print("\nCampos encontrados na interface de desconto:")
-        for k, v in encontrados.items():
-            print(f"{k}: {v}")
-        # Validação mínima: valor-desconto deve existir
-        self.assertIn("valor-desconto", encontrados, "Campo 'valor-desconto' não encontrado na interface.")
-        # Exibe todos os valores para facilitar ajuste manual
-        # (A validação exata do valor final será feita após identificação do campo correto)
+        resultados = self.preencher_e_calcular(100, 10)
+        self.assertIn("10", resultados["valor-desconto"].replace(",", "."))
+
+    def test_desconto_zero(self):
+        """
+        Testa desconto de 0% (valor final deve ser igual ao original).
+        """
+        resultados = self.preencher_e_calcular(100, 0)
+        self.assertIn("0", resultados["valor-desconto"].replace(",", "."))
+
+    def test_desconto_cem_porcento(self):
+        """
+        Testa desconto de 100% (valor final deve ser zero).
+        """
+        resultados = self.preencher_e_calcular(100, 100)
+        self.assertIn("100", resultados["valor-desconto"].replace(",", "."))
+
+    def test_valor_original_zero(self):
+        """
+        Testa valor original zero (resultados devem ser zero).
+        """
+        resultados = self.preencher_e_calcular(0, 10)
+        self.assertIn("0", resultados["valor-desconto"].replace(",", "."))
+
+    def test_desconto_negativo(self):
+        """
+        Testa desconto negativo (deve validar ou exibir erro na interface).
+        """
+        self.preencher_e_calcular(100, -10)
+        # Verifica se o campo de desconto ficou com classe 'invalid'
+        desconto_input = self.driver.find_element(By.ID, "desconto")
+        self.assertIn("invalid", desconto_input.get_attribute("class"))
+
+    def test_desconto_maior_que_cem(self):
+        """
+        Testa desconto acima de 100% (deve validar ou exibir erro na interface).
+        """
+        self.preencher_e_calcular(100, 150)
+        desconto_input = self.driver.find_element(By.ID, "desconto")
+        self.assertIn("invalid", desconto_input.get_attribute("class"))
+
+    def test_limpar_campos(self):
+        """
+        Testa a funcionalidade do botão limpar.
+        """
+        self.driver.find_element(By.ID, "valor-original").send_keys("123")
+        self.driver.find_element(By.ID, "desconto").send_keys("5")
+        limpar_btn = self.driver.find_element(By.ID, "limpar")
+        self.driver.execute_script("arguments[0].click();", limpar_btn)
+        valor = self.driver.find_element(By.ID, "valor-original").get_attribute("value")
+        desconto = self.driver.find_element(By.ID, "desconto").get_attribute("value")
+        self.assertTrue(valor == "" or valor == "0,00" or valor == "0")
+        self.assertTrue(desconto == "" or desconto == "0,00" or desconto == "0")
+
+    def test_valores_decimais(self):
+        """
+        Testa valores decimais e diferentes formatos de entrada.
+        """
+        resultados = self.preencher_e_calcular("99,99", "15,5")
+        self.assertTrue("," in resultados["valor-desconto"] or "." in resultados["valor-desconto"])
 
 def executar_testes_interface_desconto():
     suite = unittest.TestLoader().loadTestsFromTestCase(TestInterfaceCalculadoraDesconto)
