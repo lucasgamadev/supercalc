@@ -1602,18 +1602,21 @@
           const valorNormalizado = valorStr.replace(',', '.');
           const valor = parseFloat(valorNormalizado);
           
-          if (isNaN(valor)) {
+          if (isNaN(valor) || valor < 0 || valor > 100) {
             this.classList.add('invalid');
+            if (valor > 100) {
+              this.value = 100;
+              showToast('O desconto máximo é 100%', 'rounded orange');
+            } else if (valor < 0) {
+              showToast('O desconto não pode ser negativo', 'rounded orange');
+            } else {
+              showToast('Por favor, insira um desconto válido (0 a 100)', 'rounded orange');
+            }
             return;
-          }
-          
-          if (valor > 100) {
-            this.value = 100;
-            this.classList.add('invalid');
-            showToast('O desconto máximo é 100%', 'rounded orange');
-          } else if (valor <= 0) {
+          } else if (valor === 0) {
             this.classList.add('invalid');
             showToast('O desconto deve ser maior que 0%', 'rounded orange');
+            return;
           } else {
             this.classList.remove('invalid');
           }
