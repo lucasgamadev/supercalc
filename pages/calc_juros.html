@@ -648,6 +648,67 @@
           box-shadow: 0 2px 5px rgba(33, 150, 243, 0.3);
         }
       }
+      
+      /* Estilos para os botões de tipo de juros */
+      .tipo-juros-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+        width: 100%;
+      }
+      
+      .btn-tipo-juros {
+        flex: 1;
+        padding: 8px 10px; /* Reduzido o padding para botões menores */
+        border-radius: 8px;
+        background: #f5f5f5;
+        color: #757575;
+        border: 1px solid #e0e0e0; /* Borda mais fina */
+        font-weight: 500;
+        font-size: 13px; /* Texto menor */
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        height: auto; /* Altura automática baseada no conteúdo */
+        min-height: 36px; /* Altura mínima para garantir clicabilidade */
+      }
+      
+      .btn-tipo-juros:hover {
+        background: #eeeeee;
+        border-color: #bdbdbd;
+        transform: translateY(-1px); /* Reduzido o efeito de elevação */
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+      }
+      
+      .btn-tipo-juros.active {
+        background: linear-gradient(135deg, #2196f3, #00bcd4);
+        color: white;
+        border-color: #1e88e5;
+        box-shadow: 0 3px 8px rgba(33, 150, 243, 0.3);
+      }
+      
+      .btn-tipo-juros.active::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: rgba(255, 255, 255, 0.1);
+        transform: rotate(45deg);
+        animation: shimmer 2s infinite;
+        pointer-events: none;
+      }
+      
+      .btn-tipo-juros .material-icons {
+        margin-right: 4px;
+        font-size: 16px !important; /* Ícones menores */
+      }
 
       .resultado-item:hover {
         background-color: #f0f0f0;
@@ -1089,18 +1150,16 @@
                   <label for="periodo">Período (meses)</label>
                 </div>
                 <div class="input-field col s12">
-                  <p>
-                    <label>
-                      <input name="tipo-juros" type="radio" value="simples" checked />
-                      <span>Juros Simples</span>
-                    </label>
-                  </p>
-                  <p>
-                    <label>
-                      <input name="tipo-juros" type="radio" value="compostos" />
-                      <span>Juros Compostos</span>
-                    </label>
-                  </p>
+                  <div class="tipo-juros-container">
+                    <button type="button" id="btn-juros-simples" class="btn-tipo-juros active" data-value="simples">
+                      <i class="material-icons left">trending_up</i>Juros Simples
+                    </button>
+                    <button type="button" id="btn-juros-compostos" class="btn-tipo-juros" data-value="compostos">
+                      <i class="material-icons left">timeline</i>Juros Compostos
+                    </button>
+                    <!-- Input oculto para manter compatibilidade com o código existente -->
+                    <input type="hidden" id="tipo-juros-selecionado" name="tipo-juros" value="simples">
+                  </div>
                 </div>
               </div>
               <div class="btn-container">
@@ -1219,6 +1278,28 @@
         const limparBtn = document.getElementById("limpar");
         // O botão limpar histórico agora é um componente web que gerencia seu próprio estado
         const historicoList = document.getElementById("historico-list");
+        
+        // Botões de tipo de juros
+        const btnJurosSimples = document.getElementById("btn-juros-simples");
+        const btnJurosCompostos = document.getElementById("btn-juros-compostos");
+        const tipoJurosSelecionado = document.getElementById("tipo-juros-selecionado");
+        
+        // Adicionar event listeners para os botões de tipo de juros
+        btnJurosSimples.addEventListener("click", function() {
+          // Remover classe active de todos os botões
+          btnJurosSimples.classList.add("active");
+          btnJurosCompostos.classList.remove("active");
+          // Atualizar o valor do input oculto
+          tipoJurosSelecionado.value = "simples";
+        });
+        
+        btnJurosCompostos.addEventListener("click", function() {
+          // Remover classe active de todos os botões
+          btnJurosSimples.classList.remove("active");
+          btnJurosCompostos.classList.add("active");
+          // Atualizar o valor do input oculto
+          tipoJurosSelecionado.value = "compostos";
+        });
 
         // Elementos de resultado
         const valorPrincipalSpan = document.getElementById("valor-principal");
@@ -1363,13 +1444,7 @@
           }
           
           // Determinar o tipo de juros selecionado
-          let tipoJuros = "";
-          for (const radio of tipoJurosRadios) {
-            if (radio.checked) {
-              tipoJuros = radio.value;
-              break;
-            }
-          }
+          let tipoJuros = document.getElementById("tipo-juros-selecionado").value;
           
           // Calcular juros e montante
           let resultado;
