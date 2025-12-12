@@ -1,9 +1,42 @@
 /* Estilos principais para SuperCalc */
 
-/* Importar componentes */
+/* Importar componentes (devem vir antes do tailwindcss) */
 @import url('./components/background.css');
 @import url('./components/button-container.css');
 @import url('./components/calculator-buttons.css');
+
+@import "tailwindcss";
+
+/* Configuração do tema (migrado do tailwind.config.js) */
+@theme {
+  --color-primary-50: #e3f2fd;
+  --color-primary-100: #bbdefb;
+  --color-primary-200: #90caf9;
+  --color-primary-300: #64b5f6;
+  --color-primary-400: #42a5f5;
+  --color-primary-500: #2196f3;
+  --color-primary-600: #1e88e5;
+  --color-primary-700: #1976d2;
+  --color-primary-800: #1565c0;
+  --color-primary-900: #0d47a1;
+
+  --color-secondary-50: #e0f7fa;
+  --color-secondary-100: #b2ebf2;
+  --color-secondary-200: #80deea;
+  --color-secondary-300: #4dd0e1;
+  --color-secondary-400: #26c6da;
+  --color-secondary-500: #00bcd4;
+  --color-secondary-600: #00acc1;
+  --color-secondary-700: #0097a7;
+  --color-secondary-800: #00838f;
+  --color-secondary-900: #006064;
+
+  --font-family-roboto: 'Roboto', sans-serif;
+}
+
+/* Configuração de conteúdo para detecção de classes */
+@source "../../**/*.html";
+@source "../js/**/*.js";
 
 /* Estilos base */
 body {
@@ -83,7 +116,7 @@ body {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-/* Animau00e7u00e3o para o texto 'Acessar' e u00edcone */
+/* Animação para o texto 'Acessar' e ícone */
 .calculator-card .inline-flex {
   transition: all 0.3s ease;
 }
