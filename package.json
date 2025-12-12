@@ -17,6 +17,9 @@
   ],
   "author": "",
   "license": "MIT",
+  "overrides": {
+    "glob": "^13.0.0"
+  },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^8.49.0",
     "@typescript-eslint/parser": "^8.49.0",
