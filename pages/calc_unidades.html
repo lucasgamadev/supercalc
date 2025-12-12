@@ -12,8 +12,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/assets/css/styles.css">
-    <!-- Componente de fundo -->
+    <!-- Componentes personalizados -->
     <script src="/assets/js/components/background.js"></script>
+    <script src="/assets/js/components/action-button.js"></script>
     <script>
       tailwind.config = {
         theme: {
@@ -129,12 +130,64 @@
         flex-direction: column;
       }
 
+      /* Estilos para o container do histórico e scrollbar */
+      .historico-wrapper {
+        position: relative;
+        height: 480px;
+        margin-top: 10px;
+        margin-bottom: 5px;
+        border-radius: 12px;
+        background: rgba(217, 217, 217, 0.05);
+        display: block;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        padding: 12px 0 12px 12px;
+        border: 1px solid rgba(33, 150, 243, 0.1);
+      }
+
       #historico-list {
-        flex: 1;
+        height: calc(100% - 20px);
+        width: calc(100% - 10px);
         margin: 0;
+        padding: 5px 10px 5px 0;
+        list-style: none;
         border: none;
-        max-height: 357px;
-        overflow-y: auto;
+        overflow-y: auto !important;
+        overflow-x: hidden;
+        position: relative;
+        z-index: 1;
+        transform: translateZ(0);
+        will-change: scroll-position;
+      }
+
+      /* Personalização da barra de rolagem */
+      #historico-list::-webkit-scrollbar {
+        width: 8px;
+        background-color: transparent;
+      }
+
+      #historico-list::-webkit-scrollbar-track {
+        background: rgba(219, 234, 254, 0.5);
+        border-radius: 4px;
+      }
+
+      #historico-list::-webkit-scrollbar-thumb {
+        background: rgba(37, 99, 235, 0.6);
+        border-radius: 4px;
+        border: 2px solid transparent;
+        background-clip: padding-box;
+      }
+
+      #historico-list::-webkit-scrollbar-thumb:hover {
+        background: rgba(29, 78, 216, 0.8);
+        border: 2px solid transparent;
+        background-clip: padding-box;
+      }
+
+      /* Para Firefox */
+      #historico-list {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(37, 99, 235, 0.6) rgba(219, 234, 254, 0.5);
       }
 
       .collection {
@@ -578,6 +631,15 @@
           transform: translateY(0);
         }
       }
+
+      /* Ajuste para o componente de histórico vazio */
+      empty-history {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
     </style>
   </head>
   <body class="supercalc-background">
@@ -708,25 +770,29 @@
         
         <!-- Histórico -->
         <div class="col s12 m6">
-          <div id="historico-container" class="card fade-in">
-            <div class="card-content" style="position: relative; padding-bottom: 60px !important;">
-              <span class="card-title"><i class="fas fa-history mr-2"></i>Histórico</span>
-              <ul id="historico-list" class="collection">
-                <!-- Itens do histórico serão adicionados aqui via JavaScript -->
-                <empty-history 
-                  message="Nenhuma conversão realizada" 
-                  sub-message="As conversões realizadas aparecerão aqui">
-                </empty-history>
-              </ul>
-              <div class="btn-container" style="margin-top: auto; text-align: center; position: absolute; bottom: 10px; left: 0; right: 0;">
-                <clear-history-button 
-                  storage-key="historicoUnidades" 
-                  history-list-id="historico-list" 
+          <div id="historico-container" class="card fade-in show">
+            <div class="card-content" style="position: relative; padding: 10px !important; padding-bottom: 60px !important;">
+              <span class="card-title" role="heading" aria-level="1" style="margin-bottom: 10px;"><i class="fas fa-history mr-2"></i>Histórico de Conversões</span>
+              
+              <!-- Wrapper para o histórico com barra de rolagem -->
+              <div class="historico-wrapper">
+                <ul id="historico-list" class="collection" style="overflow: auto;">
+                  <!-- Itens do histórico serão adicionados aqui via JavaScript -->
+                  <empty-history 
+                    message="Nenhuma conversão realizada" 
+                    sub-message="As conversões realizadas aparecerão aqui">
+                  </empty-history>
+                </ul>
+              </div>
+              
+              <div class="btn-container" style="margin-top: auto; text-align: center; position: absolute; bottom: 10px; left: 0; right: 0; display: flex; justify-content: center;">
+                <clear-history-button
+                  storage-key="historicoUnidades"
+                  history-list-id="historico-list"
                   container-id="historico-container"
-                  success-message="Histórico de conversões limpo!"
-                  empty-message="Não há conversões para limpar">
-                  Limpar Histórico
-                </clear-history-button>
+                  success-message="Histórico limpo com sucesso!"
+                  empty-message="O histórico já está vazio!"
+                ></clear-history-button>
               </div>
             </div>
           </div>
@@ -739,25 +805,10 @@
     <!-- Importando jQuery e Materialize JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    
-    <!-- Importação dos componentes web personalizados -->
-    <script>
-      // Verifica se o componente clear-history-button já foi carregado
-      if (!customElements.get('clear-history-button')) {
-        // Carrega o script do componente se ainda não estiver carregado
-        const script = document.createElement('script');
-        script.src = '/assets/js/components/clear-history-button.js';
-        document.head.appendChild(script);
-      }
-      
-      // Verifica se o componente empty-history já foi carregado
-      if (!customElements.get('empty-history')) {
-        // Carrega o script do componente se ainda não estiver carregado
-        const script = document.createElement('script');
-        script.src = '/assets/js/components/empty-history.js';
-        document.head.appendChild(script);
-      }
-    </script>
+    <!-- Importando componentes web personalizados -->
+    <script src="/assets/js/components/clear-history-button.js"></script>
+    <script src="/assets/js/components/empty-history.js"></script>
+    <script src="/assets/js/components/toast-notification.js"></script>
     
     <script>
       // Inicialização dos componentes do Materialize
@@ -964,72 +1015,180 @@
           const novoItem = document.createElement('li');
           novoItem.className = 'collection-item historico-item';
           
-          // Obter ícone baseado na categoria
+          // Obter ícone e cor baseado na categoria
           let icone = 'straighten';
-          if (categoria === 'peso') icone = 'fitness_center';
-          if (categoria === 'temperatura') icone = 'thermostat';
-          if (categoria === 'volume') icone = 'local_drink';
-          if (categoria === 'area') icone = 'square_foot';
-          if (categoria === 'tempo') icone = 'schedule';
-          if (categoria === 'dados') icone = 'memory';
-          if (categoria === 'velocidade') icone = 'speed';
-          if (categoria === 'energia') icone = 'bolt';
+          let corBorda = '#2196f3';
+          if (categoria === 'peso') { icone = 'fitness_center'; corBorda = '#ff9800'; }
+          if (categoria === 'temperatura') { icone = 'thermostat'; corBorda = '#f44336'; }
+          if (categoria === 'volume') { icone = 'local_drink'; corBorda = '#00bcd4'; }
+          if (categoria === 'area') { icone = 'square_foot'; corBorda = '#4caf50'; }
+          if (categoria === 'tempo') { icone = 'schedule'; corBorda = '#9c27b0'; }
+          if (categoria === 'dados') { icone = 'memory'; corBorda = '#673ab7'; }
+          if (categoria === 'velocidade') { icone = 'speed'; corBorda = '#e91e63'; }
+          if (categoria === 'energia') { icone = 'bolt'; corBorda = '#ffeb3b'; }
           
-          // Formatar o HTML do item
+          // Aplicar cor da borda lateral
+          novoItem.style.borderLeft = `3px solid ${corBorda}`;
+          
+          // Formatar o HTML do item seguindo o padrão das outras calculadoras
           novoItem.innerHTML = `
-            <div class="historico-preco">
-              <span class="valor-original">
-                <i class="material-icons">${icone}</i> ${categoriaTexto}
-              </span>
-              <span class="desconto baixo">
-                ${new Date().toLocaleTimeString()}
-              </span>
+            <div class="historico-preco" style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+              <i class="material-icons" style="color: ${corBorda}; font-size: 20px;">${icone}</i>
+              <span style="font-weight: 500;">${categoriaTexto}</span>
+              <span style="margin-left: auto; color: #757575; font-size: 12px;">${new Date().toLocaleTimeString()}</span>
             </div>
-            <div class="historico-conversao">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="font-weight-bold">${valorOrigem} ${unidadeOrigem.split(' ')[0]}</span>
-                <i class="material-icons">arrow_forward</i>
-                <span class="font-weight-bold">${valorDestino} ${unidadeDestino.split(' ')[0]}</span>
+            <hr style="border: none; border-top: 1px dashed #e0e0e0; margin: 8px 0;">
+            <div class="historico-resultado">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span style="display: flex; align-items: center; color: #1976d2; font-weight: 500;">
+                  ${valorOrigem} ${unidadeOrigem.split(' ')[0]}
+                </span>
+                <i class="material-icons" style="color: #4caf50; margin: 0 8px;">arrow_forward</i>
+                <span style="display: flex; align-items: center; color: #4caf50; font-weight: 600;">
+                  ${valorDestino} ${unidadeDestino.split(' ')[0]}
+                </span>
+              </div>
+              <div style="display: flex; justify-content: flex-end; align-items: center; margin-top: 8px;">
+                <div class="historico-acoes" style="display: flex; gap: 8px;">
+                  <action-button type="copy" icon="content_copy" title="Copiar resultado"></action-button>
+                  <action-button type="delete" icon="delete_outline" title="Excluir do histórico"></action-button>
+                </div>
               </div>
             </div>
           `;
           
+          // Adicionar evento para o botão de copiar
+          const btnCopiar = novoItem.querySelector('[type="copy"]');
+          if (btnCopiar) {
+            btnCopiar.addEventListener('copy-request', function () {
+              copiarParaAreaDeTransferencia(`${valorDestino} ${unidadeDestino.split(' ')[0]}`);
+            });
+          }
+          
+          // Adicionar evento para o botão de excluir
+          const btnExcluir = novoItem.querySelector('[type="delete"]');
+          if (btnExcluir) {
+            btnExcluir.addEventListener('delete-request', function () {
+              excluirItemHistorico(novoItem);
+            });
+          }
+          
           // Adicionar ao início da lista
           historicoList.insertBefore(novoItem, historicoList.firstChild);
           
-          // Limitar o histórico a 10 itens
-          if (historicoList.children.length > 10) {
+          // Limitar o histórico a 30 itens
+          if (historicoList.children.length > 30) {
             historicoList.removeChild(historicoList.lastChild);
           }
           
           // Salvar no localStorage
           salvarHistorico();
+          
+          // Mostrar o container do histórico
+          document.getElementById('historico-container').classList.add('show');
+        }
+        
+        // Função para mostrar toast usando o componente toast-notification
+        function showToast(message, classes = 'rounded') {
+          if (typeof ToastNotification !== 'undefined' && ToastNotification.showToast) {
+            ToastNotification.showToast(message, classes);
+          } else {
+            M.toast({html: message, classes: classes});
+          }
+        }
+        
+        // Função para copiar para a área de transferência
+        function copiarParaAreaDeTransferencia(texto) {
+          navigator.clipboard
+            .writeText(texto)
+            .then(() => {
+              showToast('Resultado copiado para a área de transferência!', 'green rounded');
+            })
+            .catch((err) => {
+              console.error('Erro ao copiar: ', err);
+              showToast('Não foi possível copiar o resultado.', 'orange rounded');
+            });
+        }
+        
+        // Função para excluir um item do histórico
+        function excluirItemHistorico(item) {
+          const historicoList = document.getElementById('historico-list');
+          historicoList.removeChild(item);
+          
+          // Se não houver mais itens, mostrar mensagem de histórico vazio
+          if (historicoList.children.length === 0) {
+            const emptyHistory = document.createElement('empty-history');
+            emptyHistory.setAttribute('message', 'Nenhuma conversão realizada');
+            emptyHistory.setAttribute('sub-message', 'As conversões realizadas aparecerão aqui');
+            historicoList.appendChild(emptyHistory);
+          }
+          
+          // Salvar o histórico atualizado
+          salvarHistorico();
+          
+          // Mostrar toast de confirmação
+          showToast('Item removido do histórico!', 'green rounded');
         }
         
         // Função para salvar o histórico no localStorage
         function salvarHistorico() {
           const historicoList = document.getElementById('historico-list');
-          const itens = Array.from(historicoList.children).map(item => item.innerHTML);
+          const itens = Array.from(historicoList.children)
+            .filter((item) => !item.matches('empty-history'))
+            .map((item) => item.outerHTML);
           localStorage.setItem('historicoUnidades', JSON.stringify(itens));
         }
         
         // Função para carregar o histórico do localStorage
         function carregarHistorico() {
           const historicoSalvo = localStorage.getItem('historicoUnidades');
-          if (historicoSalvo) {
+          const historicoList = document.getElementById('historico-list');
+          
+          if (historicoSalvo && JSON.parse(historicoSalvo).length > 0) {
             const itens = JSON.parse(historicoSalvo);
-            const historicoList = document.getElementById('historico-list');
             
             // Limpar a lista atual
             historicoList.innerHTML = '';
             
             // Adicionar os itens salvos
-            itens.forEach(item => {
-              const novoItem = document.createElement('li');
-              novoItem.className = 'collection-item historico-item';
-              novoItem.innerHTML = item;
+            itens.forEach(itemHTML => {
+              const tempDiv = document.createElement('div');
+              tempDiv.innerHTML = itemHTML;
+              const novoItem = tempDiv.firstChild;
+              
+              // Recriar os eventos para os botões
+              const btnCopiar = novoItem.querySelector('[type="copy"]');
+              if (btnCopiar) {
+                btnCopiar.addEventListener('copy-request', function () {
+                  const resultado = novoItem.querySelector('.historico-resultado span[style*="color: #4caf50"]');
+                  if (resultado) {
+                    copiarParaAreaDeTransferencia(resultado.textContent.trim());
+                  }
+                });
+              }
+              
+              const btnExcluir = novoItem.querySelector('[type="delete"]');
+              if (btnExcluir) {
+                btnExcluir.addEventListener('delete-request', function () {
+                  excluirItemHistorico(novoItem);
+                });
+              }
+              
               historicoList.appendChild(novoItem);
             });
+            
+            // Mostrar o container do histórico
+            document.getElementById('historico-container').classList.add('show');
+          } else {
+            // Mostrar mensagem de histórico vazio
+            historicoList.innerHTML = '';
+            const emptyHistory = document.createElement('empty-history');
+            emptyHistory.setAttribute('message', 'Nenhuma conversão realizada');
+            emptyHistory.setAttribute('sub-message', 'As conversões realizadas aparecerão aqui');
+            historicoList.appendChild(emptyHistory);
+            
+            // Mostrar o container do histórico
+            document.getElementById('historico-container').classList.add('show');
           }
         }
         
