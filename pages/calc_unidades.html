@@ -249,69 +249,64 @@
       }
 
       .input-field {
-        margin-bottom: 20px !important;
-        position: relative;
-      }
-
-      .input-field label {
-        position: relative !important;
-        font-size: 14px !important;
-        color: #555 !important;
-        top: -5px !important;
-        left: 0 !important;
-        display: block !important;
-        margin-bottom: 6px !important;
-        transform: none !important;
-        font-family: "Roboto", sans-serif !important;
-      }
-
-      .input-field label.active {
-        transform: none !important;
+        margin-bottom: 12px;
       }
 
       .input-field input {
-        height: 42px !important;
-        padding: 0 12px !important;
-        margin-top: 0 !important;
         margin-bottom: 0 !important;
-        font-size: 14px !important;
-        border: 1px solid #e0e0e0 !important;
-        border-radius: 4px !important;
-        box-sizing: border-box !important;
+        padding: 0 !important;
+        text-indent: 0 !important;
+        box-sizing: border-box;
+        font-size: 14px;
+        font-family: "Roboto", sans-serif !important;
+        background: rgba(240, 248, 255, 0.85);
       }
 
-      .input-field .prefix {
-        top: 18px !important;
-        font-size: 18px !important;
+      .input-field label {
+        left: 10px;
+        font-size: 14px;
+        font-family: "Roboto", sans-serif !important;
       }
 
-      .input-field .prefix ~ input {
-        margin-left: 3rem !important;
-        width: calc(100% - 3rem) !important;
-      }
-
-      .select-wrapper {
+      /* Selects ocupam toda a largura */
+      .input-field .select-wrapper {
         width: 100% !important;
+        display: block !important;
       }
 
-      .select-wrapper input.select-dropdown {
-        height: 42px !important;
-        padding: 0 12px !important;
-        border: 1px solid #e0e0e0 !important;
-        border-radius: 4px !important;
+      .input-field .select-wrapper input.select-dropdown {
+        width: 100% !important;
         box-sizing: border-box !important;
-        margin-top: 0 !important;
-        margin-bottom: 0 !important;
-        font-size: 14px !important;
-        background-color: white !important;
+        display: block !important;
       }
-      
-      .input-field select {
-        opacity: 0;
-        position: absolute;
-        pointer-events: none;
-        height: 0;
-        width: 0;
+
+      .input-field .select-wrapper + label {
+        top: -26px !important;
+      }
+
+      .dropdown-content {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+
+      /* Adicionar estilos para feedback visual */
+      .input-field input:focus {
+        border-bottom: 2px solid #2196f3 !important;
+        box-shadow: 0 1px 0 0 #2196f3 !important;
+      }
+
+      .input-field input:focus + label {
+        color: #2196f3 !important;
+      }
+
+      /* Feedback visual para campos inválidos */
+      .input-field input.invalid {
+        border-bottom: 2px solid #f44336 !important;
+        box-shadow: 0 1px 0 0 #f44336 !important;
+      }
+
+      .input-field input.invalid + label {
+        color: #f44336 !important;
       }
 
       .btn-container {
@@ -509,87 +504,7 @@
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12) !important;
       }
 
-      /* Correções para o alinhamento de campos e labels */
-      .input-field {
-        margin-bottom: 20px !important;
-        position: relative;
-      }
-
-      .input-field label {
-        position: relative !important;
-        font-size: 14px !important;
-        color: #555 !important;
-        top: -5px !important;
-        left: 0 !important;
-        display: block !important;
-        margin-bottom: 6px !important;
-        transform: none !important;
-        font-family: "Roboto", sans-serif !important;
-      }
-
-      .input-field label.active {
-        transform: none !important;
-      }
-
-      .input-field input {
-        height: 42px !important;
-        padding: 0 12px !important;
-        margin-top: 0 !important;
-        margin-bottom: 0 !important;
-        font-size: 14px !important;
-        border: 1px solid #e0e0e0 !important;
-        border-radius: 4px !important;
-        box-sizing: border-box !important;
-      }
-
-      /* Correção para o select do Materialize */
-      .select-wrapper {
-        width: 100% !important;
-      }
-
-      .select-wrapper input.select-dropdown {
-        height: 42px !important;
-        padding: 0 12px !important;
-        border: 1px solid #e0e0e0 !important;
-        border-radius: 4px !important;
-        box-sizing: border-box !important;
-        margin-top: 0 !important;
-        margin-bottom: 0 !important;
-        font-size: 14px !important;
-        background-color: white !important;
-      }
-
-      /* Esconder o select nativo para evitar duplicação */
-      .input-field select {
-        opacity: 0;
-        position: absolute;
-        pointer-events: none;
-        height: 0;
-        width: 0;
-      }
-
-      /* Corrigir alinhamento do ícone prefix */
-      .input-field .prefix {
-        top: 18px !important;
-        font-size: 18px !important;
-      }
-
-      .input-field .prefix ~ input {
-        margin-left: 3rem !important;
-        width: calc(100% - 3rem) !important;
-      }
-
-      /* Corrigir dropdown */
-      .select-wrapper .caret {
-        right: 10px !important;
-        top: 50% !important;
-        transform: translateY(-50%) !important;
-      }
-
-      .select-dropdown {
-        width: 100% !important;
-      }
-
+      /* Estilos para dropdown do select */
       .dropdown-content li > a, .dropdown-content li > span {
         color: #2196f3;
         font-size: 14px;
@@ -701,10 +616,9 @@
             <div class="card-content">
               <span class="card-title"><i class="fas fa-exchange-alt mr-2"></i>Conversor de Unidades</span>
               
-              <!-- Seletor de Categoria -->
-              <div class="input-field">
-                <label for="categoria-select">Categoria</label>
-                <div class="select-wrapper">
+              <div class="row">
+                <!-- Seletor de Categoria -->
+                <div class="input-field col s12">
                   <select id="categoria-select">
                     <option value="" disabled>Escolha uma categoria</option>
                     <option value="comprimento" selected>Comprimento</option>
@@ -717,33 +631,36 @@
                     <option value="velocidade">Velocidade</option>
                     <option value="energia">Energia</option>
                   </select>
+                  <label for="categoria-select">Categoria</label>
                 </div>
-              </div>
-              
-              <!-- Valor de Entrada -->
-              <div class="input-field">
-                <label for="valor-entrada">Valor</label>
-                <i class="material-icons prefix">input</i>
-                <input id="valor-entrada" type="number" class="validate" step="any">
-              </div>
-              
-              <!-- Unidade de Origem -->
-              <div class="input-field">
-                <label for="unidade-origem">De</label>
-                <div class="select-wrapper">
+                
+                <!-- Valor de Entrada -->
+                <div class="input-field col s12">
+                  <input 
+                    id="valor-entrada" 
+                    type="text" 
+                    inputmode="decimal"
+                    pattern="[0-9]+([\.\,][0-9]+)?"
+                    aria-label="Valor para conversão"
+                    required
+                  >
+                  <label for="valor-entrada">Valor</label>
+                </div>
+                
+                <!-- Unidade de Origem -->
+                <div class="input-field col s12">
                   <select id="unidade-origem">
                     <!-- Será preenchido via JavaScript -->
                   </select>
+                  <label for="unidade-origem">De</label>
                 </div>
-              </div>
-              
-              <!-- Unidade de Destino -->
-              <div class="input-field">
-                <label for="unidade-destino">Para</label>
-                <div class="select-wrapper">
+                
+                <!-- Unidade de Destino -->
+                <div class="input-field col s12">
                   <select id="unidade-destino">
                     <!-- Será preenchido via JavaScript -->
                   </select>
+                  <label for="unidade-destino">Para</label>
                 </div>
               </div>
               
@@ -814,6 +731,10 @@
       // Inicialização dos componentes do Materialize
       document.addEventListener('DOMContentLoaded', function() {
         M.AutoInit();
+        
+        // Inicializar selects específicos
+        var elems = document.querySelectorAll('select');
+        M.FormSelect.init(elems);
         
         // Mostrar o histórico após um pequeno delay para efeito visual
         setTimeout(() => {
@@ -942,14 +863,20 @@
         // Função para converter unidades
         function converterUnidades() {
           const categoria = document.getElementById('categoria-select').value;
-          const valor = parseFloat(document.getElementById('valor-entrada').value);
+          const valorInput = document.getElementById('valor-entrada');
+          const valorStr = valorInput.value.trim().replace(',', '.');
+          const valor = parseFloat(valorStr);
           const unidadeOrigem = document.getElementById('unidade-origem').value;
           const unidadeDestino = document.getElementById('unidade-destino').value;
           
-          if (isNaN(valor)) {
-            M.toast({html: 'Por favor, insira um valor válido', classes: 'red'});
+          if (isNaN(valor) || valor <= 0) {
+            valorInput.classList.add('invalid');
+            valorInput.focus();
+            showToast('Por favor, insira um valor válido', 'orange rounded');
             return;
           }
+          
+          valorInput.classList.remove('invalid');
           
           let resultado;
           let formula = '';
@@ -1205,10 +1132,63 @@
         const limparBtn = document.getElementById('limpar-btn');
         if (limparBtn) {
           limparBtn.addEventListener('clear', function() {
-            document.getElementById('valor-entrada').value = '';
+            const valorInput = document.getElementById('valor-entrada');
+            
+            // Verifica se o campo já está vazio
+            if (valorInput.value === '' && document.getElementById('resultado-container').style.display === 'none') {
+              valorInput.classList.add('invalid');
+              setTimeout(() => {
+                valorInput.classList.remove('invalid');
+              }, 800);
+              showToast('Os campos já estão limpos!', 'orange rounded');
+              return;
+            }
+            
+            valorInput.value = '';
+            valorInput.classList.remove('invalid');
             document.getElementById('resultado-container').style.display = 'none';
+            M.updateTextFields();
+            showToast('Campos limpos com sucesso!', 'blue rounded');
           });
         }
+        
+        // Validação em tempo real para o campo de valor
+        const valorEntradaInput = document.getElementById('valor-entrada');
+        valorEntradaInput.addEventListener('input', function(e) {
+          const valorStr = this.value.trim();
+          if (valorStr === '') {
+            this.classList.remove('invalid');
+            return;
+          }
+          
+          const valorNormalizado = valorStr.replace(',', '.');
+          const valor = parseFloat(valorNormalizado);
+          
+          if (isNaN(valor) || valor <= 0) {
+            this.classList.add('invalid');
+          } else {
+            this.classList.remove('invalid');
+          }
+        });
+        
+        // Permitir apenas números, vírgula e ponto no campo de valor
+        valorEntradaInput.addEventListener('keypress', function(e) {
+          if (!/[\d,.]/.test(e.key)) {
+            e.preventDefault();
+          }
+          // Evita mais de uma vírgula ou ponto
+          if ((e.key === ',' || e.key === '.') && 
+              (this.value.includes(',') || this.value.includes('.'))) {
+            e.preventDefault();
+          }
+        });
+        
+        // Suporte a tecla Enter para converter
+        document.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            converterUnidades();
+          }
+        });
       });
     </script>
   </body>
