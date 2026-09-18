@@ -33,6 +33,6 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "markdownlint-cli": "^0.49.0",
     "prettier": "^3.7.4",
-    "tailwindcss": "^4.1.18"
+    "tailwindcss": "^4.3.3"
   }
 }
